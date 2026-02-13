@@ -1,0 +1,9 @@
+Về phần phát triển project:
+- Bắt buộc phải làm theo quy trình này 100%:
+    Bước 1. Nghiên cứu trên mạng, tìm tài liệu liên quan đến phần chuẩn bị implement, có link cụ thể
+    Bước 2. Làm báo cáo về những gì tìm được, có thể là video, bài viết, hoặc tài liệu, và cho biết sẽ sử dụng chúng như thế nào? cho mục đích gì?
+    Bước 3. Sau khi tôi đã xem qua báo cáo nhắn "ok" hoặc "làm đi", bắt đầu sử dụng những tài liệu vừa tìm được, phát triển một plan chi tiết về phần sẽ implement và các phase chia ra như thế nào, checklist ra sao? testing theo hình thức nào?
+    Bước 4. Sau khi tôi đã xem qua plan và nhắn "bắt đầu" hoặc "ok làm đi" thì bắt đầu implement theo plan đã được xem qua và bắt buộc phải bám sát vào plan, implement đến checklist cuối cùng.
+    Bước 5. Sau khi đã implement xong, tạo các script automatic test và chạy test lấy kết quả phần vừa implement, bao gồm api và ui, nếu có lỗi thì phải khắc phục lỗi đó, và tiếp tục chạy cho đến khi ko còn lỗi.
+    Bước 6. Cuối cùng là làm báo cáo, những gì vừa làm xong, test gặp những lỗi nào? đã khắc phục ra sao? và phần tiếp theo sẽ nghiên cứu và phát triển là phần nào?
+    

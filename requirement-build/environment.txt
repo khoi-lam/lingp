@@ -1,0 +1,3 @@
+Về môi trường và mục đích sử dụng project này:
+- Bởi vì đây là một project học tập, do đó không yêu cầu về môi trường deploy production, chỉ cần chạy localhost, ko cần phải setup production deploy rườm rà.
+-  

@@ -1,0 +1,52 @@
+Đây là một website bán sách, với ui dùng hoàn toàn là ngôn ngữ tiếng việt.
+Về layout và bố cục, bắt buộc phải tham khảo và reference từ các website bán sách uy tín trên internet, đặc biệt là từ website https://www.fahasa.com
+
+Nói sơ qua về các tính năng của website:
+
+Guest:
+Tìm kiếm sách theo tên sách, tên tác giả, tên nhà xuất bản, thể loại sách, có tính năng AI gợi ý sách, (tôi đã có sẵn api key, chỉ cần bạn setup và tôi sẽ tự bỏ vào env)
+Xem tổng quan danh sách sản phẩm
+Xem chi tiết sản phẩm, có thể xem thêm thông tin chi tiết về sách, có thể xem thêm thông tin về tác giả, nhà xuất bản, thể loại sách
+
+Users:
+Đăng ký, đăng nhập, đăng xuất, quên mật khẩu, reset mật khẩu, đổi mật khẩu
+Xem các thông báo từ admin, và các thông báo đơn hàng
+Tìm kiếm sách theo tên sách, tên tác giả, tên nhà xuất bản, thể loại sách, có tính năng AI gợi ý sách, (tôi đã có sẵn api key, chỉ cần bạn setup và tôi sẽ tự bỏ vào env)
+Xem tổng quan danh sách sản phẩm
+Xem chi tiết sản phẩm, có thể xem thêm thông tin chi tiết về sách, có thể xem thêm thông tin về tác giả, nhà xuất bản, thể loại sách
+Mua sách, có thể mua sách qua các hình thức thanh toán khác nhau, có thể chọn sách để mua, có thể chọn số lượng sách để mua, có thể chọn hình thức thanh toán, có thể chọn địa chỉ giao hàng, có thể chọn hình thức giao hàng
+Xem giỏ hàng, có thể xem giỏ hàng, có thể xem số lượng sách trong giỏ hàng, có thể xem tổng tiền, có thể xem số lượng sách trong giỏ hàng, có thể xem số lượng sách trong giỏ hàng, có thể xem số lượng sách trong giỏ hàng
+Xem đơn hàng đã mua, có thể yêu cầu hỗ trợ và có nút huỷ đơn
+Có phần profile, chỉnh được tên, địa chỉ (chỉnh xong tự lưu vô db gắn với user đó, để khi họ mua hàng thì sẽ có sẵn địa chỉ cho họ chọn vào mua hoặc nhập địa chỉ mới), có tính năng reset mật khẩu, đổi mật khẩu.
+có phần filter để lọc theo thể loại sách: {sách trong nước, sách ngoài nước (tuỳ vào category admin tạo)}, {thể loại: văn hoạ, khoa học, chính trị, toán học, ........... (tuỳ vào category admin tạo)}
+có thêm phần gửi hỗ trợ tới admin(báo lỗi, nhắn hỗ trợ đổi trả) (bao gồm tiêu đề, hình ảnh, và nội dung kèm theo)
+
+Admin:
+Dashboard: 
+xem tổng số lượng sản phẩm,
+xem tổng số sản phẩm đã bán, và số doanh thu 
+xem tổng sản phẩm sold out
+hiển thị biểu đồ tăng trưởng doanh thu, biểu đồ tăng trưởng số lượng sản phẩm đã bán
+có phần tổng quan xem đơn hàng đã hoàn thành, click vào hiện ra popup table chi tiết toàn bộ đơn hàng đã hoàn thành
+
+Sản phẩm:
+CRUD sản phẩm (tên, ảnh, thông tin: giá, số lượng, thể loại, thể loại sách, nhà xuất bản, tác giả, số lượng đã bán, mô tả sơ về sản phẩm, danh mục(có 2 phần danh mục: sách trong nước/ngoài nước và thể loại(chọn được nhiều thể loại )))
+
+Danh mục:
+CRUD danh mục: (tên, phân loại(xuất xứ/ thể loại), mô tả sơ về danh mục)
+
+Order:
+Xem tổng các đơn hàng đang trong hàng đang trong mọi trạng thái và điều chỉnh trạng thái đơn hàng: {chờ xác nhân, đang xử lí, đã vận chuyển(phần này sẽ có 3 mục: đã gửi đơn hàng, đang trung chuyển, đang giao hàng), đã hoàn thành || đã huỷ (lí do) || đã hoàn(ko thể cập nhật tay)} (state chỉ có thể đi lên, ko thể cập nhật lùi)
+Xem tổng các đơn hàng đã hoàn thành
+
+Support:
+Xem các yêu cầu của khách hàng, chia ra làm 2 mục:
+    - Yêu cầu hỗ trợ: xem và phản hồi
+    - Yêu cầu đổi trả: khi admin duyệt đơn, đơn hàng có orderid đó sẽ tự cập nhật state đã hoàn hàng, thông báo tới khách hàng
+
+Nội dung:
+    Cho phép admin tuỳ chỉnh được:
+        About us:
+        Hero banner (dạng ảnh slide trượt nhé, admin upload ảnh vô rồi nó hiện thôi)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    

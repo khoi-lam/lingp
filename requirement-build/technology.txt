@@ -1,0 +1,16 @@
+Đây là các công nghệ bắt buộc sử dụng trong project này:
+
+Frontend: Reactjs
+
+Backend: Nodejs
+
+Database: 
+    MongoDB
+
+UI: Tailwindcss
+
+API: 
+    AI: Openrouter
+
+
+Về layout, bắt buộc phải follow theo https://www.fahasa.com
