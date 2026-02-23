@@ -76,6 +76,12 @@ export const updateBookLens = async (req, res, next) => {
             }
             data.videoPath = `/uploads/videos/${req.file.filename}`;
             data.qrCodeUrl = await generateQR(id);
+        } else if ((existing.videoPath && !existing.qrCodeUrl) || (existing.videoPath && existing.qrCodeUrl)) {
+            // Preserve or regenerate QR if video exists
+            if (!existing.qrCodeUrl) {
+                data.qrCodeUrl = await generateQR(id);
+            }
+            // Otherwise qrCodeUrl stays untouched (not in data = not overwritten)
         }
 
         const video = await prisma.bookLens.update({ where: { id }, data, include: { book: { select: { id: true, title: true, author: true } } } });
@@ -103,7 +109,7 @@ export const getPublicVideo = async (req, res, next) => {
             where: { id: parseInt(req.params.id) },
             include: { book: { select: { id: true, title: true, author: true, images: true } } }
         });
-        if (!video || video.status !== 'published') return res.status(404).json({ success: false, message: 'Video không tồn tại hoặc chưa xuất bản' });
+        if (!video || !video.videoPath) return res.status(404).json({ success: false, message: 'Video không tồn tại hoặc chưa có file' });
 
         await prisma.bookLens.update({ where: { id: video.id }, data: { views: { increment: 1 } } });
         res.json({ success: true, data: { video: fmt({ ...video, views: video.views + 1 }) } });
