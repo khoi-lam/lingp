@@ -41,6 +41,11 @@ export default function AdminBookLens() {
 
     // Upload video directly to Cloudinary, return secure_url
     const uploadToCloudinary = async (file) => {
+        // Cloudinary free tier: max 100MB for video
+        if (file.size > 100 * 1024 * 1024) {
+            throw new Error('Video vượt quá 100MB — hãy nén lại trước khi upload');
+        }
+
         // Get signed params from backend
         const sigRes = await bookLensAPI.getUploadSignature();
         const { signature, timestamp, cloudName, apiKey, folder } = sigRes.data.data;
@@ -51,7 +56,6 @@ export default function AdminBookLens() {
         fd.append('timestamp', timestamp);
         fd.append('signature', signature);
         fd.append('folder', folder);
-        fd.append('resource_type', 'video');
 
         const xhr = new XMLHttpRequest();
         return new Promise((resolve, reject) => {
@@ -63,10 +67,13 @@ export default function AdminBookLens() {
                     const result = JSON.parse(xhr.responseText);
                     resolve(result.secure_url);
                 } else {
-                    reject(new Error('Upload thất bại'));
+                    try {
+                        const err = JSON.parse(xhr.responseText);
+                        reject(new Error(err.error?.message || 'Upload thất bại'));
+                    } catch { reject(new Error(`Upload thất bại (${xhr.status})`)); }
                 }
             };
-            xhr.onerror = () => reject(new Error('Upload thất bại'));
+            xhr.onerror = () => reject(new Error('Lỗi kết nối — thử lại'));
             xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`);
             xhr.send(fd);
         });
