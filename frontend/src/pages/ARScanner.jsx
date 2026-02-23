@@ -129,6 +129,8 @@ export default function ARScanner() {
         } catch (err) {
             const msg = err.response?.data?.message || 'Không tìm thấy video';
             showToast(msg, 'error');
+            setActiveVideo(null);
+            lastVideoIdRef.current = null;
         } finally {
             fetchingRef.current = false;
         }
