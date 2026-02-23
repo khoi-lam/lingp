@@ -5,7 +5,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "npx prisma migrate deploy && node server.js",
+    "start": "npx prisma migrate deploy && node scripts/seedAdmin.js && node server.js",
     "build": "npx prisma generate",
     "dev": "nodemon server.js",
     "seed:full": "node scripts/seedFullDatabase.js",
