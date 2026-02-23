@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuth } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
@@ -11,7 +11,7 @@ import Checkout from './pages/Checkout';
 import Support from './pages/Support';
 import Login from './pages/Login';
 import ARScanner from './pages/ARScanner';
-import WatchVideo from './pages/WatchVideo';
+// WatchVideo removed — /watch/:id now redirects to BookLens camera
 import AdminLayout from './components/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
@@ -46,6 +46,11 @@ function ScrollToTop() {
   return null;
 }
 
+function WatchRedirect() {
+  const { id } = useParams();
+  return <Navigate to={`/booklens?id=${id}`} replace />;
+}
+
 export default function App() {
   return (
     <>
@@ -59,7 +64,7 @@ export default function App() {
         <Route path="/support" element={<Layout><Support /></Layout>} />
         <Route path="/login" element={<Layout showNav={false} showFooter={false}><Login /></Layout>} />
         <Route path="/booklens" element={<Layout showNav={false} showFooter={false}><ARScanner /></Layout>} />
-        <Route path="/watch/:id" element={<Layout showNav={false} showFooter={false}><WatchVideo /></Layout>} />
+        <Route path="/watch/:id" element={<WatchRedirect />} />
 
         {/* Admin Routes — protected */}
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />

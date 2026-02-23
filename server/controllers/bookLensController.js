@@ -109,7 +109,7 @@ export const getPublicVideo = async (req, res, next) => {
             where: { id: parseInt(req.params.id) },
             include: { book: { select: { id: true, title: true, author: true, images: true } } }
         });
-        if (!video || !video.videoPath) return res.status(404).json({ success: false, message: 'Video không tồn tại hoặc chưa có file' });
+        if (!video || video.status !== 'published') return res.status(404).json({ success: false, message: 'Video không tồn tại hoặc chưa xuất bản' });
 
         await prisma.bookLens.update({ where: { id: video.id }, data: { views: { increment: 1 } } });
         res.json({ success: true, data: { video: fmt({ ...video, views: video.views + 1 }) } });

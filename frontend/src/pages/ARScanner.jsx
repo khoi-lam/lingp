@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import jsQR from 'jsqr';
 import { bookLensAPI } from '../services/api';
 import { API_BASE } from '../config.js';
@@ -7,6 +7,9 @@ import { API_BASE } from '../config.js';
 const logoUrl = '/logo.png';
 
 export default function ARScanner() {
+    const [searchParams] = useSearchParams();
+    const autoVideoId = searchParams.get('id');
+
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const fileInputRef = useRef(null);
@@ -249,12 +252,20 @@ export default function ARScanner() {
         }
     }, [qrVisible]);
 
+    // Auto-load video from URL param (from /watch/:id redirect)
+    useEffect(() => {
+        if (autoVideoId && !activeVideo) {
+            setQrVisible(true);
+            fetchVideo(autoVideoId);
+        }
+    }, [autoVideoId]);
+
     useEffect(() => {
         startCamera();
         return () => stopCamera();
     }, [facingMode]);
 
-    const showVideoOverlay = activeVideo && qrVisible;
+    const showVideoOverlay = activeVideo && (qrVisible || autoVideoId);
 
     return (
         <div className="fixed inset-0 z-[100] bg-black overflow-hidden">
@@ -345,10 +356,10 @@ export default function ARScanner() {
                     style={{ animation: 'fadeIn 0.2s ease-out' }}
                 >
                     <div className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold shadow-lg backdrop-blur-md ${toast.type === 'error'
-                            ? 'bg-red-500/90 text-white'
-                            : toast.type === 'success'
-                                ? 'bg-[#4CAF50]/90 text-white'
-                                : 'bg-white/20 text-white border border-white/20'
+                        ? 'bg-red-500/90 text-white'
+                        : toast.type === 'success'
+                            ? 'bg-[#4CAF50]/90 text-white'
+                            : 'bg-white/20 text-white border border-white/20'
                         }`}>
                         <span className="material-symbols-outlined text-base">
                             {toast.type === 'error' ? 'error' : toast.type === 'success' ? 'check_circle' : 'info'}
