@@ -1,4 +1,5 @@
 import QRCode from 'qrcode';
+import fs from 'fs';
 import cloudinary from '../config/cloudinary.js';
 import prisma from '../lib/prisma.js';
 
@@ -55,13 +56,15 @@ export const createBookLens = async (req, res, next) => {
         const { title, book, duration, status, description } = req.body;
         let videoPath = '';
 
-        // Upload video to Cloudinary if provided
+        // Upload video to Cloudinary from temp disk file
         if (req.file) {
-            const result = await uploadToCloudinary(req.file.buffer, {
+            const result = await cloudinary.uploader.upload(req.file.path, {
                 folder: 'lingoland/videos',
                 resource_type: 'video',
             });
             videoPath = result.secure_url;
+            // Cleanup temp file
+            fs.unlink(req.file.path, () => { });
         }
 
         let video = await prisma.bookLens.create({
@@ -99,12 +102,14 @@ export const updateBookLens = async (req, res, next) => {
                 const match = existing.videoPath.match(/\/lingoland\/videos\/([^.]+)/);
                 if (match) await cloudinary.uploader.destroy(`lingoland/videos/${match[1]}`, { resource_type: 'video' }).catch(() => { });
             }
-            const result = await uploadToCloudinary(req.file.buffer, {
+            const result = await cloudinary.uploader.upload(req.file.path, {
                 folder: 'lingoland/videos',
                 resource_type: 'video',
             });
             data.videoPath = result.secure_url;
             data.qrCodeUrl = await generateQR(id);
+            // Cleanup temp file
+            fs.unlink(req.file.path, () => { });
         } else if (existing.videoPath && !existing.qrCodeUrl) {
             // Regenerate QR if video exists but QR is missing
             data.qrCodeUrl = await generateQR(id);
