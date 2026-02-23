@@ -43,7 +43,6 @@ export const getUploadSignature = async (req, res) => {
     const params = {
         timestamp,
         folder: 'lingoland/videos',
-        resource_type: 'video',
     };
     const signature = cloudinary.utils.api_sign_request(params, process.env.CLOUDINARY_API_SECRET);
     res.json({
