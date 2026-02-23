@@ -102,7 +102,7 @@ const Categories = () => {
                         <button
                             onClick={() => setFilter('all')}
                             className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${filter === 'all'
-                                ? 'bg-fahasa-red text-white shadow-lg shadow-fahasa-red/20'
+                                ? 'bg-vanxuan-red text-white shadow-lg shadow-vanxuan-red/20'
                                 : 'text-gray-400 hover:bg-gray-50'
                                 }`}
                         >
@@ -111,7 +111,7 @@ const Categories = () => {
                         <button
                             onClick={() => setFilter('origin')}
                             className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${filter === 'origin'
-                                ? 'bg-fahasa-red text-white shadow-lg shadow-fahasa-red/20'
+                                ? 'bg-vanxuan-red text-white shadow-lg shadow-vanxuan-red/20'
                                 : 'text-gray-400 hover:bg-gray-50'
                                 }`}
                         >
@@ -120,7 +120,7 @@ const Categories = () => {
                         <button
                             onClick={() => setFilter('genre')}
                             className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${filter === 'genre'
-                                ? 'bg-fahasa-red text-white shadow-lg shadow-fahasa-red/20'
+                                ? 'bg-vanxuan-red text-white shadow-lg shadow-vanxuan-red/20'
                                 : 'text-gray-400 hover:bg-gray-50'
                                 }`}
                         >
@@ -129,7 +129,7 @@ const Categories = () => {
                     </div>
                     <button
                         onClick={() => setShowModal(true)}
-                        className="px-8 py-3.5 bg-fahasa-red text-white rounded-2xl font-black text-sm hover:bg-fahasa-red/90 transition-all shadow-xl shadow-fahasa-red/20 hover:scale-105 active:scale-95"
+                        className="px-8 py-3.5 bg-vanxuan-red text-white rounded-2xl font-black text-sm hover:bg-vanxuan-red/90 transition-all shadow-xl shadow-vanxuan-red/20 hover:scale-105 active:scale-95"
                     >
                         + Thêm Danh Mục
                     </button>
@@ -180,8 +180,8 @@ const Categories = () => {
                                     <tr key={category._id} className="hover:bg-gray-50/50 transition-colors group">
                                         <td className="px-10 py-6 whitespace-nowrap">
                                             <div className="flex items-center space-x-3">
-                                                <div className="w-2 h-2 rounded-full bg-fahasa-red opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                                <span className="text-base font-bold text-gray-900 group-hover:text-fahasa-red transition-colors">
+                                                <div className="w-2 h-2 rounded-full bg-vanxuan-red opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                                <span className="text-base font-bold text-gray-900 group-hover:text-vanxuan-red transition-colors">
                                                     {category.name}
                                                 </span>
                                             </div>
@@ -213,7 +213,7 @@ const Categories = () => {
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteClick(category._id)}
-                                                    className="w-10 h-10 bg-white border border-gray-100 text-fahasa-red hover:text-white hover:bg-fahasa-red rounded-xl flex items-center justify-center transition-all shadow-sm"
+                                                    className="w-10 h-10 bg-white border border-gray-100 text-vanxuan-red hover:text-white hover:bg-vanxuan-red rounded-xl flex items-center justify-center transition-all shadow-sm"
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -257,7 +257,7 @@ const Categories = () => {
                                             onChange={(e) =>
                                                 setFormData({ ...formData, name: e.target.value })
                                             }
-                                            className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:outline-none focus:bg-white focus:border-fahasa-red font-bold transition-all"
+                                            className="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:outline-none focus:bg-white focus:border-vanxuan-red font-bold transition-all"
                                         />
                                     </div>
 
@@ -308,7 +308,7 @@ const Categories = () => {
                                     </button>
                                     <button
                                         type="submit"
-                                        className="flex-[2] py-4 bg-fahasa-red text-white rounded-2xl font-black shadow-xl shadow-fahasa-red/20 hover:bg-fahasa-red/90 hover:-translate-y-1 active:translate-y-0 transition-all"
+                                        className="flex-[2] py-4 bg-vanxuan-red text-white rounded-2xl font-black shadow-xl shadow-vanxuan-red/20 hover:bg-vanxuan-red/90 hover:-translate-y-1 active:translate-y-0 transition-all"
                                     >
                                         {editingCategory ? 'Lưu thay đổi' : 'Tạo danh mục'}
                                     </button>

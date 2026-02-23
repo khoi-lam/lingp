@@ -3,10 +3,21 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { getImageUrl } from '../config';
+import {
+    FaBolt, FaTags, FaTicketAlt, FaStar, FaChartLine,
+    FaChild, FaBook, FaGlobe, FaPen, FaBookOpen,
+    FaSpa, FaMoneyBillWave, FaHome, FaFeatherAlt,
+    FaGifts, FaCrown, FaSearch, FaGhost,
+    FaRobot, FaUserSecret, FaSkull, FaDragon,
+    FaFish, FaHippo, FaMask, FaHatWizard
+} from 'react-icons/fa';
+import {
+    HiOutlineTrendingUp, HiOutlineBookOpen, HiOutlineChevronRight,
+    HiOutlineArrowRight, HiOutlineViewGrid
+} from 'react-icons/hi';
 
 const Home = () => {
     const { user } = useAuth();
-    // Hardcoded hero banners
     const banners = [
         '/hero-images/hero1.png',
         '/hero-images/hero2.png',
@@ -15,17 +26,46 @@ const Home = () => {
         '/hero-images/hero5.png'
     ];
     const [flashSaleBooks, setFlashSaleBooks] = useState([]);
+    const [trendBooks, setTrendBooks] = useState([]);
+    const [rankBooks, setRankBooks] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [activeBanner, setActiveBanner] = useState(0);
+    const [activeTab, setActiveTab] = useState(0);
+    const [activeRankTab, setActiveRankTab] = useState(0);
     const [loading, setLoading] = useState(true);
+
+    // Countdown timer
+    const [countdown, setCountdown] = useState({ h: 0, m: 29, s: 59 });
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCountdown(prev => {
+                const totalSec = prev.h * 3600 + prev.m * 60 + prev.s - 1;
+                if (totalSec <= 0) return { h: 23, m: 59, s: 59 };
+                return {
+                    h: Math.floor(totalSec / 3600),
+                    m: Math.floor((totalSec % 3600) / 60),
+                    s: totalSec % 60
+                };
+            });
+        }, 1000);
+        return () => clearInterval(timer);
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Only fetch books
-                const response = await api.get('/books?limit=5');
-                setFlashSaleBooks(response.data.data.books || []);
+                const [flashRes, trendRes, rankRes, catRes] = await Promise.all([
+                    api.get('/books?limit=5'),
+                    api.get('/books?limit=10&page=2'),
+                    api.get('/books?limit=5&page=3'),
+                    api.get('/categories')
+                ]);
+                setFlashSaleBooks(flashRes.data.data.books || []);
+                setTrendBooks(trendRes.data.data.books || []);
+                setRankBooks(rankRes.data.data.books || []);
+                setCategories(catRes.data.data.categories || catRes.data.data || []);
             } catch (error) {
-                console.error('Error fetching flash sale books:', error);
+                console.error('Error fetching data:', error);
             } finally {
                 setLoading(false);
             }
@@ -43,70 +83,105 @@ const Home = () => {
     }, [banners]);
 
     const iconMenu = [
-        {
-            name: 'Flash Sale',
-            icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" /></svg>,
-            color: 'bg-orange-500'
-        },
-        {
-            name: 'Mã Giảm Giá',
-            icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" /></svg>,
-            color: 'bg-red-500'
-        },
-        {
-            name: 'Sản Phẩm Mới',
-            icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>,
-            color: 'bg-blue-500'
-        },
-        {
-            name: 'Bán Chạy',
-            icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" /></svg>,
-            color: 'bg-pink-500'
-        },
-        {
-            name: 'Thiếu Nhi',
-            icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>,
-            color: 'bg-yellow-500'
-        },
-        {
-            name: 'Văn Học',
-            icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" /></svg>,
-            color: 'bg-green-500'
-        },
-        {
-            name: 'Kinh Tế',
-            icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" /></svg>,
-            color: 'bg-indigo-500'
-        },
-        {
-            name: 'Ngoại Văn',
-            icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z" /></svg>,
-            color: 'bg-purple-500'
-        },
-        {
-            name: 'Văn Phòng Phẩm',
-            icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" /></svg>,
-            color: 'bg-teal-500'
-        },
-        {
-            name: 'Đồ Chơi',
-            icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-1.48.41-2.86 1.12-4.06l10.94 10.94C14.86 19.59 13.48 20 12 20zm6.88-3.94L8.94 6.12C10.14 5.41 11.52 5 13 5c4.41 0 8 3.59 8 8 0 1.48-.41 2.86-1.12 4.06z" /></svg>,
-            color: 'bg-cyan-500'
-        },
+        { name: 'Flash Sale', icon: <FaBolt className="w-5 h-5" />, iconColor: 'text-vanxuan-red' },
+        { name: 'Ưu Đãi', icon: <FaTags className="w-5 h-5" />, iconColor: 'text-vanxuan-red' },
+        { name: 'Mã Giảm Giá', icon: <FaTicketAlt className="w-5 h-5" />, iconColor: 'text-vanxuan-red' },
+        { name: 'Sản Phẩm Mới', icon: <FaStar className="w-5 h-5" />, iconColor: 'text-vanxuan-red' },
+        { name: 'Bán Chạy', icon: <FaChartLine className="w-5 h-5" />, iconColor: 'text-vanxuan-red' },
+        { name: 'Thiếu Nhi', icon: <FaChild className="w-5 h-5" />, iconColor: 'text-vanxuan-red' },
+        { name: 'Văn Học', icon: <FaBook className="w-5 h-5" />, iconColor: 'text-vanxuan-red' },
+        { name: 'Ngoại Văn', icon: <FaGlobe className="w-5 h-5" />, iconColor: 'text-vanxuan-red' },
+        { name: 'Văn Phòng Phẩm', icon: <FaPen className="w-5 h-5" />, iconColor: 'text-vanxuan-red' },
+        { name: 'Manga', icon: <FaBookOpen className="w-5 h-5" />, iconColor: 'text-vanxuan-red' },
     ];
+
+    const promoBanners = [
+        { title: 'GIẢM ĐẾN 45%', subtitle: 'Sách Văn Học Hay', bgColor: 'bg-red-500', icon: <FaBook className="w-10 h-10" /> },
+        { title: 'BOOK FOR VALENTINE', subtitle: 'Sách Tình Yêu', bgColor: 'bg-rose-500', icon: <FaFeatherAlt className="w-10 h-10" /> },
+        { title: 'VĂN HỌC 360°', subtitle: 'Mọi Trang Một Cảm Xúc', bgColor: 'bg-blue-600', icon: <FaBookOpen className="w-10 h-10" /> },
+        { title: 'KHAI BÚT ĐÓN XUÂN', subtitle: 'Văn Phòng Phẩm Mới', bgColor: 'bg-teal-600', icon: <FaPen className="w-10 h-10" /> },
+    ];
+
+    const trendTabs = ['Xu Hướng Theo Ngày', 'Sách HOT - Giảm Sốc', 'Bestseller Ngoại Văn'];
+    const rankTabs = ['Văn học', 'Kinh Tế', 'Tâm lý - Kỹ năng sống', 'Thiếu nhi', 'Ngoại ngữ'];
+
+    const featuredShelves = [
+        { name: 'Bình Yên Để Bắt Đầu', icon: <FaSpa className="w-8 h-8 text-emerald-500" /> },
+        { name: 'Làm Chủ Đồng Tiền', icon: <FaMoneyBillWave className="w-8 h-8 text-green-600" /> },
+        { name: 'Về Nhà Ăn Tết', icon: <FaHome className="w-8 h-8 text-amber-600" /> },
+        { name: 'Tác Giả Trẻ Việt Nam', icon: <FaFeatherAlt className="w-8 h-8 text-blue-500" /> },
+        { name: 'Thiếu Nhi Vui Đón Tết', icon: <FaGifts className="w-8 h-8 text-red-500" /> },
+        { name: 'Sách Độc Quyền', icon: <FaCrown className="w-8 h-8 text-yellow-500" /> },
+        { name: 'Tủ Sách Trinh Thám', icon: <FaSearch className="w-8 h-8 text-indigo-500" /> },
+        { name: 'Tủ Sách Kinh Dị', icon: <FaGhost className="w-8 h-8 text-purple-600" /> },
+    ];
+
+    const collections = [
+        { name: 'Doraemon', icon: <FaRobot className="w-8 h-8 text-blue-500" /> },
+        { name: 'Conan', icon: <FaUserSecret className="w-8 h-8 text-gray-700" /> },
+        { name: 'One Piece', icon: <FaSkull className="w-8 h-8 text-red-600" /> },
+        { name: 'Dragon Ball', icon: <FaDragon className="w-8 h-8 text-orange-500" /> },
+        { name: 'Naruto', icon: <FaFish className="w-8 h-8 text-blue-600" /> },
+        { name: 'Capybara', icon: <FaHippo className="w-8 h-8 text-amber-700" /> },
+        { name: 'Marvel', icon: <FaMask className="w-8 h-8 text-red-500" /> },
+        { name: 'Harry Potter', icon: <FaHatWizard className="w-8 h-8 text-indigo-600" /> },
+    ];
+
+    const pad = (n) => n.toString().padStart(2, '0');
+
+    const ProductCard = ({ book, showSold = false }) => (
+        <Link to={`/product/${book._id}`} className="space-y-3 group">
+            <div className="aspect-[3/4] bg-gray-50 rounded-md relative overflow-hidden">
+                <div className="absolute top-2 right-2 px-2 py-0.5 bg-vanxuan-red text-white text-[10px] font-black rounded z-10">
+                    -{Math.round((1 - book.price / (book.price * 1.3)) * 100)}%
+                </div>
+                <img
+                    src={getImageUrl(book.images?.[0])}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    alt={book.title}
+                />
+            </div>
+            <div className="space-y-1.5">
+                <h4 className="text-xs font-medium text-vanxuan-dark h-[32px] line-clamp-2 leading-tight group-hover:text-vanxuan-red transition-colors">
+                    {book.title}
+                </h4>
+                <div className="flex items-center space-x-2">
+                    <span className="text-sm font-black text-vanxuan-red">
+                        {book.price?.toLocaleString('vi-VN')} đ
+                    </span>
+                    <span className="text-[10px] px-1.5 py-0.5 bg-red-50 text-vanxuan-red font-bold rounded">
+                        -{Math.round((1 - book.price / (book.price * 1.3)) * 100)}%
+                    </span>
+                </div>
+                <div className="text-[10px] text-gray-400 line-through">
+                    {(book.price * 1.3).toLocaleString('vi-VN')} đ
+                </div>
+                {showSold && (
+                    <div className="h-3.5 bg-red-50 rounded-full relative overflow-hidden">
+                        <div
+                            className="absolute inset-0 bg-vanxuan-red rounded-full"
+                            style={{ width: `${Math.min(((book.soldCount || Math.floor(Math.random() * 200 + 10)) / 300) * 100, 100)}%` }}
+                        ></div>
+                        <span className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-white">
+                            Đã bán {book.soldCount || Math.floor(Math.random() * 200 + 10)}
+                        </span>
+                    </div>
+                )}
+            </div>
+        </Link>
+    );
 
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center bg-white">
-            <div className="w-12 h-12 border-4 border-fahasa-red border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-vanxuan-red border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
 
     return (
-        <div className="bg-gray-50 min-h-screen pb-20">
-            {/* Hero Section (Fahasa Style: 1 Main + 2 Side) */}
+        <div className="bg-vanxuan-gray min-h-screen pb-20">
+            {/* ─── 1. Hero Section ─── */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
                 <div className="flex flex-col lg:flex-row gap-4">
-                    {/* Main Slider (66%) */}
                     <div className="w-full lg:w-2/3 aspect-[21/9] lg:aspect-auto lg:h-[400px] relative rounded-lg overflow-hidden shadow-xl shadow-gray-200/50 group">
                         {banners.length > 0 ? (
                             <>
@@ -123,43 +198,63 @@ const Home = () => {
                                         <button
                                             key={i}
                                             onClick={() => setActiveBanner(i)}
-                                            className={`w-2.5 h-2.5 rounded-full transition-all ${i === activeBanner ? 'bg-fahasa-red w-8' : 'bg-white/50'}`}
+                                            className={`w-2.5 h-2.5 rounded-full transition-all ${i === activeBanner ? 'bg-vanxuan-red w-8' : 'bg-white/50'}`}
                                         ></button>
                                     ))}
                                 </div>
                             </>
                         ) : (
-                            <div className="w-full h-full bg-gradient-to-r from-fahasa-red to-red-600 flex items-center justify-center">
-                                <h1 className="text-white text-3xl font-black italic tracking-widest">HỆ THỐNG NHÀ SÁCH BOOKSTORE</h1>
+                            <div className="w-full h-full bg-vanxuan-red flex items-center justify-center">
+                                <h1 className="text-white text-3xl font-black italic tracking-widest">HỆ THỐNG NHÀ SÁCH VẠN XUÂN</h1>
                             </div>
                         )}
                     </div>
-
-                    {/* Side Banners (33%) */}
                     <div className="w-full lg:w-1/3 flex flex-row lg:flex-col gap-4 h-auto lg:h-[400px]">
                         <div className="flex-1 rounded-lg overflow-hidden shadow-lg shadow-gray-200/50 relative group">
-                            <img src="/hero-images/promo-jan.png" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Khuyến mãi tháng 1" />
+                            <img src="/hero-images/promo-jan.png" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Khuyến mãi" />
                         </div>
                         <div className="flex-1 rounded-lg overflow-hidden shadow-lg shadow-gray-200/50 relative group">
-                            <img src="/hero-images/new-arrival.png" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Sách mới về" />
+                            <img src="/hero-images/new-arrival.png" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Sách mới" />
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Icon Menu (Quick Access) */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-                <div className="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100 grid grid-cols-5 md:grid-cols-10 gap-8">
+            {/* ─── 2. Promo Banner Row (4 banners) ─── */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {promoBanners.map((promo, i) => (
+                        <Link
+                            key={i}
+                            to="/shop"
+                            className={`${promo.bgColor} rounded-lg p-4 md:p-5 text-white relative overflow-hidden group hover:shadow-lg transition-shadow h-[130px] flex flex-col justify-between`}
+                        >
+                            <div className="absolute top-3 right-3 opacity-30">{promo.icon}</div>
+                            <div>
+                                <h3 className="text-sm md:text-base font-black tracking-wide line-clamp-1">{promo.title}</h3>
+                                <p className="text-[10px] md:text-xs opacity-80 mt-1 line-clamp-1">{promo.subtitle}</p>
+                            </div>
+                            <div className="inline-flex items-center text-[10px] md:text-xs font-bold bg-white/20 px-3 py-1 rounded-full group-hover:bg-white/30 transition-colors w-fit">
+                                MUA NGAY →
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </div>
+
+            {/* ─── 3. Icon Menu ─── */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 grid grid-cols-5 md:grid-cols-10 gap-4">
                     {iconMenu.map((item, i) => (
                         <Link
                             key={i}
                             to="/shop"
-                            className="flex flex-col items-center space-y-3 group transition-transform hover:-translate-y-2"
+                            className="flex flex-col items-center space-y-2 group transition-transform hover:-translate-y-1"
                         >
-                            <div className={`w-14 h-14 ${item.color} text-white flex items-center justify-center rounded-lg shadow-lg transition-transform group-hover:rotate-12`}>
+                            <div className={`w-14 h-14 bg-gray-50 border border-gray-200 ${item.iconColor} flex items-center justify-center rounded-lg transition-all group-hover:border-vanxuan-red group-hover:bg-red-50`}>
                                 {item.icon}
                             </div>
-                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center leading-tight group-hover:text-fahasa-red transition-colors">
+                            <span className="text-[10px] font-bold text-gray-600 text-center leading-tight group-hover:text-vanxuan-red transition-colors">
                                 {item.name}
                             </span>
                         </Link>
@@ -167,58 +262,288 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Flash Sale Block */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
-                <div className="bg-white rounded-[40px] overflow-hidden shadow-xl shadow-gray-200/50 border border-gray-100">
-                    <div className="bg-fahasa-red p-6 flex justify-between items-center text-white">
+            {/* ─── 4. Flash Sale ─── */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+                <div className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                    <div className="px-6 py-4 flex justify-between items-center border-b border-gray-100">
                         <div className="flex items-center space-x-4">
-                            <div className="text-3xl">📚</div>
-                            <h3 className="text-2xl font-black uppercase tracking-widest italic">Sách mới nhất</h3>
+                            <span className="text-vanxuan-red font-black text-xl tracking-wider flex items-center space-x-2"><span>FLASH</span> <FaBolt className="w-5 h-5 text-yellow-500" /> <span>SALE</span></span>
+                            <div className="hidden md:flex items-center space-x-1 text-sm font-bold text-gray-500">
+                                <span>Kết thúc trong</span>
+                                <span className="bg-vanxuan-dark text-white px-2 py-1 rounded-md font-black text-xs min-w-[28px] text-center">{pad(countdown.h)}</span>
+                                <span className="font-black">:</span>
+                                <span className="bg-vanxuan-dark text-white px-2 py-1 rounded-md font-black text-xs min-w-[28px] text-center">{pad(countdown.m)}</span>
+                                <span className="font-black">:</span>
+                                <span className="bg-vanxuan-dark text-white px-2 py-1 rounded-md font-black text-xs min-w-[28px] text-center">{pad(countdown.s)}</span>
+                            </div>
                         </div>
-                        <Link to="/shop" className="text-sm font-black uppercase tracking-widest hover:underline">Xem tất cả</Link>
+                        <Link to="/shop" className="text-vanxuan-red text-sm font-bold hover:underline flex items-center space-x-1">
+                            <span>Xem tất cả</span>
+                            <HiOutlineChevronRight className="w-4 h-4" />
+                        </Link>
                     </div>
-                    <div className="p-8 grid grid-cols-2 md:grid-cols-5 gap-8">
+                    <div className="p-6 grid grid-cols-2 md:grid-cols-5 gap-6">
                         {flashSaleBooks.map((book) => (
-                            <Link key={book._id} to={`/product/${book._id}`} className="space-y-3 group">
-                                <div className="aspect-[3/4] bg-gray-50 rounded-md relative overflow-hidden">
-                                    <div className="absolute top-2 left-2 px-2 py-1 bg-fahasa-red text-white text-[10px] font-black rounded-lg z-10">-30%</div>
-                                    <img
-                                        src={getImageUrl(book.images?.[0])}
-                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform"
-                                        alt={book.title}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <h4 className="text-xs font-bold text-fahasa-dark h-[32px] line-clamp-2 leading-tight group-hover:text-fahasa-red transition-colors">
-                                        {book.title}
-                                    </h4>
-                                    <div className="flex items-center space-x-2 h-[24px]">
-                                        <span className="text-base font-black text-fahasa-red">
-                                            {book.price.toLocaleString('vi-VN')}đ
-                                        </span>
-                                        <span className="text-[9px] text-gray-400 font-bold line-through">
-                                            {(book.price * 1.3).toLocaleString('vi-VN')}đ
-                                        </span>
-                                    </div>
-                                    <div className="h-4 bg-gray-100 rounded-full relative overflow-hidden">
-                                        <div
-                                            className="absolute inset-0 bg-orange-400 rounded-full"
-                                            style={{ width: `${Math.min(((book.soldCount || 10) / 100) * 100, 100)}%` }}
-                                        ></div>
-                                        <span className="absolute inset-0 flex items-center justify-center text-[8px] font-black text-white uppercase tracking-tighter">
-                                            Đã bán {book.soldCount || 10}
-                                        </span>
-                                    </div>
-                                </div>
-                            </Link>
+                            <ProductCard key={book._id} book={book} showSold={true} />
                         ))}
                     </div>
                 </div>
             </div>
 
-            {/* AI Suggestion Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
-                <div className="bg-gradient-to-br from-fahasa-dark to-black rounded-[40px] p-12 md:p-16 relative overflow-hidden">
+            {/* ─── 5. Xu Hướng Mua Sắm (Shopping Trends) ─── */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+                <div className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                    {/* Pink Header */}
+                    <div className="bg-red-50 px-6 py-4 flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-vanxuan-red rounded-lg flex items-center justify-center">
+                            <HiOutlineTrendingUp className="w-5 h-5 text-white" />
+                        </div>
+                        <h2 className="text-lg md:text-xl font-black text-vanxuan-dark">Xu Hướng Mua Sắm</h2>
+                    </div>
+                    {/* Tabs */}
+                    <div className="border-b border-gray-100 px-6">
+                        <div className="flex space-x-6 overflow-x-auto">
+                            {trendTabs.map((tab, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setActiveTab(i)}
+                                    className={`py-3 text-sm font-bold whitespace-nowrap border-b-2 transition-colors ${activeTab === i
+                                        ? 'border-vanxuan-red text-vanxuan-red'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                                        }`}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    {/* Product Grid */}
+                    <div className="p-6 grid grid-cols-2 md:grid-cols-5 gap-6">
+                        {trendBooks.slice(0, 5).map((book) => (
+                            <ProductCard key={book._id} book={book} showSold={true} />
+                        ))}
+                    </div>
+                    {/* Row 2 */}
+                    {trendBooks.length > 5 && (
+                        <div className="px-6 pb-6 grid grid-cols-2 md:grid-cols-5 gap-6">
+                            {trendBooks.slice(5, 10).map((book) => (
+                                <ProductCard key={book._id} book={book} showSold={true} />
+                            ))}
+                        </div>
+                    )}
+                    {/* Xem Thêm Button */}
+                    <div className="px-6 pb-6 flex justify-center">
+                        <Link
+                            to="/shop"
+                            className="border-2 border-vanxuan-red text-vanxuan-red px-16 py-3 rounded-lg font-bold text-sm hover:bg-vanxuan-red hover:text-white transition-colors"
+                        >
+                            Xem Thêm
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
+            {/* ─── 6. Tủ Sách Nổi Bật (Featured Bookshelves) ─── */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+                <div className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                    <div className="bg-red-50 px-6 py-4 flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-vanxuan-red rounded-lg flex items-center justify-center">
+                            <HiOutlineBookOpen className="w-5 h-5 text-white" />
+                        </div>
+                        <h2 className="text-lg md:text-xl font-black text-vanxuan-dark uppercase">Tủ Sách Nổi Bật</h2>
+                    </div>
+                    <div className="p-6 overflow-x-auto">
+                        <div className="flex space-x-6 min-w-[640px]">
+                            {featuredShelves.map((shelf, i) => (
+                                <Link key={i} to="/shop" className="flex flex-col items-center space-y-3 group min-w-[120px]">
+                                    <div className="w-24 h-24 bg-red-50 border-2 border-gray-100 rounded-lg flex items-center justify-center group-hover:border-vanxuan-red group-hover:shadow-md transition-all">
+                                        {shelf.icon}
+                                    </div>
+                                    <span className="text-xs font-bold text-gray-600 text-center leading-tight group-hover:text-vanxuan-red transition-colors max-w-[100px]">
+                                        {shelf.name}
+                                    </span>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* ─── 7. Bảng Xếp Hạng Bán Chạy Tuần (Weekly Rankings) ─── */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+                <div className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                    {/* Dark Header */}
+                    <div className="bg-vanxuan-dark px-6 py-4">
+                        <h2 className="text-lg md:text-xl font-black text-white">Bảng xếp hạng bán chạy tuần</h2>
+                    </div>
+                    {/* Category Tabs */}
+                    <div className="border-b border-gray-100 px-6 bg-white">
+                        <div className="flex space-x-4 overflow-x-auto">
+                            {rankTabs.map((tab, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setActiveRankTab(i)}
+                                    className={`py-3 text-sm font-bold whitespace-nowrap border-b-2 transition-colors ${activeRankTab === i
+                                        ? 'border-vanxuan-red text-vanxuan-red'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                                        }`}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    {/* 2-Column Layout */}
+                    <div className="flex flex-col lg:flex-row">
+                        {/* Left: Ranked List */}
+                        <div className="w-full lg:w-1/2 p-6 space-y-4 border-r border-gray-100">
+                            {rankBooks.slice(0, 5).map((book, i) => (
+                                <Link key={book._id} to={`/product/${book._id}`} className="flex items-center space-x-4 group p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                                    <div className="flex flex-col items-center min-w-[30px]">
+                                        <span className={`text-xl font-black ${i === 0 ? 'text-vanxuan-red' : i < 3 ? 'text-orange-500' : 'text-gray-400'}`}>
+                                            {pad(i + 1)}
+                                        </span>
+                                        <HiOutlineTrendingUp className="h-3 w-3 text-green-500" />
+                                    </div>
+                                    <img
+                                        src={getImageUrl(book.images?.[0])}
+                                        className="w-14 h-20 object-cover rounded shadow-sm"
+                                        alt={book.title}
+                                    />
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="text-sm font-bold text-vanxuan-dark line-clamp-2 group-hover:text-vanxuan-red transition-colors">{book.title}</h4>
+                                        <p className="text-xs text-gray-500 mt-0.5">{book.author || 'Nhiều tác giả'}</p>
+                                        <p className="text-xs font-bold text-vanxuan-red mt-1">{(Math.floor(Math.random() * 2000 + 500))} điểm</p>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                        {/* Right: Featured product */}
+                        {rankBooks[0] && (
+                            <div className="w-full lg:w-1/2 p-6 flex flex-col items-center justify-center">
+                                <img
+                                    src={getImageUrl(rankBooks[0].images?.[0])}
+                                    className="w-48 h-72 object-cover rounded-lg shadow-xl"
+                                    alt={rankBooks[0].title}
+                                />
+                                <div className="mt-6 text-center max-w-sm space-y-2">
+                                    <div className="flex items-center justify-center space-x-2">
+                                        <span className="text-lg font-black text-vanxuan-red">{rankBooks[0].price?.toLocaleString('vi-VN')} đ</span>
+                                        <span className="text-sm bg-vanxuan-red text-white px-2 py-0.5 rounded font-bold">-28%</span>
+                                    </div>
+                                    <div className="text-sm text-gray-400 line-through">{(rankBooks[0].price * 1.4)?.toLocaleString('vi-VN')} đ</div>
+                                    <h3 className="text-base font-black text-vanxuan-dark uppercase leading-tight">
+                                        {rankBooks[0].title}
+                                    </h3>
+                                    <p className="text-xs text-gray-500 leading-relaxed line-clamp-3">
+                                        {rankBooks[0].description || 'Một cuốn sách cuốn hút ngay từ những trang đầu tiên. Được bạn đọc yêu thích và đánh giá cao trên toàn quốc.'}
+                                    </p>
+                                    <div className="pt-2">
+                                        <p className="text-sm font-bold text-vanxuan-dark">VỀ TÁC GIẢ: {(rankBooks[0].author || 'Tác giả').toUpperCase()}</p>
+                                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                                            Một tác giả được yêu thích trong dòng văn học Việt Nam, nổi tiếng với những tác phẩm có nội dung sâu sắc, kịch tính, giàu cảm xúc.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    {/* Xem thêm */}
+                    <div className="px-6 pb-6 flex justify-center">
+                        <Link
+                            to="/shop"
+                            className="border-2 border-vanxuan-red text-vanxuan-red px-16 py-3 rounded-lg font-bold text-sm hover:bg-vanxuan-red hover:text-white transition-colors"
+                        >
+                            Xem thêm
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
+            {/* ─── 8. Bộ Sưu Tập Nổi Bật (Featured Collections) ─── */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+                <div className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                    <div className="bg-red-50 px-6 py-4 flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-vanxuan-red rounded-lg flex items-center justify-center">
+                            <HiOutlineViewGrid className="w-5 h-5 text-white" />
+                        </div>
+                        <h2 className="text-lg md:text-xl font-black text-vanxuan-dark uppercase">Bộ Sưu Tập Nổi Bật</h2>
+                    </div>
+                    <div className="p-6 overflow-x-auto">
+                        <div className="flex space-x-6 min-w-[640px]">
+                            {collections.map((col, i) => (
+                                <Link key={i} to="/shop" className="flex flex-col items-center space-y-3 group min-w-[120px]">
+                                    <div className="w-24 h-24 bg-amber-50 border-2 border-gray-100 rounded-lg flex items-center justify-center group-hover:border-vanxuan-red group-hover:shadow-md transition-all">
+                                        {col.icon}
+                                    </div>
+                                    <span className="text-xs font-bold text-gray-600 text-center leading-tight group-hover:text-vanxuan-red transition-colors">
+                                        {col.name}
+                                    </span>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* ─── 9. Sách chỉ bán tại Vạn Xuân (Exclusives) ─── */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+                <div className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                    <div className="px-6 py-4 flex justify-between items-center border-b border-gray-100">
+                        <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-vanxuan-red rounded-lg flex items-center justify-center">
+                                <FaStar className="w-5 h-5 text-white" />
+                            </div>
+                            <h2 className="text-lg md:text-xl font-black text-vanxuan-dark">Sách chỉ bán tại Vạn Xuân</h2>
+                        </div>
+                        <Link to="/shop" className="text-vanxuan-red text-sm font-bold hover:underline flex items-center space-x-1">
+                            <span>Xem tất cả</span>
+                            <HiOutlineChevronRight className="w-4 h-4" />
+                        </Link>
+                    </div>
+                    <div className="p-6 grid grid-cols-2 md:grid-cols-5 gap-6">
+                        {[...flashSaleBooks].reverse().map((book) => (
+                            <Link key={`exc-${book._id}`} to={`/product/${book._id}`} className="space-y-3 group relative">
+                                <div className="aspect-[3/4] bg-gray-50 rounded-md relative overflow-hidden">
+                                    <div className="absolute top-2 left-2 px-2 py-0.5 bg-vanxuan-gold text-vanxuan-dark text-[10px] font-black rounded z-10">Độc quyền</div>
+                                    <img
+                                        src={getImageUrl(book.images?.[0])}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                        alt={book.title}
+                                    />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <h4 className="text-xs font-medium text-vanxuan-dark h-[32px] line-clamp-2 leading-tight group-hover:text-vanxuan-red transition-colors">
+                                        {book.title}
+                                    </h4>
+                                    <div className="flex items-center space-x-2">
+                                        <span className="text-sm font-black text-vanxuan-red">
+                                            {book.price?.toLocaleString('vi-VN')} đ
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center space-x-1 text-[10px] text-yellow-500">
+                                        <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
+                                        <span className="text-gray-400 ml-1">| Đã bán {Math.floor(Math.random() * 100 + 5)}</span>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                    <div className="px-6 pb-6 flex justify-center">
+                        <Link
+                            to="/shop"
+                            className="border-2 border-vanxuan-red text-vanxuan-red px-16 py-3 rounded-lg font-bold text-sm hover:bg-vanxuan-red hover:text-white transition-colors flex items-center space-x-2"
+                        >
+                            <span>Xem tất cả</span>
+                            <HiOutlineChevronRight className="w-4 h-4" />
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
+            {/* ─── 10. AI Suggestion CTA ─── */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+                <div className="bg-vanxuan-dark rounded-lg p-12 md:p-16 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-1/2 h-full opacity-20 pointer-events-none">
                         <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                             <path d="M0,0 L100,0 L100,100 Z" fill="url(#grad)" />
@@ -231,21 +556,19 @@ const Home = () => {
                         </svg>
                     </div>
                     <div className="relative z-10 max-w-2xl space-y-8">
-                        <p className="text-fahasa-red font-black uppercase tracking-[0.2em] text-sm">Cá nhân hóa trải nghiệm</p>
-                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight underline decoration-fahasa-red decoration-8 underline-offset-8">
+                        <p className="text-vanxuan-gold font-black uppercase tracking-[0.2em] text-sm">Cá nhân hóa trải nghiệm</p>
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight underline decoration-vanxuan-gold decoration-8 underline-offset-8">
                             AI gợi ý cuốn sách <br /> dành riêng cho bạn
                         </h2>
                         <p className="text-gray-400 text-lg font-medium leading-relaxed">
                             Khám phá tri thức mới dựa trên sở thích và hành vi của bạn. Hệ thống AI của chúng tôi sẽ giúp bạn tìm thấy "chân ái" tiếp theo.
                         </p>
                         <Link to="/shop" className="group flex items-center space-x-6">
-                            <div className="px-10 py-5 bg-fahasa-red text-white rounded-lg font-black text-lg shadow-2xl shadow-fahasa-red/20 group-hover:bg-fahasa-red/90 transition-all group-hover:translate-x-2">
+                            <div className="px-10 py-5 bg-vanxuan-red text-white rounded-lg font-black text-lg shadow-2xl shadow-vanxuan-red/20 group-hover:bg-vanxuan-red/90 transition-all group-hover:translate-x-2">
                                 Trải nghiệm ngay
                             </div>
                             <div className="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center text-white scale-90 group-hover:scale-100 transition-transform">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
+                                <HiOutlineArrowRight className="w-8 h-8" />
                             </div>
                         </Link>
                     </div>

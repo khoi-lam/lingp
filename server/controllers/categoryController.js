@@ -1,155 +1,66 @@
-import Category from '../models/Category.js';
+import prisma from '../lib/prisma.js';
+import { generateSlug } from '../utils/slug.js';
 
-// @desc    Get all categories
-// @route   GET /api/categories
-// @access  Public
+function fmt(cat) {
+    if (!cat) return null;
+    return { _id: String(cat.id), id: cat.id, name: cat.name, type: cat.type, slug: cat.slug, description: cat.description, createdAt: cat.createdAt, updatedAt: cat.updatedAt };
+}
+
 export const getCategories = async (req, res, next) => {
     try {
         const { type } = req.query;
-
-        const filter = {};
-        if (type) {
-            filter.type = type;
-        }
-
-        const categories = await Category.find(filter).sort({ createdAt: -1 });
-
-        res.json({
-            success: true,
-            data: {
-                categories,
-                count: categories.length
-            }
-        });
-    } catch (error) {
-        next(error);
-    }
+        const where = type ? { type } : {};
+        const categories = await prisma.category.findMany({ where, orderBy: { createdAt: 'desc' } });
+        res.json({ success: true, data: { categories: categories.map(fmt), count: categories.length } });
+    } catch (error) { next(error); }
 };
 
-// @desc    Get category by ID
-// @route   GET /api/categories/:id
-// @access  Public
 export const getCategoryById = async (req, res, next) => {
     try {
-        const category = await Category.findById(req.params.id);
-
-        if (!category) {
-            return res.status(404).json({
-                success: false,
-                message: 'Không tìm thấy danh mục'
-            });
-        }
-
-        res.json({
-            success: true,
-            data: { category }
-        });
-    } catch (error) {
-        next(error);
-    }
+        const category = await prisma.category.findUnique({ where: { id: parseInt(req.params.id) } });
+        if (!category) return res.status(404).json({ success: false, message: 'Không tìm thấy danh mục' });
+        res.json({ success: true, data: { category: fmt(category) } });
+    } catch (error) { next(error); }
 };
 
-// @desc    Create category
-// @route   POST /api/categories
-// @access  Private/Admin
 export const createCategory = async (req, res, next) => {
     try {
         const { name, type, description } = req.body;
+        if (!name || !type) return res.status(400).json({ success: false, message: 'Tên và loại danh mục là bắt buộc' });
 
-        // Validate required fields
-        if (!name || !type) {
-            return res.status(400).json({
-                success: false,
-                message: 'Tên và loại danh mục là bắt buộc'
-            });
-        }
+        const existing = await prisma.category.findFirst({ where: { name: name.trim(), type } });
+        if (existing) return res.status(400).json({ success: false, message: 'Danh mục này đã tồn tại' });
 
-        // Check if category already exists
-        const existingCategory = await Category.findOne({
-            name: name.trim(),
-            type
+        const category = await prisma.category.create({
+            data: { name: name.trim(), type, slug: generateSlug(name.trim()), description: description?.trim() || null }
         });
-
-        if (existingCategory) {
-            return res.status(400).json({
-                success: false,
-                message: 'Danh mục này đã tồn tại'
-            });
-        }
-
-        const category = await Category.create({
-            name: name.trim(),
-            type,
-            description: description?.trim()
-        });
-
-        res.status(201).json({
-            success: true,
-            message: 'Tạo danh mục thành công',
-            data: { category }
-        });
-    } catch (error) {
-        next(error);
-    }
+        res.status(201).json({ success: true, message: 'Tạo danh mục thành công', data: { category: fmt(category) } });
+    } catch (error) { next(error); }
 };
 
-// @desc    Update category
-// @route   PUT /api/categories/:id
-// @access  Private/Admin
 export const updateCategory = async (req, res, next) => {
     try {
         const { name, type, description } = req.body;
+        const id = parseInt(req.params.id);
+        const existing = await prisma.category.findUnique({ where: { id } });
+        if (!existing) return res.status(404).json({ success: false, message: 'Không tìm thấy danh mục' });
 
-        const category = await Category.findById(req.params.id);
+        const data = {};
+        if (name) { data.name = name.trim(); data.slug = generateSlug(name.trim()); }
+        if (type) data.type = type;
+        if (description !== undefined) data.description = description?.trim() || null;
 
-        if (!category) {
-            return res.status(404).json({
-                success: false,
-                message: 'Không tìm thấy danh mục'
-            });
-        }
-
-        // Update fields
-        if (name) category.name = name.trim();
-        if (type) category.type = type;
-        if (description !== undefined) category.description = description?.trim();
-
-        await category.save();
-
-        res.json({
-            success: true,
-            message: 'Cập nhật danh mục thành công',
-            data: { category }
-        });
-    } catch (error) {
-        next(error);
-    }
+        const category = await prisma.category.update({ where: { id }, data });
+        res.json({ success: true, message: 'Cập nhật danh mục thành công', data: { category: fmt(category) } });
+    } catch (error) { next(error); }
 };
 
-// @desc    Delete category
-// @route   DELETE /api/categories/:id
-// @access  Private/Admin
 export const deleteCategory = async (req, res, next) => {
     try {
-        const category = await Category.findById(req.params.id);
-
-        if (!category) {
-            return res.status(404).json({
-                success: false,
-                message: 'Không tìm thấy danh mục'
-            });
-        }
-
-        // TODO: Check if category is being used by any books
-        // For now, we'll allow deletion
-
-        await category.deleteOne();
-
-        res.json({
-            success: true,
-            message: 'Xóa danh mục thành công'
-        });
-    } catch (error) {
-        next(error);
-    }
+        const id = parseInt(req.params.id);
+        const category = await prisma.category.findUnique({ where: { id } });
+        if (!category) return res.status(404).json({ success: false, message: 'Không tìm thấy danh mục' });
+        await prisma.category.delete({ where: { id } });
+        res.json({ success: true, message: 'Xóa danh mục thành công' });
+    } catch (error) { next(error); }
 };

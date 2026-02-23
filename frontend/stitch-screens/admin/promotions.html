@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LingoLand Admin - Promotion Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec13",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102210",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#111811] dark:text-white font-display overflow-hidden">
+<div class="flex h-screen w-full bg-background-light dark:bg-background-dark">
+<!-- Sidebar Navigation -->
+<aside class="w-64 flex-shrink-0 border-r border-[#e0e6e0] dark:border-[#2a382a] bg-white dark:bg-[#152515] flex flex-col justify-between h-full overflow-y-auto">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-8">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-12 shadow-sm border border-gray-100" data-alt="Bookstore logo abstract nature" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCWNi2g9NDO8E8_K9smIHJaujgQtdE24meqoXMzGb0kgKxnyvxuT0dc1a1KMA-djNps2l9aefftLnlZVnFsmOJt-G-dAeuWEPK9UzzGx5mUyVGA7dF-kFlsFCLoDpCkyumEECoACSy7BF6Wo8UqxGz-ODXMza638uNcRl_dw2LKqTLh2LKNcCMHgxmBMEsrmx5ZG4a_Di2X7oKB4XsuXrHj9FanX6kK8Q9oymunze0LvkzLjTIkLOQV63Z0ny5zvRu5GCTrKKOeqKQ");'></div>
+<div class="flex flex-col">
+<h1 class="text-[#111811] dark:text-white text-lg font-bold leading-tight">LingoLand</h1>
+<p class="text-[#618961] text-xs font-medium">Admin Portal</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-background-light dark:hover:bg-[#1f331f] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#618961] group-hover:text-primary transition-colors">pie_chart</span>
+<span class="text-[#111811] dark:text-gray-200 text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-background-light dark:hover:bg-[#1f331f] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#618961] group-hover:text-primary transition-colors">inventory_2</span>
+<span class="text-[#111811] dark:text-gray-200 text-sm font-medium">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-background-light dark:hover:bg-[#1f331f] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#618961] group-hover:text-primary transition-colors">shopping_bag</span>
+<span class="text-[#111811] dark:text-gray-200 text-sm font-medium">Orders</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full bg-primary/10 dark:bg-primary/20 text-primary-900" href="#">
+<span class="material-symbols-outlined text-primary-700 dark:text-primary font-variation-settings-fill">local_offer</span>
+<span class="text-[#111811] dark:text-white text-sm font-bold">Promotions</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-background-light dark:hover:bg-[#1f331f] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#618961] group-hover:text-primary transition-colors">group</span>
+<span class="text-[#111811] dark:text-gray-200 text-sm font-medium">Customers</span>
+</a>
+</nav>
+</div>
+<div class="p-6 border-t border-[#e0e6e0] dark:border-[#2a382a]">
+<div class="flex items-center gap-3">
+<img alt="Admin User" class="size-10 rounded-full object-cover border-2 border-white dark:border-[#2a382a]" data-alt="Portrait of smiling woman admin" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8224DGj_AHsiqTXFOtnEyIxfeZ_psBmy06X8ZMN9gsM_np9L7gYv4HvyJ-rz8kAdjy-8Ab505xFy5-OhVcioEzIre_4O9cyyXQS5zsB93IZnFqzh1AAaJtyEIIlXy9mGMMaiEV58xOpKcI2i3upoXarQ1PnHHGOHltzfju0WKNs-SQRcQgGMPrwioJ64NTikNCjYdL4gMwrDY-d_Oy7ihzmz7zmRmPLYTvtDokTzRrykqhnHEFeOpoOfQnUYOiLbXDepmqEjTx4w"/>
+<div class="flex flex-col">
+<p class="text-sm font-bold text-[#111811] dark:text-white">Jane Admin</p>
+<p class="text-xs text-[#618961]">Super Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Background Decoration -->
+<div class="absolute top-0 right-0 w-1/3 h-1/3 bg-gradient-to-bl from-primary/10 to-transparent pointer-events-none rounded-bl-full z-0"></div>
+<!-- Header -->
+<header class="flex-shrink-0 px-8 py-6 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm sticky top-0">
+<div class="max-w-7xl mx-auto w-full">
+<div class="flex items-center gap-2 text-sm text-[#618961] mb-2">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Admin</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-[#111811] dark:text-white font-semibold">Promotions</span>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div>
+<h1 class="text-3xl md:text-4xl font-black text-[#111811] dark:text-white tracking-tight flex items-center gap-2">
+                                Flash Sale Manager <span class="text-2xl">🌿</span>
+</h1>
+<p class="text-[#618961] mt-1 font-medium">Manage your daily deals and inventory limits.</p>
+</div>
+<button class="bg-[#111811] hover:bg-[#2a382a] dark:bg-primary dark:hover:bg-primary/90 text-white dark:text-[#102210] px-6 py-3 rounded-full font-bold shadow-lg shadow-primary/20 flex items-center gap-2 transition-all transform hover:scale-105 active:scale-95">
+<span class="material-symbols-outlined">add</span>
+<span>New Flash Sale</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto px-8 pb-8 z-10">
+<div class="max-w-7xl mx-auto w-full flex flex-col gap-8">
+<!-- Metrics Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="bg-white dark:bg-[#152515] p-6 rounded-xl border border-[#e0e6e0] dark:border-[#2a382a] shadow-sm flex flex-col gap-2 group hover:border-primary/50 transition-colors">
+<div class="flex justify-between items-start">
+<div class="bg-primary/10 p-2 rounded-lg text-primary-700 dark:text-primary">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +12%
+                                </span>
+</div>
+<p class="text-[#618961] text-sm font-medium">Active Sales Revenue</p>
+<p class="text-2xl font-bold text-[#111811] dark:text-white">$1,240.50</p>
+</div>
+<div class="bg-white dark:bg-[#152515] p-6 rounded-xl border border-[#e0e6e0] dark:border-[#2a382a] shadow-sm flex flex-col gap-2 group hover:border-primary/50 transition-colors">
+<div class="flex justify-between items-start">
+<div class="bg-primary/10 p-2 rounded-lg text-primary-700 dark:text-primary">
+<span class="material-symbols-outlined">shopping_cart_checkout</span>
+</div>
+<span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +5%
+                                </span>
+</div>
+<p class="text-[#618961] text-sm font-medium">Items Sold Today</p>
+<p class="text-2xl font-bold text-[#111811] dark:text-white">86 books</p>
+</div>
+<div class="bg-white dark:bg-[#152515] p-6 rounded-xl border border-[#e0e6e0] dark:border-[#2a382a] shadow-sm flex flex-col gap-2 group hover:border-primary/50 transition-colors">
+<div class="flex justify-between items-start">
+<div class="bg-primary/10 p-2 rounded-lg text-primary-700 dark:text-primary">
+<span class="material-symbols-outlined">calendar_month</span>
+</div>
+</div>
+<p class="text-[#618961] text-sm font-medium">Scheduled Promos</p>
+<p class="text-2xl font-bold text-[#111811] dark:text-white">4 upcoming</p>
+</div>
+</div>
+<!-- Layout: Form + List -->
+<div class="flex flex-col lg:flex-row gap-8 items-start">
+<!-- Create New Promotion Form -->
+<div class="w-full lg:w-1/3 bg-white dark:bg-[#152515] rounded-xl border border-[#e0e6e0] dark:border-[#2a382a] shadow-sm p-6 sticky top-0">
+<h3 class="text-lg font-bold text-[#111811] dark:text-white mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">edit_note</span>
+                                Create Promotion
+                            </h3>
+<form class="flex flex-col gap-5">
+<div class="flex flex-col gap-2">
+<label class="text-sm font-bold text-[#111811] dark:text-gray-200">Select Book</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+<input class="w-full bg-background-light dark:bg-[#1f331f] border-transparent focus:border-primary focus:ring-primary rounded-full pl-10 pr-4 py-3 text-sm text-[#111811] dark:text-white placeholder-gray-400 transition-all outline-none" placeholder="Search title or ISBN..." type="text"/>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex flex-col gap-2 flex-1">
+<label class="text-sm font-bold text-[#111811] dark:text-gray-200">Discount %</label>
+<input class="w-full bg-background-light dark:bg-[#1f331f] border-transparent focus:border-primary focus:ring-primary rounded-full px-4 py-3 text-sm text-[#111811] dark:text-white outline-none" placeholder="20" type="number"/>
+</div>
+<div class="flex flex-col gap-2 flex-1">
+<label class="text-sm font-bold text-[#111811] dark:text-gray-200">Stock Limit</label>
+<input class="w-full bg-background-light dark:bg-[#1f331f] border-transparent focus:border-primary focus:ring-primary rounded-full px-4 py-3 text-sm text-[#111811] dark:text-white outline-none" placeholder="100" type="number"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-bold text-[#111811] dark:text-gray-200">Duration</label>
+<div class="grid grid-cols-2 gap-3">
+<input class="bg-background-light dark:bg-[#1f331f] border-transparent focus:border-primary focus:ring-primary rounded-lg px-3 py-3 text-xs text-[#111811] dark:text-white outline-none" type="datetime-local"/>
+<input class="bg-background-light dark:bg-[#1f331f] border-transparent focus:border-primary focus:ring-primary rounded-lg px-3 py-3 text-xs text-[#111811] dark:text-white outline-none" type="datetime-local"/>
+</div>
+</div>
+<div class="p-4 bg-background-light dark:bg-[#1f331f] rounded-xl flex justify-between items-center mt-2 border border-dashed border-gray-300 dark:border-gray-700">
+<div class="flex flex-col">
+<span class="text-xs text-gray-500 font-medium uppercase tracking-wider">New Price</span>
+<span class="text-xl font-black text-primary">$0.00</span>
+</div>
+<div class="text-right">
+<span class="text-xs text-gray-500 font-medium uppercase tracking-wider block">Original</span>
+<span class="text-sm font-bold text-gray-400 line-through">$0.00</span>
+</div>
+</div>
+<button class="mt-2 w-full bg-[#111811] hover:bg-[#2a382a] dark:bg-white dark:hover:bg-gray-200 text-white dark:text-[#102210] font-bold py-3.5 rounded-full shadow-lg transition-all active:scale-95" type="button">
+                                    Schedule Promotion
+                                </button>
+</form>
+</div>
+<!-- Active Sales List -->
+<div class="flex-1 flex flex-col gap-6 w-full">
+<!-- Filter Tabs -->
+<div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+<button class="px-5 py-2 rounded-full bg-primary text-[#102210] text-sm font-bold whitespace-nowrap shadow-md shadow-primary/20">Active Now</button>
+<button class="px-5 py-2 rounded-full bg-white dark:bg-[#152515] border border-[#e0e6e0] dark:border-[#2a382a] text-[#618961] hover:text-[#111811] dark:hover:text-white text-sm font-bold whitespace-nowrap transition-colors">Scheduled</button>
+<button class="px-5 py-2 rounded-full bg-white dark:bg-[#152515] border border-[#e0e6e0] dark:border-[#2a382a] text-[#618961] hover:text-[#111811] dark:hover:text-white text-sm font-bold whitespace-nowrap transition-colors">Ended</button>
+</div>
+<!-- List Item 1 -->
+<div class="bg-white dark:bg-[#152515] rounded-xl p-5 border border-[#e0e6e0] dark:border-[#2a382a] shadow-sm flex flex-col md:flex-row gap-6 items-center group hover:border-primary/30 transition-all">
+<div class="relative flex-shrink-0 w-20 h-28 rounded-lg overflow-hidden shadow-md">
+<img alt="The Secret Garden Book Cover" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Book cover of The Secret Garden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFgQLhgfhU18asFQC5fpePjN1aaQkvMn9DSPXAQvMwRhqv0U2Sg6j6weQ2LSLLmii10pDcfYalFjWdoD2-N-RxQxNcgyPUVMRQX-Q7ZuRMBfvMM45hKrB0zJF8kmu9G3HvAZQKGSAzpk1yeqWRf5Yq3iJhPgxQZi0xu-3QT4PKm8PHVtEhqLGlzLq9MYG9Fbrk6ueOrKUoZ163f9FB5yYctnJWtqAtS1m4t5CqURbimwQmK39ABOlQKdI4zVPyzL_0X1iyxkSISLw"/>
+<div class="absolute top-0 left-0 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-br-lg shadow-sm">
+                                        -40%
+                                    </div>
+</div>
+<div class="flex-1 w-full flex flex-col justify-between h-full gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-lg font-bold text-[#111811] dark:text-white leading-tight">The Secret Garden (Illustrated)</h4>
+<p class="text-sm text-[#618961]">Children's Classics • Hardcover</p>
+</div>
+<div class="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-bold text-primary-900 dark:text-primary tracking-wide uppercase">Active</span>
+</div>
+</div>
+<div class="w-full">
+<div class="flex justify-between text-xs font-bold mb-1.5">
+<span class="text-[#111811] dark:text-white">60 sold</span>
+<span class="text-[#618961]">100 total</span>
+</div>
+<div class="w-full bg-[#f0f4f0] dark:bg-[#1f331f] rounded-full h-3 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 60%"></div>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-4 mt-1">
+<div class="flex items-center gap-1.5 text-xs font-medium text-[#618961] bg-[#f0f4f0] dark:bg-[#1f331f] px-3 py-1.5 rounded-full">
+<span class="material-symbols-outlined text-[16px]">timer</span>
+<span>Ends in <span class="text-[#111811] dark:text-white font-bold">04h 12m</span></span>
+</div>
+<div class="flex items-center gap-1.5 text-xs font-medium text-[#618961]">
+<span class="material-symbols-outlined text-[16px]">sell</span>
+<span>Sale Price: <span class="text-[#111811] dark:text-white font-bold">$12.50</span></span>
+<span class="line-through text-gray-400 ml-1">$20.00</span>
+</div>
+</div>
+</div>
+<div class="flex md:flex-col gap-2 w-full md:w-auto mt-2 md:mt-0 justify-end">
+<button class="p-2.5 rounded-full text-[#618961] hover:bg-[#f0f4f0] dark:hover:bg-[#1f331f] hover:text-[#111811] dark:hover:text-white transition-colors" title="Edit">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2.5 rounded-full text-[#618961] hover:bg-[#f0f4f0] dark:hover:bg-[#1f331f] hover:text-[#111811] dark:hover:text-white transition-colors" title="Pause">
+<span class="material-symbols-outlined">pause_circle</span>
+</button>
+<button class="p-2.5 rounded-full text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-colors" title="End Early">
+<span class="material-symbols-outlined">stop_circle</span>
+</button>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="bg-white dark:bg-[#152515] rounded-xl p-5 border border-[#e0e6e0] dark:border-[#2a382a] shadow-sm flex flex-col md:flex-row gap-6 items-center group hover:border-primary/30 transition-all">
+<div class="relative flex-shrink-0 w-20 h-28 rounded-lg overflow-hidden shadow-md">
+<img alt="Botany for Beginners Book Cover" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Book cover of Botany for Beginners" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEVqbx38Z6D2ZHZ2eJhebwo5GbVzREDneQrwoWPHNnAeYUEi61O98RQhaq0NcmhbvgMus5neaTMJtLao0rmjnSzWqj-kdfjZg0nN8kstHDfaBnB47r8tKGqZZwAH4WUIxsE8uIdU5O3tRvnpbpfY7HSDhP6lZj0Jd_qhuzWuZTufG5pmiRe_-tXK8tVPe-j_mnqEzHXrt_HMlG30Mxux8yOyHuff2whppNnSgVfCOPxAYR56cfs1JrGDmXcnc-_0YjrqMdcAIhJbM"/>
+<div class="absolute top-0 left-0 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-br-lg shadow-sm">
+                                        -25%
+                                    </div>
+</div>
+<div class="flex-1 w-full flex flex-col justify-between h-full gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-lg font-bold text-[#111811] dark:text-white leading-tight">Botany for Beginners</h4>
+<p class="text-sm text-[#618961]">Science &amp; Nature • Paperback</p>
+</div>
+<div class="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-bold text-primary-900 dark:text-primary tracking-wide uppercase">Active</span>
+</div>
+</div>
+<div class="w-full">
+<div class="flex justify-between text-xs font-bold mb-1.5">
+<span class="text-[#111811] dark:text-white">88 sold</span>
+<span class="text-[#618961]">150 total</span>
+</div>
+<div class="w-full bg-[#f0f4f0] dark:bg-[#1f331f] rounded-full h-3 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 58%"></div>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-4 mt-1">
+<div class="flex items-center gap-1.5 text-xs font-medium text-[#618961] bg-[#f0f4f0] dark:bg-[#1f331f] px-3 py-1.5 rounded-full">
+<span class="material-symbols-outlined text-[16px]">timer</span>
+<span>Ends in <span class="text-[#111811] dark:text-white font-bold">09h 45m</span></span>
+</div>
+<div class="flex items-center gap-1.5 text-xs font-medium text-[#618961]">
+<span class="material-symbols-outlined text-[16px]">sell</span>
+<span>Sale Price: <span class="text-[#111811] dark:text-white font-bold">$18.00</span></span>
+<span class="line-through text-gray-400 ml-1">$24.00</span>
+</div>
+</div>
+</div>
+<div class="flex md:flex-col gap-2 w-full md:w-auto mt-2 md:mt-0 justify-end">
+<button class="p-2.5 rounded-full text-[#618961] hover:bg-[#f0f4f0] dark:hover:bg-[#1f331f] hover:text-[#111811] dark:hover:text-white transition-colors" title="Edit">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2.5 rounded-full text-[#618961] hover:bg-[#f0f4f0] dark:hover:bg-[#1f331f] hover:text-[#111811] dark:hover:text-white transition-colors" title="Pause">
+<span class="material-symbols-outlined">pause_circle</span>
+</button>
+<button class="p-2.5 rounded-full text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-colors" title="End Early">
+<span class="material-symbols-outlined">stop_circle</span>
+</button>
+</div>
+</div>
+<!-- List Item 3 (Almost Gone) -->
+<div class="bg-white dark:bg-[#152515] rounded-xl p-5 border border-[#e0e6e0] dark:border-[#2a382a] shadow-sm flex flex-col md:flex-row gap-6 items-center group hover:border-primary/30 transition-all">
+<div class="relative flex-shrink-0 w-20 h-28 rounded-lg overflow-hidden shadow-md">
+<img alt="Forest Magic Book Cover" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Book cover of Forest Magic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2SEN1Kg5scmsq1hhY5RXJmfpEfX4PeE7nCcCUqWyvPcWvXmNHe1WkxPXoHx8p0t6qRZVeQwYA7CXo9Tci4HncQwt8H0dp4pnxExG886VCmeFqUa6Ua9rXDIG9mqGJQadO4pBhbJaxFa8nimflNasE5XV0G8kxq2J0bTd7GBsPYUgz7iOSgulp54UbTDm_0uuDez3tZ34odZ4v6ZdxIDua7_XY-cnySyT4O9p_9mugfJkE1XOAtw28PjBeNojgIWrdSxHcCQMRBW4"/>
+<div class="absolute top-0 left-0 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-br-lg shadow-sm">
+                                        -50%
+                                    </div>
+</div>
+<div class="flex-1 w-full flex flex-col justify-between h-full gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-lg font-bold text-[#111811] dark:text-white leading-tight">Forest Magic: A Guide</h4>
+<p class="text-sm text-[#618961]">Fantasy • Hardcover</p>
+</div>
+<div class="flex items-center gap-2 bg-orange-100 dark:bg-orange-900/30 px-3 py-1.5 rounded-full">
+<span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+<span class="text-xs font-bold text-orange-700 dark:text-orange-400 tracking-wide uppercase">Selling Fast</span>
+</div>
+</div>
+<div class="w-full">
+<div class="flex justify-between text-xs font-bold mb-1.5">
+<span class="text-orange-600 dark:text-orange-400">45 sold (Low Stock!)</span>
+<span class="text-[#618961]">50 total</span>
+</div>
+<div class="w-full bg-[#f0f4f0] dark:bg-[#1f331f] rounded-full h-3 overflow-hidden">
+<div class="bg-orange-500 h-full rounded-full" style="width: 90%"></div>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-4 mt-1">
+<div class="flex items-center gap-1.5 text-xs font-medium text-[#618961] bg-[#f0f4f0] dark:bg-[#1f331f] px-3 py-1.5 rounded-full">
+<span class="material-symbols-outlined text-[16px]">timer</span>
+<span>Ends in <span class="text-[#111811] dark:text-white font-bold">01h 05m</span></span>
+</div>
+<div class="flex items-center gap-1.5 text-xs font-medium text-[#618961]">
+<span class="material-symbols-outlined text-[16px]">sell</span>
+<span>Sale Price: <span class="text-[#111811] dark:text-white font-bold">$15.00</span></span>
+<span class="line-through text-gray-400 ml-1">$30.00</span>
+</div>
+</div>
+</div>
+<div class="flex md:flex-col gap-2 w-full md:w-auto mt-2 md:mt-0 justify-end">
+<button class="p-2.5 rounded-full text-[#618961] hover:bg-[#f0f4f0] dark:hover:bg-[#1f331f] hover:text-[#111811] dark:hover:text-white transition-colors" title="Edit">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2.5 rounded-full text-[#618961] hover:bg-[#f0f4f0] dark:hover:bg-[#1f331f] hover:text-[#111811] dark:hover:text-white transition-colors" title="Pause">
+<span class="material-symbols-outlined">pause_circle</span>
+</button>
+<button class="p-2.5 rounded-full text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-colors" title="End Early">
+<span class="material-symbols-outlined">stop_circle</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

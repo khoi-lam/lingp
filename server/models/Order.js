@@ -48,15 +48,14 @@ const orderSchema = new mongoose.Schema(
                 required: true
             },
             city: {
-                type: String,
-                required: true
+                type: String
             },
             note: String
         },
         orderStatus: {
             type: String,
-            enum: ['waiting', 'processing', 'shipping', 'delivered', 'completed', 'cancelled', 'returned'],
-            default: 'waiting'
+            enum: ['processing', 'shipping', 'completed', 'cancelled'],
+            default: 'processing'
         },
         paymentMethod: {
             type: String,

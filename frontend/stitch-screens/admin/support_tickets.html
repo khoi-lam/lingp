@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LingoLand Admin - Support Tickets</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec13",
+                        "primary-content": "#053f05", // Darker green for text on primary
+                        "secondary-bg": "#e6f4e6",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102210",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1a2e1a",
+                        "text-main": "#111811",
+                        "text-subtle": "#618961",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem", 
+                        "lg": "1.5rem", 
+                        "xl": "2rem", 
+                        "2xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+        }
+        /* Custom Scrollbar for a cleaner look */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #e2e8f0;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main antialiased h-screen overflow-hidden flex">
+<!-- Sidebar Navigation -->
+<aside class="hidden md:flex flex-col w-20 lg:w-64 bg-surface-light dark:bg-surface-dark border-r border-slate-100 dark:border-slate-800 h-full shrink-0 transition-all duration-300">
+<div class="p-6 flex items-center gap-3">
+<div class="bg-primary/20 p-2 rounded-xl">
+<span class="material-symbols-outlined text-primary-content">forest</span>
+</div>
+<div class="hidden lg:flex flex-col">
+<h1 class="font-bold text-lg leading-tight">LingoLand</h1>
+<p class="text-xs text-text-subtle font-medium">Admin Console</p>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-2 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-text-subtle hover:bg-background-light dark:hover:bg-background-dark hover:text-text-main rounded-xl transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">dashboard</span>
+<span class="hidden lg:block font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-subtle hover:bg-background-light dark:hover:bg-background-dark hover:text-text-main rounded-xl transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">inventory_2</span>
+<span class="hidden lg:block font-medium">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-subtle hover:bg-background-light dark:hover:bg-background-dark hover:text-text-main rounded-xl transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">group</span>
+<span class="hidden lg:block font-medium">Users</span>
+</a>
+<!-- Active State -->
+<a class="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary-content rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined text-primary-content fill-1">support_agent</span>
+<span class="hidden lg:block font-bold">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-text-subtle hover:bg-background-light dark:hover:bg-background-dark hover:text-text-main rounded-xl transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">settings</span>
+<span class="hidden lg:block font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-3 px-2">
+<div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden shrink-0">
+<img alt="Admin Profile" class="w-full h-full object-cover" data-alt="Portrait of a smiling man with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAh-hVDRJSApN7YWNLj1c4rKNOJAIs2md1JX4hRsnWswOr4ZWXuOKQ3xnqmjYamFRbvhQu_rIPUbTBOZeLdv-awzFRaMPFV5PCFeO1Lk7Q_VkV72EFt9PyJ5YA2p8hLq-4NrVYNmfd3ZGf1BHVe_uJmTAlBdjiBt7i4yCGyjkBqyIuP1NZpPqmkBS1bnn_rBnaJ5F0xmFAd5VqNf8DY2x2CZR5kwTyxwATwtBsodY0l-Fb-kJMqkgKh_EbzNNK8lMw8RNoeNdzWrkQ"/>
+</div>
+<div class="hidden lg:flex flex-col">
+<p class="text-sm font-semibold">Admin Alex</p>
+<p class="text-xs text-text-subtle">Online</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area: Split Screen -->
+<main class="flex-1 flex flex-col md:flex-row h-full overflow-hidden">
+<!-- Left Pane: Ticket List -->
+<section class="w-full md:w-96 lg:w-[400px] border-r border-slate-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark flex flex-col h-full shrink-0 z-10 shadow-sm md:shadow-none">
+<!-- Header & Search -->
+<div class="p-5 pb-2">
+<h2 class="text-2xl font-bold mb-4">Inbox</h2>
+<div class="relative mb-4">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-subtle">search</span>
+<input class="w-full pl-10 pr-4 py-3 bg-background-light dark:bg-background-dark border-none rounded-xl text-sm focus:ring-2 focus:ring-primary focus:ring-opacity-50 placeholder-text-subtle" placeholder="Search orders or users..." type="text"/>
+</div>
+<!-- Filters -->
+<div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+<button class="px-4 py-1.5 bg-primary text-primary-content text-sm font-semibold rounded-full whitespace-nowrap">All Tickets</button>
+<button class="px-4 py-1.5 bg-background-light dark:bg-background-dark text-text-subtle hover:text-text-main text-sm font-medium rounded-full whitespace-nowrap transition-colors">Open (5)</button>
+<button class="px-4 py-1.5 bg-background-light dark:bg-background-dark text-text-subtle hover:text-text-main text-sm font-medium rounded-full whitespace-nowrap transition-colors">Resolved</button>
+</div>
+</div>
+<!-- Ticket List -->
+<div class="flex-1 overflow-y-auto custom-scrollbar px-3 pb-4 space-y-2">
+<!-- Ticket Item: Active -->
+<div class="group cursor-pointer p-4 rounded-xl bg-primary/10 border border-primary/20 transition-all">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-bold text-primary-content bg-white/50 px-2 py-0.5 rounded-full">New</span>
+<span class="text-xs text-text-subtle">#12345</span>
+</div>
+<span class="text-xs text-text-subtle font-medium">2m ago</span>
+</div>
+<div class="flex items-start gap-3">
+<img alt="Alice Avatar" class="w-10 h-10 rounded-full object-cover shrink-0 border-2 border-white" data-alt="Portrait of a woman with short hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm6pgt3RTEiOK0CIF-es8t6fdGGMdKAyciZ-nDkzxOmzPgL8zvkGZ6I2A05lcm8YXCrOfJ6CX5YT8cE_-8vt0hyq4D3hPk0JOOadj3IIv9s5it1LPltsRH_XSOTGJOiPzKH2a9JxqWWVbIEp6LzKivijqKhMT0cKTeMRCuPvAuaXxrolwc0N3ERwPRNBcbCk5js4VtgL63y8PYfrSgureoF56Kw4gegb_TzIg5PCbXHkyZ39HTSMWKqPozoKGhpVHy5JldD79R8fw"/>
+<div class="flex-1 min-w-0">
+<h4 class="font-semibold text-text-main truncate">Alice M.</h4>
+<p class="text-sm font-medium text-text-main truncate">Damaged Cover - Forest Fables</p>
+<p class="text-sm text-text-subtle line-clamp-2 mt-0.5">Hi, I just received my order and the cover of the book is...</p>
+</div>
+</div>
+</div>
+<!-- Ticket Item -->
+<div class="group cursor-pointer p-4 rounded-xl hover:bg-background-light dark:hover:bg-background-dark border border-transparent hover:border-slate-100 transition-all">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full">Open</span>
+<span class="text-xs text-text-subtle">#12342</span>
+</div>
+<span class="text-xs text-text-subtle font-medium">1h ago</span>
+</div>
+<div class="flex items-start gap-3">
+<img alt="Bob Avatar" class="w-10 h-10 rounded-full object-cover shrink-0 bg-slate-100" data-alt="Portrait of a man smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBC9WIeAi7HhtJS5h5vJpf7M2KZ4z68vPq1LoOnLPxK2SCFgUmrwvC4uCPyQKQ5ztXUoDgOZyh8IX_x5iE-bDl55PnARWQRriUfVcegBtwknB1VAQdcWz-eJvO9cVvV9sr40EvJoG4jeilHYmDrMjTado2bKHxP7Xkq55o_m1pTcblxtuCXjqmaywrBKyW4VbqzwIJCphgZN-Uymc9N6CX_pmhi2PQ46w4rdyjhuDVdSXnll_PO97rEtZjwVLE7Sf1XuFcTjQ9QZCk"/>
+<div class="flex-1 min-w-0">
+<h4 class="font-semibold text-text-main truncate">Bob R.</h4>
+<p class="text-sm font-medium text-text-main truncate">Missing Pages Issue</p>
+<p class="text-sm text-text-subtle line-clamp-2 mt-0.5">Hello, page 45-50 seems to be blank in the copy I got...</p>
+</div>
+</div>
+</div>
+<!-- Ticket Item -->
+<div class="group cursor-pointer p-4 rounded-xl hover:bg-background-light dark:hover:bg-background-dark border border-transparent hover:border-slate-100 transition-all">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Resolved</span>
+<span class="text-xs text-text-subtle">#12301</span>
+</div>
+<span class="text-xs text-text-subtle font-medium">Yesterday</span>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold shrink-0">SJ</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-semibold text-text-main truncate">Sarah Jenkins</h4>
+<p class="text-sm font-medium text-text-main truncate">Refund Request Approved</p>
+<p class="text-sm text-text-subtle line-clamp-2 mt-0.5">Thanks for sorting this out so quickly!</p>
+</div>
+</div>
+</div>
+<!-- Ticket Item -->
+<div class="group cursor-pointer p-4 rounded-xl hover:bg-background-light dark:hover:bg-background-dark border border-transparent hover:border-slate-100 transition-all opacity-60">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Resolved</span>
+<span class="text-xs text-text-subtle">#12299</span>
+</div>
+<span class="text-xs text-text-subtle font-medium">2 days ago</span>
+</div>
+<div class="flex items-start gap-3">
+<img alt="User Avatar" class="w-10 h-10 rounded-full object-cover shrink-0" data-alt="Portrait of a woman with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmQicLMZQ4R57f9GPzZVzkoowrgN9xU9JsR5y1UN63s5Vh-rAqajhJT4x0jWQ4vRvE8p4wfQaRGmOLslnoM1kTlvDOGfE2x7qAknGsSgq-us7sLAaXm_KNQkHnfWsb3UjCY1BLC4pBV5Mu-vrKOMZSiyKN3rOkoEebsGejnrhPgEDbPNaMs-BBIPHCdS97IjmwLBRhwLfT7gZasEojRvFk9TEgjyFp6iCUZaVS7qwf8hBS0v_yUb0O-S3YfIxhNTePzgQ3o0hXRT4"/>
+<div class="flex-1 min-w-0">
+<h4 class="font-semibold text-text-main truncate">Emily Chen</h4>
+<p class="text-sm font-medium text-text-main truncate">Address Change</p>
+<p class="text-sm text-text-subtle line-clamp-2 mt-0.5">All good now, thank you.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Pane: Conversation Workspace -->
+<section class="flex-1 flex flex-col h-full bg-white dark:bg-[#152815] relative">
+<!-- Conversation Header -->
+<header class="h-20 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-6 shrink-0 bg-white dark:bg-[#152815] z-10">
+<div class="flex items-center gap-4">
+<div class="flex flex-col">
+<h2 class="text-lg font-bold flex items-center gap-2">
+                            Damaged Cover - The Forest Fables
+                            <span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary-content text-xs font-bold">New</span>
+</h2>
+<div class="flex items-center gap-2 text-sm text-text-subtle">
+<span>Order <a class="text-primary-content underline hover:text-primary font-medium" href="#">#12345</a></span>
+<span>•</span>
+<span>Placed on Oct 24, 2023</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-background-light dark:bg-surface-dark hover:bg-slate-200 transition-colors text-text-subtle" title="View User Profile">
+<span class="material-symbols-outlined">person</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-background-light dark:bg-surface-dark hover:bg-slate-200 transition-colors text-text-subtle" title="More Options">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+<button class="hidden sm:flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-surface-dark hover:bg-slate-200 text-text-main text-sm font-semibold rounded-full transition-colors">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+                        Close Ticket
+                    </button>
+</div>
+</header>
+<!-- Quick Action Bar (Context) -->
+<div class="px-6 py-3 bg-secondary-bg/30 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+<div class="flex items-center gap-3">
+<img alt="Book Cover" class="w-8 h-10 object-cover rounded shadow-sm" data-alt="Cover of a book titled Forest Fables" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5VHWS7Us4s5ayJwCoZ4VAVM_PmetLUSNnxA-Ds5X1m6GzsB-fE4EBAEIuzJLVMe5Bf0a0KFHaZLTz_1Mo8y_8dXDCofEMGJPVuFine-uuZ3Z6ZQL2otJM3QVTBHVeIVflX6qATRJNF4B3jfQ2LIlB4KM-FtfIRX2vRvbsanhWw-nDjQcOJ5l6-cbDE7qjwLQXKvrvqubS8Yu6a8Y5HjJPv-5siHTkC0TqQAQRSRbX47eudSjjGLJ4PKCJgDiiMy6cLIrpJA7CpEA"/>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-text-main">The Forest Fables: Limited Edition</span>
+<span class="text-xs text-text-subtle">$24.99 • Hardcover</span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold hover:bg-slate-50 transition-colors">
+                        Full Refund
+                    </button>
+<button class="px-3 py-1.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold hover:bg-slate-50 transition-colors">
+                        Resend Item
+                    </button>
+</div>
+</div>
+<!-- Messages Area -->
+<div class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6 bg-background-light dark:bg-background-dark/50">
+<!-- Time Divider -->
+<div class="flex justify-center">
+<span class="text-xs font-medium text-text-subtle bg-slate-100 dark:bg-surface-dark px-3 py-1 rounded-full">Today, 10:23 AM</span>
+</div>
+<!-- Customer Message -->
+<div class="flex gap-4">
+<img alt="Alice Avatar" class="w-10 h-10 rounded-full object-cover shrink-0 mt-1" data-alt="Portrait of a woman with short hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiXedL6NCD08JLzB2mwklV6kS_DPjdRSHR4VYut9tKoekq9PHylGZqOAZivQSuraNSd4t6n7L8jm4l5HRHVanM1RZDKEG49f-7SnSiKap1NlestbRh-1GEXlVsEQwtOXegOCI-NChvpogl7XCejOPyURv1yAlawQtbGMjiD7ywZqIh32w2-qE91xHxFUm_9iJdJaSU3P_1nRY1kVwHXjxv4XxQ0kpbj17ccVPc-8T30vVzOM1tpFMtlJy7eMHfi7qP60h6eA9uJx0"/>
+<div class="flex flex-col gap-1 max-w-[80%]">
+<div class="flex items-baseline gap-2">
+<span class="text-sm font-bold text-text-main">Alice M.</span>
+<span class="text-xs text-text-subtle">VIP Member</span>
+</div>
+<div class="bg-white dark:bg-surface-dark p-4 rounded-2xl rounded-tl-none shadow-sm text-text-main text-sm leading-relaxed border border-slate-100 dark:border-slate-800">
+<p>Hi, I just received my order and the cover of the book is bent in the corner. It was supposed to be a gift for my niece. Is there any way I can get a replacement?</p>
+</div>
+<!-- Attachment -->
+<div class="mt-2 flex gap-2">
+<div class="relative group cursor-pointer overflow-hidden rounded-xl w-32 h-24 bg-slate-200">
+<img alt="Attachment" class="w-full h-full object-cover transition-transform group-hover:scale-105" data-alt="Close up of a damaged book corner" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5rd0yRDZnJhOEkXnWmCWOKkW56HAHonD53-VbiQndrjaXFdxulKA4AachrxKSUoYyyCKhNgFcMQjnXZ6Pa-7ZmERlfJW7k3u_WuKxbHlsH8D3YMHfJZgg0C9MnPHVof9RTGkLwYpfX2R9wxdIoreZtrwVsn_bXpzFjcQlZ6C7989aDHT5Udx1BUY-seQeD7x8CqogImSgG-7_qDgT-3ZCWDX9o8sg4WfugFaQwJdmfPiYnSJec7eMqM1OfsUQqPhKAgfSUgsI4J8"/>
+<div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-white">visibility</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Auto-Response (System) -->
+<div class="flex justify-center my-4">
+<div class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-surface-dark rounded-full">
+<span class="material-symbols-outlined text-sm text-text-subtle">smart_toy</span>
+<span class="text-xs font-medium text-text-subtle">Automated reply sent confirming receipt of ticket #12345.</span>
+</div>
+</div>
+<!-- Draft Indicator -->
+<div class="flex gap-4 opacity-50">
+<div class="w-10 h-10 rounded-full bg-slate-200 shrink-0 mt-1 overflow-hidden">
+<img alt="Admin Profile" class="w-full h-full object-cover grayscale" data-alt="Portrait of a smiling man with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiahRnHeOVnAnNeUwNBvQAoDZADkX_4PoFxt7rFyZAerSwJ45da99iHGXal8pXErtWroXs1_9Vc2fCMg8W0C1awCTBsmoK2lx-lpptFMwB77lAMuEifOuLE2V0s5_VmriBIF1LNlvPCTn01NBUc-yr8hCP9Eu-qip4H64E0-XplyfjKTWy-k0wDKfllZaJo5fOmYSh-qj77EsiA3NjQdfV5VHYLiqUAdftq1aP101GQkSP7y8r8uY1d1sJB03ZE5NnCzrtOeET9yQ"/>
+</div>
+<div class="flex flex-col gap-1 max-w-[80%]">
+<div class="flex items-baseline gap-2">
+<span class="text-sm font-bold text-text-main">You</span>
+<span class="text-xs text-text-subtle">Drafting...</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 bg-text-subtle rounded-full animate-bounce"></div>
+<div class="w-2 h-2 bg-text-subtle rounded-full animate-bounce delay-75"></div>
+<div class="w-2 h-2 bg-text-subtle rounded-full animate-bounce delay-150"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Reply Box Area -->
+<div class="p-6 bg-white dark:bg-[#152815] border-t border-slate-100 dark:border-slate-800 shrink-0 z-20">
+<div class="relative flex flex-col bg-background-light dark:bg-surface-dark rounded-2xl border border-slate-200 dark:border-slate-700 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+<!-- Toolbar -->
+<div class="flex items-center gap-2 px-3 py-2 border-b border-slate-200 dark:border-slate-700/50">
+<button class="p-1.5 text-text-subtle hover:text-text-main hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors" title="Bold">
+<span class="material-symbols-outlined text-[20px]">format_bold</span>
+</button>
+<button class="p-1.5 text-text-subtle hover:text-text-main hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors" title="Italic">
+<span class="material-symbols-outlined text-[20px]">format_italic</span>
+</button>
+<div class="w-px h-4 bg-slate-300 dark:bg-slate-600 mx-1"></div>
+<button class="p-1.5 text-text-subtle hover:text-text-main hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors" title="Insert Template">
+<span class="material-symbols-outlined text-[20px]">auto_fix_high</span>
+</button>
+<button class="p-1.5 text-text-subtle hover:text-text-main hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors" title="Attach File">
+<span class="material-symbols-outlined text-[20px]">attach_file</span>
+</button>
+<div class="ml-auto flex items-center gap-2">
+<span class="text-xs text-text-subtle">Public Reply</span>
+<button class="text-text-subtle hover:text-text-main">
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Text Area -->
+<textarea class="w-full bg-transparent border-none p-4 min-h-[100px] text-sm text-text-main placeholder-text-subtle focus:ring-0 resize-none" placeholder="Type your reply to Alice... (Internal notes start with /note)"></textarea>
+<!-- Footer Actions -->
+<div class="px-4 pb-3 pt-1 flex justify-between items-center">
+<div class="text-xs text-text-subtle">Press ⌘+Enter to send</div>
+<button class="bg-primary hover:bg-[#11d811] text-primary-content px-6 py-2.5 rounded-full font-bold text-sm shadow-sm hover:shadow transition-all flex items-center gap-2">
+<span>Send Reply</span>
+<span class="material-symbols-outlined text-sm">send</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

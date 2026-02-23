@@ -99,12 +99,12 @@ const Support = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                 <div>
-                    <h1 className="text-3xl font-black text-fahasa-dark uppercase tracking-tight">Hỗ trợ & Đổi trả</h1>
+                    <h1 className="text-3xl font-black text-vanxuan-dark uppercase tracking-tight">Hỗ trợ & Đổi trả</h1>
                     <p className="text-gray-500 font-bold mt-2">Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn</p>
                 </div>
                 <button
                     onClick={() => setShowForm(!showForm)}
-                    className="px-8 py-4 bg-fahasa-red text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-fahasa-red/20 hover:scale-105 active:scale-95 transition-all"
+                    className="px-8 py-4 bg-vanxuan-red text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-vanxuan-red/20 hover:scale-105 active:scale-95 transition-all"
                 >
                     {showForm ? 'Đóng Form' : '+ Gửi yêu cầu mới'}
                 </button>
@@ -119,7 +119,7 @@ const Support = () => {
                                 <select
                                     value={formData.type}
                                     onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                                    className="w-full h-14 bg-gray-50 border-none rounded-2xl px-6 font-bold text-fahasa-dark focus:ring-2 focus:ring-fahasa-red/20 transition-all outline-none"
+                                    className="w-full h-14 bg-gray-50 border-none rounded-2xl px-6 font-bold text-vanxuan-dark focus:ring-2 focus:ring-vanxuan-red/20 transition-all outline-none"
                                 >
                                     <option value="support">Hỗ trợ kỹ thuật / Tư vấn</option>
                                     <option value="return">Yêu cầu đổi trả hàng</option>
@@ -131,7 +131,7 @@ const Support = () => {
                                     <select
                                         value={formData.orderId}
                                         onChange={(e) => setFormData({ ...formData, orderId: e.target.value })}
-                                        className="w-full h-14 bg-gray-50 border-none rounded-2xl px-6 font-bold text-fahasa-dark focus:ring-2 focus:ring-fahasa-red/20 transition-all outline-none"
+                                        className="w-full h-14 bg-gray-50 border-none rounded-2xl px-6 font-bold text-vanxuan-dark focus:ring-2 focus:ring-vanxuan-red/20 transition-all outline-none"
                                         required
                                     >
                                         <option value="">-- Chọn đơn hàng cần đổi trả --</option>
@@ -152,7 +152,7 @@ const Support = () => {
                                 value={formData.title}
                                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                 placeholder="Nhập tiêu đề yêu cầu..."
-                                className="w-full h-14 bg-gray-50 border-none rounded-2xl px-6 font-bold text-fahasa-dark focus:ring-2 focus:ring-fahasa-red/20 transition-all outline-none"
+                                className="w-full h-14 bg-gray-50 border-none rounded-2xl px-6 font-bold text-vanxuan-dark focus:ring-2 focus:ring-vanxuan-red/20 transition-all outline-none"
                                 required
                             />
                         </div>
@@ -164,7 +164,7 @@ const Support = () => {
                                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                                 placeholder="Mô tả chi tiết vấn đề bạn gặp phải..."
                                 rows="5"
-                                className="w-full bg-gray-50 border-none rounded-3xl p-6 font-bold text-fahasa-dark focus:ring-2 focus:ring-fahasa-red/20 transition-all outline-none resize-none"
+                                className="w-full bg-gray-50 border-none rounded-3xl p-6 font-bold text-vanxuan-dark focus:ring-2 focus:ring-vanxuan-red/20 transition-all outline-none resize-none"
                                 required
                             ></textarea>
                         </div>
@@ -190,7 +190,7 @@ const Support = () => {
                                     type="button"
                                     onClick={() => fileInputRef.current?.click()}
                                     disabled={uploading}
-                                    className="w-24 h-24 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-400 hover:border-fahasa-red hover:text-fahasa-red transition-all gap-1"
+                                    className="w-24 h-24 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-400 hover:border-vanxuan-red hover:text-vanxuan-red transition-all gap-1"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -204,7 +204,7 @@ const Support = () => {
                         <button
                             type="submit"
                             disabled={submitting}
-                            className="w-full py-5 bg-fahasa-dark text-white rounded-3xl font-black text-sm uppercase tracking-widest shadow-2xl hover:bg-black transition-all disabled:opacity-50"
+                            className="w-full py-5 bg-vanxuan-dark text-white rounded-3xl font-black text-sm uppercase tracking-widest shadow-2xl hover:bg-black transition-all disabled:opacity-50"
                         >
                             {submitting ? 'Đang gửi yêu cầu...' : 'Gửi yêu cầu hỗ trợ'}
                         </button>
@@ -228,7 +228,7 @@ const Support = () => {
                                         <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${request.type === 'return' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'}`}>
                                             {request.type === 'return' ? 'Đổi trả' : 'Hỗ trợ'}
                                         </span>
-                                        <h3 className="text-lg font-black text-fahasa-dark">{request.title}</h3>
+                                        <h3 className="text-lg font-black text-vanxuan-dark">{request.title}</h3>
                                     </div>
                                     <p className="text-xs text-gray-400 font-bold">Gửi ngày: {new Date(request.createdAt).toLocaleDateString('vi-VN')}</p>
                                 </div>
@@ -249,15 +249,15 @@ const Support = () => {
                             </div>
 
                             {request.adminReply && (
-                                <div className="bg-fahasa-red/5 rounded-2xl p-6 border border-fahasa-red/10 relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-24 h-24 -mt-8 -mr-8 bg-fahasa-red/5 rounded-full"></div>
+                                <div className="bg-vanxuan-red/5 rounded-2xl p-6 border border-vanxuan-red/10 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-24 h-24 -mt-8 -mr-8 bg-vanxuan-red/5 rounded-full"></div>
                                     <div className="flex items-start space-x-4">
-                                        <div className="w-8 h-8 bg-fahasa-red rounded-full flex items-center justify-center text-white shrink-0">
+                                        <div className="w-8 h-8 bg-vanxuan-red rounded-full flex items-center justify-center text-white shrink-0">
                                             <span className="text-[10px] font-black">AD</span>
                                         </div>
                                         <div className="space-y-1">
-                                            <p className="text-[10px] font-black text-fahasa-red uppercase tracking-widest">Phản hồi từ Admin</p>
-                                            <p className="text-fahasa-dark font-bold leading-relaxed">{request.adminReply}</p>
+                                            <p className="text-[10px] font-black text-vanxuan-red uppercase tracking-widest">Phản hồi từ Admin</p>
+                                            <p className="text-vanxuan-dark font-bold leading-relaxed">{request.adminReply}</p>
                                         </div>
                                     </div>
                                 </div>

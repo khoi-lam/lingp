@@ -102,14 +102,14 @@ const Content = () => {
                             </button>
                             <button
                                 onClick={addBannerUrl}
-                                className="px-6 py-2.5 bg-fahasa-red text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-fahasa-red/90 transition-all shadow-lg shadow-fahasa-red/10 active:scale-95"
+                                className="px-6 py-2.5 bg-vanxuan-red text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-vanxuan-red/90 transition-all shadow-lg shadow-vanxuan-red/10 active:scale-95"
                             >
                                 + Thêm URL
                             </button>
                             <button
                                 onClick={handleSaveHero}
                                 disabled={loading}
-                                className="px-6 py-2.5 bg-fahasa-dark text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all shadow-lg active:scale-95 disabled:opacity-50"
+                                className="px-6 py-2.5 bg-vanxuan-dark text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all shadow-lg active:scale-95 disabled:opacity-50"
                             >
                                 {loading ? 'Đang lưu...' : 'Lưu banner'}
                             </button>

@@ -94,7 +94,7 @@ const Shop = () => {
                     {/* Sidebar Filters */}
                     <div className="w-full lg:w-64 space-y-8">
                         <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
-                            <h3 className="text-sm font-black text-fahasa-dark uppercase tracking-widest mb-6 border-b border-gray-50 pb-4">Bộ lọc</h3>
+                            <h3 className="text-sm font-black text-vanxuan-dark uppercase tracking-widest mb-6 border-b border-gray-50 pb-4">Bộ lọc</h3>
 
                             {/* Origin Filter */}
                             <div className="space-y-4 mb-8">
@@ -102,7 +102,7 @@ const Shop = () => {
                                 <div className="space-y-2">
                                     <button
                                         onClick={() => handleFilterChange('origin', '')}
-                                        className={`w-full text-left px-4 py-2 rounded-xl text-sm font-bold transition-all ${!filters.origin ? 'bg-fahasa-red text-white shadow-lg shadow-fahasa-red/20' : 'text-gray-500 hover:bg-gray-50'}`}
+                                        className={`w-full text-left px-4 py-2 rounded-xl text-sm font-bold transition-all ${!filters.origin ? 'bg-vanxuan-red text-white shadow-lg shadow-vanxuan-red/20' : 'text-gray-500 hover:bg-gray-50'}`}
                                     >
                                         Tất cả
                                     </button>
@@ -110,7 +110,7 @@ const Shop = () => {
                                         <button
                                             key={cat._id}
                                             onClick={() => handleFilterChange('origin', cat._id)}
-                                            className={`w-full text-left px-4 py-2 rounded-xl text-sm font-bold transition-all ${filters.origin === cat._id ? 'bg-fahasa-red text-white shadow-lg shadow-fahasa-red/20' : 'text-gray-500 hover:bg-gray-50'}`}
+                                            className={`w-full text-left px-4 py-2 rounded-xl text-sm font-bold transition-all ${filters.origin === cat._id ? 'bg-vanxuan-red text-white shadow-lg shadow-vanxuan-red/20' : 'text-gray-500 hover:bg-gray-50'}`}
                                         >
                                             {cat.name}
                                         </button>
@@ -124,7 +124,7 @@ const Shop = () => {
                                 <div className="space-y-2 overflow-y-auto max-h-[300px] pr-2 custom-scrollbar">
                                     <button
                                         onClick={() => handleFilterChange('genre', '')}
-                                        className={`w-full text-left px-4 py-2 rounded-xl text-sm font-bold transition-all ${!filters.genre ? 'bg-fahasa-red text-white shadow-lg shadow-fahasa-red/20' : 'text-gray-500 hover:bg-gray-50'}`}
+                                        className={`w-full text-left px-4 py-2 rounded-xl text-sm font-bold transition-all ${!filters.genre ? 'bg-vanxuan-red text-white shadow-lg shadow-vanxuan-red/20' : 'text-gray-500 hover:bg-gray-50'}`}
                                     >
                                         Tất cả thể loại
                                     </button>
@@ -132,7 +132,7 @@ const Shop = () => {
                                         <button
                                             key={cat._id}
                                             onClick={() => handleFilterChange('genre', cat._id)}
-                                            className={`w-full text-left px-4 py-2 rounded-xl text-sm font-bold transition-all ${filters.genre === cat._id ? 'bg-fahasa-red text-white shadow-lg shadow-fahasa-red/20' : 'text-gray-500 hover:bg-gray-50'}`}
+                                            className={`w-full text-left px-4 py-2 rounded-xl text-sm font-bold transition-all ${filters.genre === cat._id ? 'bg-vanxuan-red text-white shadow-lg shadow-vanxuan-red/20' : 'text-gray-500 hover:bg-gray-50'}`}
                                         >
                                             {cat.name}
                                         </button>
@@ -147,14 +147,14 @@ const Shop = () => {
                         {/* Toolbar */}
                         <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4 px-6">
                             <p className="text-sm font-bold text-gray-500">
-                                Hiển thị <span className="text-fahasa-dark font-black">{books.length}</span> trên <span className="text-fahasa-dark font-black">{total}</span> sản phẩm
+                                Hiển thị <span className="text-vanxuan-dark font-black">{books.length}</span> trên <span className="text-vanxuan-dark font-black">{total}</span> sản phẩm
                             </p>
                             <div className="flex items-center space-x-4">
                                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Sắp xếp theo</span>
                                 <select
                                     value={filters.sort}
                                     onChange={(e) => handleFilterChange('sort', e.target.value)}
-                                    className="bg-gray-50 border-none rounded-xl px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-fahasa-red text-fahasa-dark cursor-pointer"
+                                    className="bg-gray-50 border-none rounded-xl px-4 py-2 text-sm font-bold focus:ring-2 focus:ring-vanxuan-red text-vanxuan-dark cursor-pointer"
                                 >
                                     <option value="-createdAt">Mới nhất</option>
                                     <option value="-soldCount">Bán chạy nhất</option>
@@ -193,9 +193,9 @@ const Shop = () => {
                                                     />
                                                 </div>
                                                 <div className="space-y-3 px-2">
-                                                    <p className="text-[10px] font-black text-fahasa-red uppercase tracking-widest truncate">{book.author}</p>
-                                                    <h4 className="!text-xs font-bold text-fahasa-dark line-clamp-2 h-10 group-hover:text-fahasa-red transition-colors">{book.title}</h4>
-                                                    <p className="text-lg font-black text-fahasa-red">{book.price?.toLocaleString()}đ</p>
+                                                    <p className="text-[10px] font-black text-vanxuan-red uppercase tracking-widest truncate">{book.author}</p>
+                                                    <h4 className="!text-xs font-bold text-vanxuan-dark line-clamp-2 h-10 group-hover:text-vanxuan-red transition-colors">{book.title}</h4>
+                                                    <p className="text-lg font-black text-vanxuan-red">{book.price?.toLocaleString()}đ</p>
                                                 </div>
                                             </Link>
                                         ))}
@@ -207,7 +207,7 @@ const Shop = () => {
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                             </svg>
                                         </div>
-                                        <h4 className="text-xl font-black text-fahasa-dark">Không tìm thấy kết quả</h4>
+                                        <h4 className="text-xl font-black text-vanxuan-dark">Không tìm thấy kết quả</h4>
                                         <p className="text-gray-400 font-bold mt-2">Thử điều chỉnh bộ lọc để tìm kiếm thêm nhé!</p>
                                     </div>
                                 )}
@@ -219,7 +219,7 @@ const Shop = () => {
                                             <button
                                                 key={i}
                                                 onClick={() => handleFilterChange('page', i + 1)}
-                                                className={`w-10 h-10 rounded-xl font-black transition-all ${filters.page === i + 1 ? 'bg-fahasa-red text-white shadow-lg shadow-fahasa-red/20' : 'bg-white text-gray-500 hover:bg-gray-50 border border-gray-100'}`}
+                                                className={`w-10 h-10 rounded-xl font-black transition-all ${filters.page === i + 1 ? 'bg-vanxuan-red text-white shadow-lg shadow-vanxuan-red/20' : 'bg-white text-gray-500 hover:bg-gray-50 border border-gray-100'}`}
                                             >
                                                 {i + 1}
                                             </button>

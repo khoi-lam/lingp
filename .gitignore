@@ -34,3 +34,15 @@ coverage/
 
 # Misc
 *.pem
+
+# Agent config
+.agent/
+.gemini/
+
+# Prisma generated
+server/generated/
+
+# Uploaded files (use cloud storage in production)
+server/uploads/books/
+server/uploads/videos/
+test_hf.py

@@ -9,7 +9,7 @@ const ChatBubble = () => {
     const [messages, setMessages] = useState([
         {
             type: 'ai',
-            content: 'Xin chào! 👋 Tôi là trợ lý sách của Bookstore. Bạn muốn tìm sách gì hôm nay?',
+            content: 'Xin chào! 👋 Tôi là trợ lý sách của Vạn Xuân. Bạn muốn tìm sách gì hôm nay?',
             books: []
         }
     ]);

@@ -1,50 +1,104 @@
-import Book from '../models/Book.js';
+import prisma from '../lib/prisma.js';
+import { generateSlug } from '../utils/slug.js';
 import { processBookImages, deleteBookImages } from '../utils/imageProcessor.js';
+
+// Helper: format book for frontend (add _id alias, flatten categories)
+function formatBook(book) {
+    if (!book) return null;
+    return {
+        _id: String(book.id),
+        id: book.id,
+        title: book.title,
+        author: book.author,
+        publisher: book.publisher,
+        isbn: book.isbn,
+        description: book.description,
+        price: book.price,
+        stockQuantity: book.stockQuantity,
+        soldCount: book.soldCount,
+        images: book.images || [],
+        slug: book.slug,
+        createdAt: book.createdAt,
+        updatedAt: book.updatedAt,
+        categories: {
+            origin: book.origin ? { _id: String(book.origin.id), name: book.origin.name, slug: book.origin.slug } : null,
+            genres: (book.genres || []).map(bg => ({
+                _id: String(bg.category.id),
+                name: bg.category.name,
+                slug: bg.category.slug
+            }))
+        }
+    };
+}
 
 // @desc    Get all books
 // @route   GET /api/books
 // @access  Public
 export const getBooks = async (req, res, next) => {
     try {
-        const { page = 1, limit = 12, search, origin, genre } = req.query;
+        const { page = 1, limit = 12, search, origin, genre, sort } = req.query;
+        const take = parseInt(limit);
+        const skip = (parseInt(page) - 1) * take;
 
-        const filter = {};
+        const where = {};
 
-        // Search by title or author
         if (search) {
-            filter.$text = { $search: search };
+            where.OR = [
+                { title: { contains: search, mode: 'insensitive' } },
+                { author: { contains: search, mode: 'insensitive' } }
+            ];
         }
 
-        // Filter by origin category
         if (origin) {
-            filter['categories.origin'] = origin;
+            where.originId = parseInt(origin);
         }
 
-        // Filter by genre category
         if (genre) {
-            filter['categories.genres'] = genre;
+            const genreCat = await prisma.category.findFirst({ where: { slug: genre } });
+            if (genreCat) {
+                if (genreCat.type === 'origin') {
+                    where.originId = genreCat.id;
+                } else {
+                    where.genres = { some: { categoryId: genreCat.id } };
+                }
+            } else {
+                return res.json({ success: true, data: { books: [], pagination: { page: parseInt(page), limit: take, total: 0, pages: 0 } } });
+            }
         }
 
-        const skip = (page - 1) * limit;
+        // Parse sort
+        let orderBy = { createdAt: 'desc' };
+        if (sort) {
+            const desc = sort.startsWith('-');
+            const field = desc ? sort.slice(1) : sort;
+            if (['createdAt', 'price', 'soldCount', 'title'].includes(field)) {
+                orderBy = { [field]: desc ? 'desc' : 'asc' };
+            }
+        }
 
-        const books = await Book.find(filter)
-            .populate('categories.origin', 'name slug')
-            .populate('categories.genres', 'name slug')
-            .sort({ createdAt: -1 })
-            .skip(skip)
-            .limit(parseInt(limit));
-
-        const total = await Book.countDocuments(filter);
+        const [books, total] = await Promise.all([
+            prisma.book.findMany({
+                where,
+                include: {
+                    origin: true,
+                    genres: { include: { category: true } }
+                },
+                orderBy,
+                skip,
+                take
+            }),
+            prisma.book.count({ where })
+        ]);
 
         res.json({
             success: true,
             data: {
-                books,
+                books: books.map(formatBook),
                 pagination: {
                     page: parseInt(page),
-                    limit: parseInt(limit),
+                    limit: take,
                     total,
-                    pages: Math.ceil(total / limit)
+                    pages: Math.ceil(total / take)
                 }
             }
         });
@@ -58,21 +112,19 @@ export const getBooks = async (req, res, next) => {
 // @access  Public
 export const getBookById = async (req, res, next) => {
     try {
-        const book = await Book.findById(req.params.id)
-            .populate('categories.origin', 'name slug')
-            .populate('categories.genres', 'name slug');
+        const book = await prisma.book.findUnique({
+            where: { id: parseInt(req.params.id) },
+            include: {
+                origin: true,
+                genres: { include: { category: true } }
+            }
+        });
 
         if (!book) {
-            return res.status(404).json({
-                success: false,
-                message: 'Không tìm thấy sách'
-            });
+            return res.status(404).json({ success: false, message: 'Không tìm thấy sách' });
         }
 
-        res.json({
-            success: true,
-            data: { book }
-        });
+        res.json({ success: true, data: { book: formatBook(book) } });
     } catch (error) {
         next(error);
     }
@@ -83,21 +135,19 @@ export const getBookById = async (req, res, next) => {
 // @access  Public
 export const getBookBySlug = async (req, res, next) => {
     try {
-        const book = await Book.findOne({ slug: req.params.slug })
-            .populate('categories.origin', 'name slug')
-            .populate('categories.genres', 'name slug');
+        const book = await prisma.book.findFirst({
+            where: { slug: req.params.slug },
+            include: {
+                origin: true,
+                genres: { include: { category: true } }
+            }
+        });
 
         if (!book) {
-            return res.status(404).json({
-                success: false,
-                message: 'Không tìm thấy sách'
-            });
+            return res.status(404).json({ success: false, message: 'Không tìm thấy sách' });
         }
 
-        res.json({
-            success: true,
-            data: { book }
-        });
+        res.json({ success: true, data: { book: formatBook(book) } });
     } catch (error) {
         next(error);
     }
@@ -110,50 +160,44 @@ export const createBook = async (req, res, next) => {
     try {
         const { title, author, publisher, isbn, description, price, stockQuantity, origin, genres } = req.body;
 
-        // Validate required fields
         if (!title || !author || !price) {
-            return res.status(400).json({
-                success: false,
-                message: 'Tên sách, tác giả và giá là bắt buộc'
-            });
+            return res.status(400).json({ success: false, message: 'Tên sách, tác giả và giá là bắt buộc' });
         }
 
-        // Process uploaded images
         let images = [];
         if (req.files && req.files.length > 0) {
             const processedImages = await processBookImages(req.files);
-            images = processedImages.map(img => img.medium); // Use medium size as default
+            images = processedImages.map(img => img.medium);
         }
 
-        const bookData = {
-            title: title.trim(),
-            author: author.trim(),
-            publisher: publisher?.trim(),
-            isbn: isbn && isbn.trim() !== '' ? isbn.trim() : null,
-            description: description?.trim(),
-            price: parseFloat(price),
-            stockQuantity: parseInt(stockQuantity) || 0,
-            images,
-            categories: {
-                origin: origin || null,
-                genres: genres ? JSON.parse(genres) : []
-            }
-        };
+        const slug = generateSlug(title.trim());
+        const genreIds = genres ? JSON.parse(genres) : [];
 
-        const book = await Book.create(bookData);
-
-        res.status(201).json({
-            success: true,
-            message: 'Tạo sách thành công',
-            data: { book }
+        const book = await prisma.book.create({
+            data: {
+                title: title.trim(),
+                author: author.trim(),
+                publisher: publisher?.trim() || null,
+                isbn: isbn && isbn.trim() !== '' ? isbn.trim() : null,
+                description: description?.trim() || null,
+                price: parseFloat(price),
+                stockQuantity: parseInt(stockQuantity) || 0,
+                images,
+                slug,
+                originId: origin ? parseInt(origin) : null,
+                genres: {
+                    create: genreIds.map(gid => ({ categoryId: parseInt(gid) }))
+                }
+            },
+            include: { origin: true, genres: { include: { category: true } } }
         });
+
+        res.status(201).json({ success: true, message: 'Tạo sách thành công', data: { book: formatBook(book) } });
     } catch (error) {
-        // Handle duplicate ISBN error
-        if (error.code === 11000 && error.keyPattern?.isbn) {
-            return res.status(400).json({
-                success: false,
-                message: 'ISBN đã tồn tại trong hệ thống'
-            });
+        if (error.code === 'P2002') {
+            const field = error.meta?.target?.[0];
+            if (field === 'isbn') return res.status(400).json({ success: false, message: 'ISBN đã tồn tại trong hệ thống' });
+            if (field === 'slug') return res.status(400).json({ success: false, message: 'Slug đã tồn tại' });
         }
         next(error);
     }
@@ -164,85 +208,61 @@ export const createBook = async (req, res, next) => {
 // @access  Private/Admin
 export const updateBook = async (req, res, next) => {
     try {
-        console.log(`📝 Updating book ID: ${req.params.id}`);
-        console.log('📦 Request body:', req.body);
+        const bookId = parseInt(req.params.id);
+        const existing = await prisma.book.findUnique({ where: { id: bookId } });
 
-        const book = await Book.findById(req.params.id);
-
-        if (!book) {
-            console.log('❌ Book not found');
-            return res.status(404).json({
-                success: false,
-                message: 'Không tìm thấy sách'
-            });
+        if (!existing) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy sách' });
         }
 
         const { title, author, publisher, isbn, description, price, stockQuantity, origin, genres } = req.body;
 
-        // Update fields
+        const data = {};
         if (title && title.trim() !== '') {
-            const trimmedTitle = title.trim();
-            // Update slug if title changed
-            if (trimmedTitle !== book.title) {
-                book.title = trimmedTitle;
-                // Force slug update by clearing it (pre-save hook will regenerate or we do it here)
-                book.slug = undefined;
-            }
+            data.title = title.trim();
+            if (title.trim() !== existing.title) data.slug = generateSlug(title.trim());
         }
-
-        if (author) book.author = author.trim();
-        if (publisher !== undefined) book.publisher = publisher?.trim();
-        if (isbn !== undefined) book.isbn = isbn && isbn.trim() !== '' ? isbn.trim() : null;
-        if (description !== undefined) book.description = description?.trim();
-
+        if (author) data.author = author.trim();
+        if (publisher !== undefined) data.publisher = publisher?.trim() || null;
+        if (isbn !== undefined) data.isbn = isbn && isbn.trim() !== '' ? isbn.trim() : null;
+        if (description !== undefined) data.description = description?.trim() || null;
         if (price !== undefined && price !== '') {
-            const numPrice = parseFloat(price);
-            if (!isNaN(numPrice)) book.price = numPrice;
+            const n = parseFloat(price);
+            if (!isNaN(n)) data.price = n;
         }
-
         if (stockQuantity !== undefined && stockQuantity !== '') {
-            const numStock = parseInt(stockQuantity);
-            if (!isNaN(numStock)) book.stockQuantity = numStock;
+            const n = parseInt(stockQuantity);
+            if (!isNaN(n)) data.stockQuantity = n;
         }
+        if (origin !== undefined) data.originId = origin ? parseInt(origin) : null;
 
-        // Update categories
-        if (origin !== undefined) book.categories.origin = origin || null;
-        if (genres) {
-            try {
-                book.categories.genres = typeof genres === 'string' ? JSON.parse(genres) : genres;
-            } catch (e) {
-                console.error('Error parsing genres:', e);
-            }
-        }
-
-        // Process new images if uploaded
+        // Process new images
         if (req.files && req.files.length > 0) {
-            console.log(`📸 Processing ${req.files.length} new images`);
             const processedImages = await processBookImages(req.files);
             const newImages = processedImages.map(img => img.medium);
-            book.images = [...book.images, ...newImages];
+            data.images = [...existing.images, ...newImages];
         }
 
-        const updatedBook = await book.save();
-        console.log('✅ Book updated successfully:', updatedBook._id);
-
-        res.json({
-            success: true,
-            message: 'Cập nhật sách thành công',
-            data: { book: updatedBook }
-        });
-    } catch (error) {
-        console.error('❌ Error updating book:', error);
-        // Handle duplicate ISBN or Slug error
-        if (error.code === 11000) {
-            let message = 'Lỗi trùng lặp dữ liệu';
-            if (error.keyPattern?.isbn) message = 'ISBN đã tồn tại trong hệ thống';
-            if (error.keyPattern?.slug) message = 'Slug (đường dẫn) của sách đã tồn tại';
-
-            return res.status(400).json({
-                success: false,
-                message
+        // Update genres (delete old, create new)
+        if (genres) {
+            const genreIds = typeof genres === 'string' ? JSON.parse(genres) : genres;
+            await prisma.bookGenre.deleteMany({ where: { bookId } });
+            await prisma.bookGenre.createMany({
+                data: genreIds.map(gid => ({ bookId, categoryId: parseInt(gid) }))
             });
+        }
+
+        const book = await prisma.book.update({
+            where: { id: bookId },
+            data,
+            include: { origin: true, genres: { include: { category: true } } }
+        });
+
+        res.json({ success: true, message: 'Cập nhật sách thành công', data: { book: formatBook(book) } });
+    } catch (error) {
+        if (error.code === 'P2002') {
+            const field = error.meta?.target?.[0];
+            return res.status(400).json({ success: false, message: field === 'isbn' ? 'ISBN đã tồn tại' : 'Lỗi trùng lặp dữ liệu' });
         }
         next(error);
     }
@@ -253,30 +273,27 @@ export const updateBook = async (req, res, next) => {
 // @access  Private/Admin
 export const deleteBook = async (req, res, next) => {
     try {
-        const book = await Book.findById(req.params.id);
+        const book = await prisma.book.findUnique({ where: { id: parseInt(req.params.id) } });
 
         if (!book) {
-            return res.status(404).json({
-                success: false,
-                message: 'Không tìm thấy sách'
-            });
+            return res.status(404).json({ success: false, message: 'Không tìm thấy sách' });
         }
 
-        // Delete associated images
         if (book.images && book.images.length > 0) {
             await deleteBookImages(book.images);
         }
 
-        await book.deleteOne();
+        await prisma.book.delete({ where: { id: book.id } });
 
-        res.json({
-            success: true,
-            message: 'Xóa sách thành công'
-        });
+        res.json({ success: true, message: 'Xóa sách thành công' });
     } catch (error) {
         next(error);
     }
 };
+
+// @desc    Suggest books (autocomplete)
+// @route   GET /api/books/suggest
+// @access  Public
 export const suggestBooks = async (req, res, next) => {
     try {
         const { q } = req.query;
@@ -285,15 +302,17 @@ export const suggestBooks = async (req, res, next) => {
             return res.json({ success: true, data: { suggestions: [] } });
         }
 
-        const suggestions = await Book.find({
-            title: { $regex: q, $options: 'i' }
-        })
-            .select('title author images price')
-            .limit(10);
+        const suggestions = await prisma.book.findMany({
+            where: { title: { contains: q, mode: 'insensitive' } },
+            select: { id: true, title: true, author: true, images: true, price: true },
+            take: 10
+        });
 
         res.json({
             success: true,
-            data: { suggestions }
+            data: {
+                suggestions: suggestions.map(s => ({ ...s, _id: String(s.id) }))
+            }
         });
     } catch (error) {
         next(error);

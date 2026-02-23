@@ -56,14 +56,14 @@ const AdminOrderDetail = () => {
 
     if (loading) return (
         <div className="p-10 flex justify-center">
-            <div className="w-12 h-12 border-4 border-fahasa-red border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-vanxuan-red border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
 
     if (!order) return (
         <div className="p-10 text-center space-y-4">
-            <h2 className="text-2xl font-black text-fahasa-dark">Không tìm thấy đơn hàng</h2>
-            <Link to="/admin/orders" className="text-fahasa-red font-bold">Quay lại danh sách</Link>
+            <h2 className="text-2xl font-black text-vanxuan-dark">Không tìm thấy đơn hàng</h2>
+            <Link to="/admin/orders" className="text-vanxuan-red font-bold">Quay lại danh sách</Link>
         </div>
     );
 
@@ -71,14 +71,14 @@ const AdminOrderDetail = () => {
         <AdminLayout>
             <div className="p-6 lg:p-10 space-y-8">
                 <div className="flex items-center space-x-4">
-                    <Link to="/admin/orders" className="w-12 h-12 flex items-center justify-center bg-white rounded-2xl border border-gray-100 text-gray-400 hover:text-fahasa-red transition-all shadow-sm">
+                    <Link to="/admin/orders" className="w-12 h-12 flex items-center justify-center bg-white rounded-2xl border border-gray-100 text-gray-400 hover:text-vanxuan-red transition-all shadow-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
                         </svg>
                     </Link>
                     <div className="space-y-1">
-                        <p className="text-[10px] font-black text-fahasa-red uppercase tracking-widest">Đơn hàng #{order._id.slice(-6).toUpperCase()}</p>
-                        <h1 className="text-2xl font-black text-fahasa-dark uppercase">Chi tiết đơn hàng</h1>
+                        <p className="text-[10px] font-black text-vanxuan-red uppercase tracking-widest">Đơn hàng #{order._id.slice(-6).toUpperCase()}</p>
+                        <h1 className="text-2xl font-black text-vanxuan-dark uppercase">Chi tiết đơn hàng</h1>
                     </div>
                 </div>
 
@@ -88,7 +88,7 @@ const AdminOrderDetail = () => {
                         {/* Items Card */}
                         <div className="bg-white rounded-[40px] border border-gray-100 shadow-sm overflow-hidden">
                             <div className="px-8 py-6 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
-                                <h3 className="text-sm font-black text-fahasa-dark uppercase tracking-widest">Sản phẩm trong đơn</h3>
+                                <h3 className="text-sm font-black text-vanxuan-dark uppercase tracking-widest">Sản phẩm trong đơn</h3>
                                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{order.items.length} món</span>
                             </div>
                             <div className="divide-y divide-gray-50">
@@ -102,14 +102,14 @@ const AdminOrderDetail = () => {
                                             />
                                         </div>
                                         <div className="flex-1 space-y-2">
-                                            <h4 className="font-black text-fahasa-dark line-clamp-2">{item.title}</h4>
+                                            <h4 className="font-black text-vanxuan-dark line-clamp-2">{item.title}</h4>
                                             <div className="flex items-center space-x-4 text-xs">
-                                                <span className="text-fahasa-red font-black">{item.price?.toLocaleString()}đ</span>
+                                                <span className="text-vanxuan-red font-black">{item.price?.toLocaleString()}đ</span>
                                                 <span className="text-gray-400 font-bold">Số lượng: {item.quantity}</span>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className="font-black text-fahasa-dark">{(item.price * item.quantity).toLocaleString()}đ</p>
+                                            <p className="font-black text-vanxuan-dark">{(item.price * item.quantity).toLocaleString()}đ</p>
                                         </div>
                                     </div>
                                 ))}
@@ -118,15 +118,15 @@ const AdminOrderDetail = () => {
                                 <div className="w-full max-w-xs space-y-4">
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="font-bold text-gray-400 uppercase tracking-widest">Tạm tính</span>
-                                        <span className="font-black text-fahasa-dark">{order.totalAmount?.toLocaleString()}đ</span>
+                                        <span className="font-black text-vanxuan-dark">{order.totalAmount?.toLocaleString()}đ</span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="font-bold text-gray-400 uppercase tracking-widest">Phí vận chuyển</span>
                                         <span className="font-black text-green-600 uppercase">Miễn phí</span>
                                     </div>
                                     <div className="pt-4 border-t border-gray-200 flex justify-between items-center">
-                                        <span className="text-lg font-black text-fahasa-dark uppercase tracking-widest">Tổng cộng</span>
-                                        <span className="text-2xl font-black text-fahasa-red">{order.totalAmount?.toLocaleString()}đ</span>
+                                        <span className="text-lg font-black text-vanxuan-dark uppercase tracking-widest">Tổng cộng</span>
+                                        <span className="text-2xl font-black text-vanxuan-red">{order.totalAmount?.toLocaleString()}đ</span>
                                     </div>
                                 </div>
                             </div>
@@ -135,19 +135,19 @@ const AdminOrderDetail = () => {
                         {/* Customer Info */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="bg-white rounded-[40px] border border-gray-100 shadow-sm p-8 space-y-6">
-                                <h3 className="text-sm font-black text-fahasa-dark uppercase tracking-widest">Thông tin giao hàng</h3>
+                                <h3 className="text-sm font-black text-vanxuan-dark uppercase tracking-widest">Thông tin giao hàng</h3>
                                 <div className="space-y-4">
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Người nhận</p>
-                                        <p className="font-black text-fahasa-dark">{order.shippingAddress.fullName}</p>
+                                        <p className="font-black text-vanxuan-dark">{order.shippingAddress.fullName}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Số điện thoại</p>
-                                        <p className="font-bold text-fahasa-dark">{order.shippingAddress.phone}</p>
+                                        <p className="font-bold text-vanxuan-dark">{order.shippingAddress.phone}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Địa chỉ</p>
-                                        <p className="font-bold text-fahasa-dark leading-relaxed">{order.shippingAddress.address}, {order.shippingAddress.city}</p>
+                                        <p className="font-bold text-vanxuan-dark leading-relaxed">{order.shippingAddress.address}, {order.shippingAddress.city}</p>
                                     </div>
                                     {order.shippingAddress.note && (
                                         <div className="space-y-1 p-4 bg-yellow-50 rounded-2xl border border-yellow-100">
@@ -159,11 +159,11 @@ const AdminOrderDetail = () => {
                             </div>
 
                             <div className="bg-white rounded-[40px] border border-gray-100 shadow-sm p-8 space-y-6">
-                                <h3 className="text-sm font-black text-fahasa-dark uppercase tracking-widest">Thanh toán</h3>
+                                <h3 className="text-sm font-black text-vanxuan-dark uppercase tracking-widest">Thanh toán</h3>
                                 <div className="space-y-4">
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Phương thức</p>
-                                        <p className="font-black text-fahasa-dark uppercase tracking-widest">{order.paymentMethod}</p>
+                                        <p className="font-black text-vanxuan-dark uppercase tracking-widest">{order.paymentMethod}</p>
                                     </div>
                                     <div className="space-y-1">
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Trạng thái thanh toán</p>
@@ -183,7 +183,7 @@ const AdminOrderDetail = () => {
                     {/* Actions Column */}
                     <div className="space-y-8">
                         <div className="bg-white rounded-[40px] border border-gray-100 shadow-sm p-8 space-y-8 sticky top-8">
-                            <h3 className="text-sm font-black text-fahasa-dark uppercase tracking-widest">Cập nhật đơn hàng</h3>
+                            <h3 className="text-sm font-black text-vanxuan-dark uppercase tracking-widest">Cập nhật đơn hàng</h3>
 
                             <div className="space-y-6">
                                 <div className="space-y-2">
@@ -191,7 +191,7 @@ const AdminOrderDetail = () => {
                                     <select
                                         value={statusData.orderStatus}
                                         onChange={(e) => setStatusData({ ...statusData, orderStatus: e.target.value })}
-                                        className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-fahasa-dark focus:ring-2 focus:ring-fahasa-red/20 outline-none transition-all appearance-none"
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-vanxuan-dark focus:ring-2 focus:ring-vanxuan-red/20 outline-none transition-all appearance-none"
                                     >
                                         <option value="waiting">Chờ xác nhận</option>
                                         <option value="processing">Đang xử lý</option>
@@ -208,7 +208,7 @@ const AdminOrderDetail = () => {
                                     <select
                                         value={statusData.paymentStatus}
                                         onChange={(e) => setStatusData({ ...statusData, paymentStatus: e.target.value })}
-                                        className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-fahasa-dark focus:ring-2 focus:ring-fahasa-red/20 outline-none transition-all appearance-none"
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-vanxuan-dark focus:ring-2 focus:ring-vanxuan-red/20 outline-none transition-all appearance-none"
                                     >
                                         <option value="pending">Chờ thanh toán</option>
                                         <option value="paid">Đã thanh toán</option>
@@ -223,14 +223,14 @@ const AdminOrderDetail = () => {
                                         value={statusData.trackingNumber}
                                         onChange={(e) => setStatusData({ ...statusData, trackingNumber: e.target.value })}
                                         placeholder="VN-XXXXXXX"
-                                        className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-fahasa-dark focus:ring-2 focus:ring-fahasa-red/20 outline-none transition-all"
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-vanxuan-dark focus:ring-2 focus:ring-vanxuan-red/20 outline-none transition-all"
                                     />
                                 </div>
 
                                 <button
                                     onClick={handleUpdate}
                                     disabled={updating}
-                                    className="w-full py-5 bg-fahasa-red text-white rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-fahasa-red/20 hover:scale-[1.02] active:scale-100 transition-all disabled:opacity-50"
+                                    className="w-full py-5 bg-vanxuan-red text-white rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-vanxuan-red/20 hover:scale-[1.02] active:scale-100 transition-all disabled:opacity-50"
                                 >
                                     {updating ? 'Đang cập nhật...' : 'Lưu cập nhật'}
                                 </button>

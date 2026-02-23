@@ -62,7 +62,7 @@ const AdminSupport = () => {
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
-                        <h2 className="text-3xl font-black text-fahasa-dark uppercase tracking-tight">Yêu cầu hỗ trợ</h2>
+                        <h2 className="text-3xl font-black text-vanxuan-dark uppercase tracking-tight">Yêu cầu hỗ trợ</h2>
                         <p className="text-gray-500 font-bold mt-1">Quản lý và giải quyết khiếu nại của khách hàng</p>
                     </div>
                 </div>
@@ -118,11 +118,11 @@ const AdminSupport = () => {
                                     <tr key={req._id} className="hover:bg-gray-50/50 transition-colors">
                                         <td className="p-6">
                                             <div className="flex items-center space-x-3">
-                                                <div className="w-10 h-10 bg-fahasa-red/10 rounded-full flex items-center justify-center text-fahasa-red font-black text-xs uppercase">
+                                                <div className="w-10 h-10 bg-vanxuan-red/10 rounded-full flex items-center justify-center text-vanxuan-red font-black text-xs uppercase">
                                                     {req.user?.name?.charAt(0)}
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-fahasa-dark">{req.user?.name}</p>
+                                                    <p className="font-bold text-vanxuan-dark">{req.user?.name}</p>
                                                     <p className="text-[10px] text-gray-400 font-bold">{req.user?.email}</p>
                                                 </div>
                                             </div>
@@ -132,12 +132,12 @@ const AdminSupport = () => {
                                                 <span className={`text-[8px] font-black px-2 py-0.5 rounded uppercase ${req.type === 'return' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'}`}>
                                                     {req.type === 'return' ? 'Đổi trả' : 'Hỗ trợ'}
                                                 </span>
-                                                <p className="font-bold text-fahasa-dark truncate max-w-[200px]">{req.title}</p>
+                                                <p className="font-bold text-vanxuan-dark truncate max-w-[200px]">{req.title}</p>
                                             </div>
                                         </td>
                                         <td className="p-6">
                                             {req.orderId ? (
-                                                <span className="text-xs font-black text-fahasa-red">#{req.orderId.orderId}</span>
+                                                <span className="text-xs font-black text-vanxuan-red">#{req.orderId.orderId}</span>
                                             ) : (
                                                 <span className="text-xs text-gray-300 font-bold">N/A</span>
                                             )}
@@ -152,7 +152,7 @@ const AdminSupport = () => {
                                                     setSelectedRequest(req);
                                                     setReplyText(req.adminReply || '');
                                                 }}
-                                                className="px-4 py-2 bg-fahasa-dark text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all"
+                                                className="px-4 py-2 bg-vanxuan-dark text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all"
                                             >
                                                 Xem & Phản hồi
                                             </button>
@@ -168,7 +168,7 @@ const AdminSupport = () => {
             {/* Modal */}
             {selectedRequest && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-fahasa-dark/60 backdrop-blur-sm" onClick={() => setSelectedRequest(null)}></div>
+                    <div className="absolute inset-0 bg-vanxuan-dark/60 backdrop-blur-sm" onClick={() => setSelectedRequest(null)}></div>
                     <div className="bg-white rounded-[40px] shadow-2xl w-full max-w-3xl relative overflow-hidden animate-in zoom-in-95 duration-300">
                         <div className="p-10 space-y-8">
                             <div className="flex justify-between items-start">
@@ -179,9 +179,9 @@ const AdminSupport = () => {
                                         </span>
                                         {getStatusBadge(selectedRequest.status)}
                                     </div>
-                                    <h3 className="text-2xl font-black text-fahasa-dark">{selectedRequest.title}</h3>
+                                    <h3 className="text-2xl font-black text-vanxuan-dark">{selectedRequest.title}</h3>
                                 </div>
-                                <button onClick={() => setSelectedRequest(null)} className="text-gray-400 hover:text-fahasa-red transition-colors">
+                                <button onClick={() => setSelectedRequest(null)} className="text-gray-400 hover:text-vanxuan-red transition-colors">
                                     <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -215,7 +215,7 @@ const AdminSupport = () => {
                                             value={replyText}
                                             onChange={(e) => setReplyText(e.target.value)}
                                             rows="4"
-                                            className="w-full bg-gray-50 border-none rounded-3xl p-6 font-bold text-fahasa-dark focus:ring-2 focus:ring-fahasa-red/20 outline-none resize-none"
+                                            className="w-full bg-gray-50 border-none rounded-3xl p-6 font-bold text-vanxuan-dark focus:ring-2 focus:ring-vanxuan-red/20 outline-none resize-none"
                                             placeholder="Nhập nội dung phản hồi..."
                                         />
                                     </div>
@@ -228,7 +228,7 @@ const AdminSupport = () => {
                                         </button>
                                         <button
                                             onClick={() => handleUpdate(selectedRequest._id, selectedRequest.type === 'return' ? 'resolved' : 'resolved')}
-                                            className="bg-fahasa-red text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-fahasa-red/20 hover:bg-fahasa-red/90 transition-all"
+                                            className="bg-vanxuan-red text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-vanxuan-red/20 hover:bg-vanxuan-red/90 transition-all"
                                         >
                                             Duyệt / Hoàn thành
                                         </button>

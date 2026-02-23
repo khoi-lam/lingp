@@ -86,7 +86,7 @@ const Products = () => {
                     </div>
                     <Link
                         to="/admin/products/new"
-                        className="px-8 py-4 bg-fahasa-red text-white rounded-2xl font-black text-sm hover:bg-fahasa-red/90 transition-all shadow-xl shadow-fahasa-red/20 hover:scale-105 active:scale-95 flex items-center space-x-2"
+                        className="px-8 py-4 bg-vanxuan-red text-white rounded-2xl font-black text-sm hover:bg-vanxuan-red/90 transition-all shadow-xl shadow-vanxuan-red/20 hover:scale-105 active:scale-95 flex items-center space-x-2"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -196,7 +196,7 @@ const Products = () => {
                                                 </Link>
                                                 <button
                                                     onClick={() => handleDeleteClick(product._id)}
-                                                    className="w-12 h-12 bg-white border border-gray-100 text-fahasa-red hover:text-white hover:bg-fahasa-red rounded-2xl flex items-center justify-center transition-all shadow-sm active:scale-90"
+                                                    className="w-12 h-12 bg-white border border-gray-100 text-vanxuan-red hover:text-white hover:bg-vanxuan-red rounded-2xl flex items-center justify-center transition-all shadow-sm active:scale-90"
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

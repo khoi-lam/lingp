@@ -1,9 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-    /* Fahasa Primary Red */
-    --color-fahasa-red: #C81E2B;
-    --color-fahasa-dark: #212121;
+    /* Vạn Xuân Brand Colors */
+    --color-vanxuan-red: #C62828;
+    --color-vanxuan-dark: #1A1A1A;
+    --color-vanxuan-gold: #D4A017;
+    --color-vanxuan-cream: #FFF8E7;
+    --color-vanxuan-gray: #F0F0F0;
 }
 
 /* UI Scaling Refinement */

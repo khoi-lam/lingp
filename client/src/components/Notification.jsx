@@ -10,7 +10,7 @@ const Notification = ({ message, type = 'success', onClose, duration = 3000 }) =
 
     const bgColors = {
         success: 'bg-green-500',
-        error: 'bg-fahasa-red',
+        error: 'bg-vanxuan-red',
         info: 'bg-blue-500'
     };
 

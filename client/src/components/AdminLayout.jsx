@@ -69,14 +69,14 @@ const AdminLayout = ({ children }) => {
                 {/* Logo Section */}
                 <div className="p-8 pb-4">
                     <div className="flex items-center space-x-3 cursor-default">
-                        <div className="w-10 h-10 bg-fahasa-red rounded-xl flex items-center justify-center shadow-lg shadow-fahasa-red/20">
-                            <span className="text-white font-bold text-xl">B</span>
+                        <div className="w-10 h-10 bg-vanxuan-red rounded-xl flex items-center justify-center shadow-lg shadow-vanxuan-red/20">
+                            <span className="text-white font-bold text-sm">VX</span>
                         </div>
                         <div>
-                            <h2 className="text-xl font-black text-fahasa-dark tracking-tight">
-                                Bookstore
+                            <h2 className="text-xl font-black text-vanxuan-dark tracking-tight">
+                                Vạn Xuân
                             </h2>
-                            <p className="text-[10px] font-bold text-fahasa-red uppercase tracking-widest leading-tight">
+                            <p className="text-[10px] font-bold text-vanxuan-red uppercase tracking-widest leading-tight">
                                 Control Center
                             </p>
                         </div>
@@ -90,8 +90,8 @@ const AdminLayout = ({ children }) => {
                             key={item.path}
                             to={item.path}
                             className={`flex items-center space-x-3 px-4 py-3.5 rounded-2xl font-bold transition-all duration-300 ${isActive(item.path)
-                                ? 'bg-fahasa-red text-white shadow-xl shadow-fahasa-red/10 scale-[1.02]'
-                                : 'text-gray-500 hover:bg-fahasa-red/5 hover:text-fahasa-red'
+                                ? 'bg-vanxuan-red text-white shadow-xl shadow-vanxuan-red/10 scale-[1.02]'
+                                : 'text-gray-500 hover:bg-vanxuan-red/5 hover:text-vanxuan-red'
                                 }`}
                         >
                             <span className={`${isActive(item.path) ? 'text-white' : 'text-gray-400'}`}>
@@ -174,7 +174,7 @@ const AdminLayout = ({ children }) => {
                 {/* Footer hint */}
                 <footer className="px-12 py-6 text-center border-t border-gray-100">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                        Bookstore Admin Dashboard © 2026 • Made with ❤️
+                        Vạn Xuân Admin Dashboard © 2026 • Made with ❤️
                     </p>
                 </footer>
             </div>

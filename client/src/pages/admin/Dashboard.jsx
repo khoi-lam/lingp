@@ -46,14 +46,14 @@ const Dashboard = () => {
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="bg-white rounded-[2.5rem] shadow-xl shadow-gray-200/50 border border-gray-100 p-8 flex items-center space-x-6 transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 group">
-                        <div className="w-16 h-16 bg-fahasa-red/5 text-fahasa-red rounded-3xl flex items-center justify-center transition-transform group-hover:scale-110">
+                        <div className="w-16 h-16 bg-vanxuan-red/5 text-vanxuan-red rounded-3xl flex items-center justify-center transition-transform group-hover:scale-110">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                             </svg>
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tổng Sản Phẩm</p>
-                            <h3 className="text-4xl font-black text-fahasa-dark mt-1">{stats.totalProducts}</h3>
+                            <h3 className="text-4xl font-black text-vanxuan-dark mt-1">{stats.totalProducts}</h3>
                         </div>
                     </div>
 
@@ -65,7 +65,7 @@ const Dashboard = () => {
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Doanh Thu</p>
-                            <h3 className="text-4xl font-black text-fahasa-dark mt-1">{stats.totalRevenue.toLocaleString('vi-VN')} đ</h3>
+                            <h3 className="text-4xl font-black text-vanxuan-dark mt-1">{stats.totalRevenue.toLocaleString('vi-VN')} đ</h3>
                         </div>
                     </div>
 
@@ -77,7 +77,7 @@ const Dashboard = () => {
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Đơn Hàng</p>
-                            <h3 className="text-4xl font-black text-fahasa-dark mt-1">{stats.totalOrders}</h3>
+                            <h3 className="text-4xl font-black text-vanxuan-dark mt-1">{stats.totalOrders}</h3>
                         </div>
                     </div>
                 </div>

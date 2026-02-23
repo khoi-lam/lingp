@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LingoLand Admin - Order Management</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec13",
+                        "primary-dark": "#0eb50e",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102210",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Plus Jakarta Sans", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-background-light text-slate-900 font-display antialiased selection:bg-primary/30">
+<div class="flex min-h-screen w-full flex-row overflow-hidden bg-background-light">
+<!-- Sidebar -->
+<aside class="hidden lg:flex w-64 flex-col bg-white border-r border-slate-100 h-screen sticky top-0 shrink-0 z-20">
+<div class="p-6 pb-2">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center text-primary-dark">
+<span class="material-symbols-outlined text-3xl">eco</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 text-lg font-bold leading-tight tracking-tight">LingoLand</h1>
+<p class="text-slate-500 text-xs font-medium">Admin Dashboard</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-1 px-4 py-6 overflow-y-auto">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary-dark transition-colors">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary-dark rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined fill-1">shopping_bag</span>
+<span class="font-bold text-sm">Orders</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary-dark transition-colors">inventory_2</span>
+<span class="font-medium text-sm">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary-dark transition-colors">group</span>
+<span class="font-medium text-sm">Customers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary-dark transition-colors">analytics</span>
+<span class="font-medium text-sm">Analytics</span>
+</a>
+<div class="mt-auto pt-6 border-t border-slate-100">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary-dark transition-colors">settings</span>
+<span class="font-medium text-sm">Settings</span>
+</a>
+</div>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col min-w-0 overflow-hidden h-screen">
+<!-- Header -->
+<header class="bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between sticky top-0 z-10 shrink-0">
+<div class="flex items-center gap-4 lg:hidden">
+<button class="p-2 -ml-2 text-slate-500 hover:text-slate-900">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-slate-900 font-bold text-lg">Orders</h1>
+</div>
+<div class="hidden lg:flex items-center gap-4 text-slate-800">
+<h2 class="text-2xl font-bold tracking-tight">Order Management</h2>
+<span class="px-3 py-1 bg-slate-100 rounded-full text-xs font-semibold text-slate-500">1,245 Total</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex relative group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400">search</span>
+</div>
+<input class="block w-64 pl-10 pr-3 py-2.5 border-none rounded-full leading-5 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-primary/50 sm:text-sm transition-all" placeholder="Search order ID, customer..." type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<button class="relative p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+</button>
+<div class="h-8 w-px bg-slate-200 mx-1"></div>
+<button class="flex items-center gap-3 pl-1 pr-2 py-1 rounded-full hover:bg-slate-50 transition-colors">
+<div class="size-9 rounded-full bg-indigo-100 overflow-hidden border-2 border-white shadow-sm">
+<img alt="Admin user profile picture" class="h-full w-full object-cover" data-alt="Smiling woman with glasses profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0iHLNyzkbPj8XDqG92IRsI71pzBIc_n-lnDJEZuQnKdEIYGAa0twAl2rR19j2bYoNSnreQzAkWsunpOBqyNBwOVHNTfBSNpTDptvND-WMjREpjkc2B8DMkh-Mv5kZ-7ZKRDh8mpZ34G03NcB5ETmcNP9DEcbvabjIZ42E0s7MuPEt78KpYpZgJkxHOVEkfceR2__Dv-0RST_Ys06st-02p4PqNKUGL9r8JS2jTDhnih26_aF4u4bL9Ce-Wtz1yc8Rkw1hFsDaIMI"/>
+</div>
+<div class="hidden md:flex flex-col items-start">
+<span class="text-sm font-bold text-slate-700 leading-none">Sarah L.</span>
+<span class="text-xs text-slate-500 mt-0.5">Admin</span>
+</div>
+<span class="hidden md:block material-symbols-outlined text-slate-400 text-lg">expand_more</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Scrollable Page Content -->
+<div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8">
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-4 relative overflow-hidden group">
+<div class="absolute -right-6 -top-6 size-24 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors"></div>
+<div class="flex justify-between items-start z-10">
+<div>
+<p class="text-slate-500 text-sm font-medium mb-1">Total Orders</p>
+<h3 class="text-3xl font-bold text-slate-800">1,245</h3>
+</div>
+<span class="p-2 bg-primary/10 text-primary-dark rounded-xl">
+<span class="material-symbols-outlined">shopping_cart</span>
+</span>
+</div>
+<div class="flex items-center gap-1 text-sm z-10">
+<span class="text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded font-medium flex items-center">
+<span class="material-symbols-outlined text-sm mr-0.5">trending_up</span> +12%
+                            </span>
+<span class="text-slate-400">vs last month</span>
+</div>
+</div>
+<div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-4 relative overflow-hidden group">
+<div class="absolute -right-6 -top-6 size-24 rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors"></div>
+<div class="flex justify-between items-start z-10">
+<div>
+<p class="text-slate-500 text-sm font-medium mb-1">Pending</p>
+<h3 class="text-3xl font-bold text-slate-800">45</h3>
+</div>
+<span class="p-2 bg-orange-50 text-orange-600 rounded-xl">
+<span class="material-symbols-outlined">hourglass_top</span>
+</span>
+</div>
+<div class="flex items-center gap-1 text-sm z-10">
+<span class="text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded font-medium flex items-center">
+<span class="material-symbols-outlined text-sm mr-0.5">trending_up</span> +5%
+                            </span>
+<span class="text-slate-400">vs last week</span>
+</div>
+</div>
+<div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-4 relative overflow-hidden group">
+<div class="absolute -right-6 -top-6 size-24 rounded-full bg-blue-50 group-hover:bg-blue-100 transition-colors"></div>
+<div class="flex justify-between items-start z-10">
+<div>
+<p class="text-slate-500 text-sm font-medium mb-1">Shipped Today</p>
+<h3 class="text-3xl font-bold text-slate-800">12</h3>
+</div>
+<span class="p-2 bg-blue-50 text-blue-600 rounded-xl">
+<span class="material-symbols-outlined">local_shipping</span>
+</span>
+</div>
+<div class="flex items-center gap-1 text-sm z-10">
+<span class="text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded font-medium flex items-center">
+<span class="material-symbols-outlined text-sm mr-0.5">trending_up</span> +2%
+                            </span>
+<span class="text-slate-400">vs yesterday</span>
+</div>
+</div>
+<div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-4 relative overflow-hidden group">
+<div class="absolute -right-6 -top-6 size-24 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors"></div>
+<div class="flex justify-between items-start z-10">
+<div>
+<p class="text-slate-500 text-sm font-medium mb-1">Total Revenue</p>
+<h3 class="text-3xl font-bold text-slate-800">$12,450</h3>
+</div>
+<span class="p-2 bg-primary/10 text-primary-dark rounded-xl">
+<span class="material-symbols-outlined">attach_money</span>
+</span>
+</div>
+<div class="flex items-center gap-1 text-sm z-10">
+<span class="text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded font-medium flex items-center">
+<span class="material-symbols-outlined text-sm mr-0.5">trending_up</span> +8%
+                            </span>
+<span class="text-slate-400">vs last month</span>
+</div>
+</div>
+</div>
+<!-- Main Table Section -->
+<div class="bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col">
+<!-- Tabs & Filters -->
+<div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full text-sm font-bold bg-slate-900 text-white shadow-md shadow-slate-200 transition-transform active:scale-95">All Orders</button>
+<button class="px-4 py-2 rounded-full text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">Pending</button>
+<button class="px-4 py-2 rounded-full text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">Processing</button>
+<button class="px-4 py-2 rounded-full text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">Shipped</button>
+<button class="px-4 py-2 rounded-full text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">Cancelled</button>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 hover:border-slate-300 transition-colors">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+<span>Filter</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 hover:border-slate-300 transition-colors">
+<span class="material-symbols-outlined text-lg">file_download</span>
+<span>Export</span>
+</button>
+</div>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-slate-100 text-xs uppercase text-slate-400 font-semibold tracking-wider">
+<th class="px-6 py-4">Order ID</th>
+<th class="px-6 py-4">Date</th>
+<th class="px-6 py-4">Customer</th>
+<th class="px-6 py-4">Total</th>
+<th class="px-6 py-4">Payment</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="text-sm font-medium text-slate-600">
+<tr class="group hover:bg-slate-50/80 transition-colors border-b border-slate-50 last:border-0">
+<td class="px-6 py-4">
+<span class="font-mono text-slate-900">#ORD-7721</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">Oct 24, 2023</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center font-bold text-xs">
+                                                AW
+                                            </div>
+<span class="text-slate-900">Alice Wonderland</span>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-900 font-bold">$45.99</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2 text-slate-500">
+<span class="material-symbols-outlined text-lg">credit_card</span>
+<span>•••• 4242</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">
+<span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                            Shipped
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary-dark p-2 hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+<tr class="group hover:bg-slate-50/80 transition-colors border-b border-slate-50 last:border-0">
+<td class="px-6 py-4">
+<span class="font-mono text-slate-900">#ORD-7720</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">Oct 24, 2023</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img alt="Customer avatar" class="size-8 rounded-full object-cover" data-alt="Man with short hair smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVCCmdiK9A5FbfngbGFeUAqqVR9rYkS9scPXcXH6wbMq84sXKmKBhA53Z4o6NcgR4Ub1Rc5aleOwFoOleq2F1radgAswz5yE1h6DwfFkzbxoq8FTRoQigqXzXo101g_Y5AbQLX2tUJB4iUD5gPtqQjNLPGfz5_v6mdjgqimA5r5XBfsHPq_5SzldS3ung82jThxClQaQjqnfKaLEL2esbqR7KBy4kZlQl3D-cqEgeUjKa-jVggoyjk2pgUcswFP_mInfwPcsJm1r4"/>
+<span class="text-slate-900">Mad Hatter</span>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-900 font-bold">$120.50</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2 text-slate-500">
+<span class="material-symbols-outlined text-lg">account_balance_wallet</span>
+<span>PayPal</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
+<span class="size-1.5 rounded-full bg-blue-500"></span>
+                                            Processing
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary-dark p-2 hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+<tr class="group hover:bg-slate-50/80 transition-colors border-b border-slate-50 last:border-0">
+<td class="px-6 py-4">
+<span class="font-mono text-slate-900">#ORD-7719</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">Oct 23, 2023</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs">
+                                                QH
+                                            </div>
+<span class="text-slate-900">Queen of Hearts</span>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-900 font-bold">$12.00</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2 text-slate-500">
+<span class="material-symbols-outlined text-lg">credit_card</span>
+<span>•••• 8812</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700">
+<span class="size-1.5 rounded-full bg-orange-500"></span>
+                                            Pending
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary-dark p-2 hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+<tr class="group hover:bg-slate-50/80 transition-colors border-b border-slate-50 last:border-0">
+<td class="px-6 py-4">
+<span class="font-mono text-slate-900">#ORD-7718</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">Oct 23, 2023</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img alt="Customer avatar" class="size-8 rounded-full object-cover" data-alt="Man with beard profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGsp9YMP3l3v3800EPkpVm2OZv6zGj8c5DYKsESnNi09suvMNdmDEP8RhubDa9kjjHoVD1KnE02t0VfnRxlOCIWyrLeeaXj8tcQQ_gAPxSkZO1BWCHYI8fCpTCfgEJUXoB3swhwdqnTw6rDEN8PYBgeUEikvfJVxXrDn9ZDZJWwFzKFIGCsslqv8ctV13CEIwSTqszo4St8nfylNeDVDIPR2imxGCVzJUNlgP3Sk87c1AwhcmONYjB3jrpBNvdr0qCRdHRqPaEIaA"/>
+<span class="text-slate-900">White Rabbit</span>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-900 font-bold">$34.00</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2 text-slate-500">
+<span class="material-symbols-outlined text-lg">smartphone</span>
+<span>Apple Pay</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+<span class="size-1.5 rounded-full bg-red-500"></span>
+                                            Cancelled
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary-dark p-2 hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+<tr class="group hover:bg-slate-50/80 transition-colors border-b border-slate-50 last:border-0">
+<td class="px-6 py-4">
+<span class="font-mono text-slate-900">#ORD-7717</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">Oct 22, 2023</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center font-bold text-xs">
+                                                CC
+                                            </div>
+<span class="text-slate-900">Cheshire Cat</span>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-900 font-bold">$89.99</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2 text-slate-500">
+<span class="material-symbols-outlined text-lg">credit_card</span>
+<span>•••• 1234</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">
+<span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                            Shipped
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary-dark p-2 hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+<tr class="group hover:bg-slate-50/80 transition-colors border-b border-slate-50 last:border-0">
+<td class="px-6 py-4">
+<span class="font-mono text-slate-900">#ORD-7716</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">Oct 22, 2023</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img alt="Customer avatar" class="size-8 rounded-full object-cover" data-alt="Woman with glasses portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNAmlHnUNsr9bc-2dlOzzCEzPuIffHC3wfYNI0iFEqGWzTZtKzzFjPXChhRcIVpm0OqkuubYPl_aarH6slcNRByF63U3Yl26gcygP0633bw7mbuG-dUHFwijq1_7pyZxffuylUYtVptKH9_LF5styfmlVlsb1-bu2yQQn-VqiLQz2EGHjQY5tXkHYYhEiEuWEfa2ldgUpEEwTbItdzwK6bVlyGTs6cnQq14NgGR43gfyh7ams0_7rw4LfB7nrn3sEU_vY6eGTIKfk"/>
+<span class="text-slate-900">March Hare</span>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-900 font-bold">$215.00</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2 text-slate-500">
+<span class="material-symbols-outlined text-lg">credit_card</span>
+<span>•••• 5590</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
+<span class="size-1.5 rounded-full bg-blue-500"></span>
+                                            Processing
+                                        </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary-dark p-2 hover:bg-primary/10 rounded-full transition-all">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-4 border-t border-slate-100 flex items-center justify-between">
+<div class="text-sm text-slate-500 pl-2">
+                            Showing <span class="font-bold text-slate-800">1-6</span> of <span class="font-bold text-slate-800">1245</span> orders
+                        </div>
+<div class="flex gap-2">
+<button class="flex items-center justify-center size-9 rounded-full border border-slate-200 text-slate-400 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+<span class="material-symbols-outlined text-lg">chevron_left</span>
+</button>
+<button class="flex items-center justify-center size-9 rounded-full bg-primary text-slate-900 font-bold shadow-md shadow-primary/30">1</button>
+<button class="flex items-center justify-center size-9 rounded-full border border-slate-200 text-slate-600 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all">2</button>
+<button class="flex items-center justify-center size-9 rounded-full border border-slate-200 text-slate-600 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all">3</button>
+<span class="flex items-center justify-center size-9 text-slate-400">...</span>
+<button class="flex items-center justify-center size-9 rounded-full border border-slate-200 text-slate-600 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all">12</button>
+<button class="flex items-center justify-center size-9 rounded-full border border-slate-200 text-slate-600 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined text-lg">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer area -->
+<div class="flex justify-center pb-6 text-slate-400 text-xs">
+<p>© 2023 LingoLand Inc. All rights reserved.</p>
+</div>
+</div>
+</main>
+</div>
+</body></html>

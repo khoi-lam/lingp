@@ -23,7 +23,7 @@ const OrderSuccess = () => {
 
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center bg-white">
-            <div className="w-12 h-12 border-4 border-fahasa-red border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-vanxuan-red border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
 
@@ -38,23 +38,23 @@ const OrderSuccess = () => {
                     </div>
 
                     <div className="space-y-4">
-                        <h1 className="text-3xl font-black text-fahasa-dark uppercase tracking-widest">Đặt hàng thành công!</h1>
-                        <p className="text-gray-400 font-bold">Cảm ơn bạn đã tin tưởng và mua sắm tại Bookstore.</p>
+                        <h1 className="text-3xl font-black text-vanxuan-dark uppercase tracking-widest">Đặt hàng thành công!</h1>
+                        <p className="text-gray-400 font-bold">Cảm ơn bạn đã tin tưởng và mua sắm tại Vạn Xuân.</p>
                     </div>
 
                     {order && (
                         <div className="bg-gray-50 rounded-3xl p-8 space-y-6 text-left">
                             <div className="flex justify-between items-center pb-4 border-b border-gray-200">
                                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Mã đơn hàng</span>
-                                <span className="text-sm font-black text-fahasa-dark">#{order._id.slice(-8).toUpperCase()}</span>
+                                <span className="text-sm font-black text-vanxuan-dark">#{order._id.slice(-8).toUpperCase()}</span>
                             </div>
                             <div className="flex justify-between items-center pb-4 border-b border-gray-200">
                                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Phương thức thanh toán</span>
-                                <span className="text-sm font-black text-fahasa-dark uppercase">{order.paymentMethod === 'cod' ? 'COD - Tiền mặt' : 'Chuyển khoản ngân hàng'}</span>
+                                <span className="text-sm font-black text-vanxuan-dark uppercase">{order.paymentMethod === 'cod' ? 'COD - Tiền mặt' : 'Chuyển khoản ngân hàng'}</span>
                             </div>
                             <div className="flex justify-between items-center pt-2">
-                                <span className="text-sm font-black text-fahasa-dark uppercase tracking-widest">Tổng tiền</span>
-                                <span className="text-2xl font-black text-fahasa-red">{order.totalAmount.toLocaleString()}đ</span>
+                                <span className="text-sm font-black text-vanxuan-dark uppercase tracking-widest">Tổng tiền</span>
+                                <span className="text-2xl font-black text-vanxuan-red">{order.totalAmount.toLocaleString()}đ</span>
                             </div>
                         </div>
                     )}
@@ -77,13 +77,13 @@ const OrderSuccess = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Link
                             to="/shop"
-                            className="py-5 bg-gray-50 text-fahasa-dark rounded-2xl font-black uppercase tracking-widest hover:bg-gray-100 transition-all border border-gray-100"
+                            className="py-5 bg-gray-50 text-vanxuan-dark rounded-2xl font-black uppercase tracking-widest hover:bg-gray-100 transition-all border border-gray-100"
                         >
                             Tiếp tục mua sắm
                         </Link>
                         <Link
                             to="/"
-                            className="py-5 bg-fahasa-red text-white rounded-2xl font-black uppercase tracking-widest shadow-2xl shadow-fahasa-red/20 hover:bg-fahasa-red/90 transition-all"
+                            className="py-5 bg-vanxuan-red text-white rounded-2xl font-black uppercase tracking-widest shadow-2xl shadow-vanxuan-red/20 hover:bg-vanxuan-red/90 transition-all"
                         >
                             Về trang chủ
                         </Link>

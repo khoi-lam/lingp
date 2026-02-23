@@ -301,7 +301,7 @@ const ProductForm = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="px-6 py-3 bg-fahasa-red text-white rounded-xl font-bold hover:bg-fahasa-red/90 transition-all shadow-lg disabled:opacity-50"
+                            className="px-6 py-3 bg-vanxuan-red text-white rounded-xl font-bold hover:bg-vanxuan-red/90 transition-all shadow-lg disabled:opacity-50"
                         >
                             {loading ? 'Đang lưu...' : isEdit ? 'Cập nhật' : 'Tạo mới'}
                         </button>

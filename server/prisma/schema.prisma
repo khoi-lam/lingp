@@ -1,0 +1,298 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── ENUMS ──────────────────────────────────────────
+
+enum CategoryType {
+  origin
+  genre
+}
+
+enum UserRole {
+  user
+  admin
+}
+
+enum OrderStatus {
+  processing
+  shipping
+  completed
+  cancelled
+}
+
+enum PaymentMethod {
+  cod
+  vnpay
+  transfer
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+}
+
+enum SupportType {
+  support
+  return_request
+}
+
+enum SupportStatus {
+  pending
+  processing
+  resolved
+  rejected
+}
+
+enum VideoStatus {
+  published
+  draft
+  archived
+}
+
+enum ContentType {
+  hero_banner
+  about_us
+}
+
+enum NotificationType {
+  order
+  admin
+  system
+}
+
+// ─── MODELS ─────────────────────────────────────────
+
+model Category {
+  id          Int          @id @default(autoincrement())
+  name        String
+  type        CategoryType
+  slug        String?      @unique
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  booksAsOrigin Book[]       @relation("BookOrigin")
+  bookGenres    BookGenre[]
+
+  @@map("categories")
+}
+
+model Book {
+  id            Int      @id @default(autoincrement())
+  title         String
+  author        String
+  publisher     String?
+  isbn          String?  @unique
+  description   String?
+  price         Float
+  stockQuantity Int      @default(0)
+  soldCount     Int      @default(0)
+  images        String[] @default([])
+  slug          String?  @unique
+
+  // Category relations
+  originId Int?
+  origin   Category? @relation("BookOrigin", fields: [originId], references: [id])
+  genres   BookGenre[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Reverse relations
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
+  arVideos    ArVideo[]
+  bookLenses  BookLens[]
+
+  @@index([slug])
+  @@map("books")
+}
+
+model BookGenre {
+  bookId     Int
+  categoryId Int
+  book       Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([bookId, categoryId])
+  @@map("book_genres")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(user)
+  addresses Json     @default("[]")
+  isBlocked Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  orders        Order[]
+  cart          Cart?
+  notifications Notification[]
+  supportTickets SupportTicket[]
+
+  @@map("users")
+}
+
+model Order {
+  id                 Int           @id @default(autoincrement())
+  orderCode          String        @unique
+  userId             Int?
+  user               User?         @relation(fields: [userId], references: [id])
+  totalAmount        Float
+  shippingAddress    Json
+  orderStatus        OrderStatus   @default(processing)
+  paymentMethod      PaymentMethod @default(cod)
+  paymentStatus      PaymentStatus @default(pending)
+  vnpayTransactionId String?
+  cancelledReason    String?
+  trackingNumber     String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  // Relations
+  items          OrderItem[]
+  supportTickets SupportTicket[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([orderStatus])
+  @@index([paymentStatus])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int    @id @default(autoincrement())
+  orderId   Int
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Book   @relation(fields: [productId], references: [id])
+  title     String
+  price     Float
+  quantity  Int
+
+  @@map("order_items")
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("carts")
+}
+
+model CartItem {
+  id       Int  @id @default(autoincrement())
+  cartId   Int
+  cart     Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  bookId   Int
+  book     Book @relation(fields: [bookId], references: [id])
+  quantity Int  @default(1)
+
+  @@unique([cartId, bookId])
+  @@map("cart_items")
+}
+
+model SupportTicket {
+  id         Int           @id @default(autoincrement())
+  userId     Int?
+  user       User?         @relation(fields: [userId], references: [id])
+  guestName  String?
+  guestEmail String?
+  type       SupportType   @default(support)
+  title      String
+  content    String
+  images     String[]      @default([])
+  orderId    Int?
+  order      Order?        @relation(fields: [orderId], references: [id])
+  status     SupportStatus @default(pending)
+  adminReply String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@map("support_tickets")
+}
+
+model ArVideo {
+  id          Int         @id @default(autoincrement())
+  title       String
+  bookId      Int?
+  book        Book?       @relation(fields: [bookId], references: [id])
+  videoUrl    String      @default("")
+  duration    String      @default("0:00")
+  views       Int         @default(0)
+  status      VideoStatus @default(draft)
+  description String      @default("")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("ar_videos")
+}
+
+model BookLens {
+  id          Int         @id @default(autoincrement())
+  title       String
+  bookId      Int?
+  book        Book?       @relation(fields: [bookId], references: [id])
+  videoPath   String      @default("")
+  qrCodeUrl   String      @default("")
+  duration    String      @default("0:00")
+  views       Int         @default(0)
+  status      VideoStatus @default(draft)
+  description String      @default("")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("book_lenses")
+}
+
+model Content {
+  id        Int         @id @default(autoincrement())
+  type      ContentType @unique
+  content   Json
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@map("contents")
+}
+
+model Setting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([isRead])
+  @@map("notifications")
+}

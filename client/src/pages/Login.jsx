@@ -43,14 +43,14 @@ const Login = () => {
                 {/* Logo & Header */}
                 <div className="text-center mb-10">
                     <Link to="/" className="inline-flex items-center space-x-3 group mb-8">
-                        <div className="w-14 h-14 bg-fahasa-red rounded-2xl flex items-center justify-center shadow-2xl shadow-fahasa-red/30 transition-transform group-hover:scale-110">
-                            <span className="text-white font-black text-2xl">B</span>
+                        <div className="w-14 h-14 bg-vanxuan-red rounded-2xl flex items-center justify-center shadow-2xl shadow-vanxuan-red/30 transition-transform group-hover:scale-110">
+                            <span className="text-white font-black text-lg">VX</span>
                         </div>
-                        <span className="text-3xl font-black text-fahasa-dark tracking-tight">
-                            Bookstore
+                        <span className="text-3xl font-black text-vanxuan-dark tracking-tight">
+                            Vạn Xuân
                         </span>
                     </Link>
-                    <h2 className="text-3xl font-black text-fahasa-dark uppercase tracking-tight mb-2">
+                    <h2 className="text-3xl font-black text-vanxuan-dark uppercase tracking-tight mb-2">
                         Đăng nhập
                     </h2>
                     <p className="text-gray-500 font-bold">
@@ -89,7 +89,7 @@ const Login = () => {
                                         name="email"
                                         type="email"
                                         required
-                                        className="w-full h-14 pl-12 pr-6 bg-gray-50 border-2 border-transparent rounded-2xl font-bold text-fahasa-dark placeholder:text-gray-400 placeholder:font-medium focus:outline-none focus:bg-white focus:border-fahasa-red transition-all"
+                                        className="w-full h-14 pl-12 pr-6 bg-gray-50 border-2 border-transparent rounded-2xl font-bold text-vanxuan-dark placeholder:text-gray-400 placeholder:font-medium focus:outline-none focus:bg-white focus:border-vanxuan-red transition-all"
                                         placeholder="your.email@example.com"
                                         value={formData.email}
                                         onChange={handleChange}
@@ -113,7 +113,7 @@ const Login = () => {
                                         name="password"
                                         type="password"
                                         required
-                                        className="w-full h-14 pl-12 pr-6 bg-gray-50 border-2 border-transparent rounded-2xl font-bold text-fahasa-dark placeholder:text-gray-400 placeholder:font-medium focus:outline-none focus:bg-white focus:border-fahasa-red transition-all"
+                                        className="w-full h-14 pl-12 pr-6 bg-gray-50 border-2 border-transparent rounded-2xl font-bold text-vanxuan-dark placeholder:text-gray-400 placeholder:font-medium focus:outline-none focus:bg-white focus:border-vanxuan-red transition-all"
                                         placeholder="••••••••"
                                         value={formData.password}
                                         onChange={handleChange}
@@ -126,7 +126,7 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full h-14 bg-fahasa-red text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-fahasa-red/20 hover:bg-fahasa-red/90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full h-14 bg-vanxuan-red text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-vanxuan-red/20 hover:bg-vanxuan-red/90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? (
                                 <div className="flex items-center justify-center space-x-3">
@@ -155,10 +155,10 @@ const Login = () => {
                     <div className="text-center">
                         <Link
                             to="/register"
-                            className="inline-flex items-center space-x-2 text-sm font-bold text-gray-600 hover:text-fahasa-red transition-colors group"
+                            className="inline-flex items-center space-x-2 text-sm font-bold text-gray-600 hover:text-vanxuan-red transition-colors group"
                         >
                             <span>Chưa có tài khoản?</span>
-                            <span className="text-fahasa-red font-black group-hover:translate-x-1 transition-transform">
+                            <span className="text-vanxuan-red font-black group-hover:translate-x-1 transition-transform">
                                 Đăng ký ngay →
                             </span>
                         </Link>
@@ -169,7 +169,7 @@ const Login = () => {
                 <div className="text-center mt-8">
                     <Link
                         to="/"
-                        className="inline-flex items-center space-x-2 text-sm font-bold text-gray-500 hover:text-fahasa-dark transition-colors group"
+                        className="inline-flex items-center space-x-2 text-sm font-bold text-gray-500 hover:text-vanxuan-dark transition-colors group"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />

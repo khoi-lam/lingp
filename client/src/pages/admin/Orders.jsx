@@ -78,14 +78,14 @@ const AdminOrders = () => {
             <div className="p-6 lg:p-10 space-y-8">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div className="flex items-center space-x-4">
-                        <Link to="/admin" className="w-10 h-10 flex items-center justify-center bg-white rounded-xl border border-gray-100 text-gray-400 hover:text-fahasa-red transition-all shadow-sm">
+                        <Link to="/admin" className="w-10 h-10 flex items-center justify-center bg-white rounded-xl border border-gray-100 text-gray-400 hover:text-vanxuan-red transition-all shadow-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
                             </svg>
                         </Link>
                         <div className="space-y-1">
-                            <p className="text-[10px] font-black text-fahasa-red uppercase tracking-widest">Hệ thống quản lý</p>
-                            <h1 className="text-3xl font-black text-fahasa-dark uppercase">Quản lý đơn hàng</h1>
+                            <p className="text-[10px] font-black text-vanxuan-red uppercase tracking-widest">Hệ thống quản lý</p>
+                            <h1 className="text-3xl font-black text-vanxuan-dark uppercase">Quản lý đơn hàng</h1>
                         </div>
                     </div>
 
@@ -93,7 +93,7 @@ const AdminOrders = () => {
                         <select
                             value={filter.status}
                             onChange={(e) => setFilter({ ...filter, status: e.target.value, page: 1 })}
-                            className="bg-white border border-gray-100 rounded-xl px-4 py-2 text-sm font-bold text-fahasa-dark focus:outline-none focus:ring-2 focus:ring-fahasa-red/20"
+                            className="bg-white border border-gray-100 rounded-xl px-4 py-2 text-sm font-bold text-vanxuan-dark focus:outline-none focus:ring-2 focus:ring-vanxuan-red/20"
                         >
                             <option value="all">Tất cả trạng thái</option>
                             <option value="waiting">Chờ xác nhận</option>
@@ -111,11 +111,11 @@ const AdminOrders = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm space-y-2">
                             <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Tổng đơn hàng</p>
-                            <p className="text-3xl font-black text-fahasa-dark">{stats.totalOrders}</p>
+                            <p className="text-3xl font-black text-vanxuan-dark">{stats.totalOrders}</p>
                         </div>
                         <div className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm space-y-2">
                             <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Tổng doanh thu</p>
-                            <p className="text-3xl font-black text-fahasa-red">{stats.totalRevenue?.toLocaleString()}đ</p>
+                            <p className="text-3xl font-black text-vanxuan-red">{stats.totalRevenue?.toLocaleString()}đ</p>
                         </div>
                         <div className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm space-y-2">
                             <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Đang xử lý</p>
@@ -162,14 +162,14 @@ const AdminOrders = () => {
                                 ) : (
                                     orders.map((order) => (
                                         <tr key={order._id} className="hover:bg-gray-50/50 transition-colors group">
-                                            <td className="px-8 py-6 font-black text-fahasa-dark">#{order._id.slice(-6).toUpperCase()}</td>
+                                            <td className="px-8 py-6 font-black text-vanxuan-dark">#{order._id.slice(-6).toUpperCase()}</td>
                                             <td className="px-8 py-6">
                                                 <div className="flex flex-col">
-                                                    <span className="font-bold text-fahasa-dark">{order.shippingAddress.fullName}</span>
+                                                    <span className="font-bold text-vanxuan-dark">{order.shippingAddress.fullName}</span>
                                                     <span className="text-xs text-gray-400">{order.shippingAddress.phone}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-8 py-6 font-black text-fahasa-red">{order.totalAmount?.toLocaleString()}đ</td>
+                                            <td className="px-8 py-6 font-black text-vanxuan-red">{order.totalAmount?.toLocaleString()}đ</td>
                                             <td className="px-8 py-6">
                                                 <span className={`text-[10px] font-black uppercase tracking-widest ${order.paymentStatus === 'paid' ? 'text-green-600' : 'text-gray-400'}`}>
                                                     {order.paymentMethod.toUpperCase()} - {order.paymentStatus === 'paid' ? 'Đã thu' : 'Chưa thu'}
@@ -179,7 +179,7 @@ const AdminOrders = () => {
                                             <td className="px-8 py-6 text-right">
                                                 <Link
                                                     to={`/admin/orders/${order._id}`}
-                                                    className="w-10 h-10 inline-flex items-center justify-center bg-gray-50 text-gray-400 rounded-xl hover:bg-fahasa-red hover:text-white transition-all shadow-sm"
+                                                    className="w-10 h-10 inline-flex items-center justify-center bg-gray-50 text-gray-400 rounded-xl hover:bg-vanxuan-red hover:text-white transition-all shadow-sm"
                                                 >
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
@@ -201,14 +201,14 @@ const AdminOrders = () => {
                                 <button
                                     onClick={() => setFilter({ ...filter, page: filter.page - 1 })}
                                     disabled={filter.page === 1}
-                                    className="px-4 py-2 bg-gray-50 rounded-xl text-xs font-black uppercase tracking-widest text-fahasa-dark disabled:opacity-50"
+                                    className="px-4 py-2 bg-gray-50 rounded-xl text-xs font-black uppercase tracking-widest text-vanxuan-dark disabled:opacity-50"
                                 >
                                     Trước
                                 </button>
                                 <button
                                     onClick={() => setFilter({ ...filter, page: filter.page + 1 })}
                                     disabled={filter.page === pagination.pages}
-                                    className="px-4 py-2 bg-gray-100 rounded-xl text-xs font-black uppercase tracking-widest text-fahasa-dark disabled:opacity-50"
+                                    className="px-4 py-2 bg-gray-100 rounded-xl text-xs font-black uppercase tracking-widest text-vanxuan-dark disabled:opacity-50"
                                 >
                                     Sau
                                 </button>

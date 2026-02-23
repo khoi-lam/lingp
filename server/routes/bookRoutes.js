@@ -16,9 +16,9 @@ const router = express.Router();
 
 // Public routes
 router.get('/', getBooks);
-router.get('/:id', getBookById);
-router.get('/slug/:slug', getBookBySlug);
 router.get('/suggest', suggestBooks);
+router.get('/slug/:slug', getBookBySlug);
+router.get('/:id', getBookById);
 
 // Admin routes
 router.post('/', authenticate, requireAdmin, upload.array('images', 5), createBook);

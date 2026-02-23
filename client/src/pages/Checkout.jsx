@@ -84,8 +84,8 @@ const Checkout = () => {
     if (cart.length === 0) {
         return (
             <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-                <h2 className="text-xl font-black text-fahasa-dark uppercase tracking-widest">Không có gì để thanh toán</h2>
-                <Link to="/shop" className="text-fahasa-red font-bold mt-4 hover:underline">Tiếp tục mua sắm</Link>
+                <h2 className="text-xl font-black text-vanxuan-dark uppercase tracking-widest">Không có gì để thanh toán</h2>
+                <Link to="/shop" className="text-vanxuan-red font-bold mt-4 hover:underline">Tiếp tục mua sắm</Link>
             </div>
         );
     }
@@ -99,9 +99,9 @@ const Checkout = () => {
                         <div className="flex-1 space-y-8">
                             {/* Shipping Info */}
                             <div className="bg-white rounded-[40px] p-8 lg:p-12 border border-gray-100 shadow-sm relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-2 h-full bg-fahasa-red"></div>
-                                <h2 className="text-xl font-black text-fahasa-dark uppercase tracking-widest mb-10 flex items-center space-x-3">
-                                    <span className="w-8 h-8 bg-fahasa-red text-white rounded-lg flex items-center justify-center text-sm">1</span>
+                                <div className="absolute top-0 left-0 w-2 h-full bg-vanxuan-red"></div>
+                                <h2 className="text-xl font-black text-vanxuan-dark uppercase tracking-widest mb-10 flex items-center space-x-3">
+                                    <span className="w-8 h-8 bg-vanxuan-red text-white rounded-lg flex items-center justify-center text-sm">1</span>
                                     <span>Thông tin giao hàng</span>
                                 </h2>
 
@@ -114,7 +114,7 @@ const Checkout = () => {
                                             value={formData.fullName}
                                             onChange={handleChange}
                                             required
-                                            className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 font-bold text-fahasa-dark focus:ring-2 focus:ring-fahasa-red/20 transition-all"
+                                            className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 font-bold text-vanxuan-dark focus:ring-2 focus:ring-vanxuan-red/20 transition-all"
                                             placeholder="Nguyễn Văn A"
                                         />
                                     </div>
@@ -126,7 +126,7 @@ const Checkout = () => {
                                             value={formData.phone}
                                             onChange={handleChange}
                                             required
-                                            className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 font-bold text-fahasa-dark focus:ring-2 focus:ring-fahasa-red/20 transition-all"
+                                            className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 font-bold text-vanxuan-dark focus:ring-2 focus:ring-vanxuan-red/20 transition-all"
                                             placeholder="0987xxxxxx"
                                         />
                                     </div>
@@ -138,7 +138,7 @@ const Checkout = () => {
                                             value={formData.city}
                                             onChange={handleChange}
                                             required
-                                            className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 font-bold text-fahasa-dark focus:ring-2 focus:ring-fahasa-red/20 transition-all"
+                                            className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 font-bold text-vanxuan-dark focus:ring-2 focus:ring-vanxuan-red/20 transition-all"
                                             placeholder="TP. Hồ Chí Minh"
                                         />
                                     </div>
@@ -150,7 +150,7 @@ const Checkout = () => {
                                             onChange={handleChange}
                                             required
                                             rows="3"
-                                            className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 font-bold text-fahasa-dark focus:ring-2 focus:ring-fahasa-red/20 transition-all resize-none"
+                                            className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 font-bold text-vanxuan-dark focus:ring-2 focus:ring-vanxuan-red/20 transition-all resize-none"
                                             placeholder="Số nhà, tên đường, phường/xã..."
                                         />
                                     </div>
@@ -161,7 +161,7 @@ const Checkout = () => {
                                             name="note"
                                             value={formData.note}
                                             onChange={handleChange}
-                                            className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 font-bold text-fahasa-dark focus:ring-2 focus:ring-fahasa-red/20 transition-all"
+                                            className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 font-bold text-vanxuan-dark focus:ring-2 focus:ring-vanxuan-red/20 transition-all"
                                             placeholder="Ví dụ: Giao giờ hành chính"
                                         />
                                     </div>
@@ -170,9 +170,9 @@ const Checkout = () => {
 
                             {/* Payment Method */}
                             <div className="bg-white rounded-[40px] p-8 lg:p-12 border border-gray-100 shadow-sm relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-2 h-full bg-fahasa-red"></div>
-                                <h2 className="text-xl font-black text-fahasa-dark uppercase tracking-widest mb-10 flex items-center space-x-3">
-                                    <span className="w-8 h-8 bg-fahasa-red text-white rounded-lg flex items-center justify-center text-sm">2</span>
+                                <div className="absolute top-0 left-0 w-2 h-full bg-vanxuan-red"></div>
+                                <h2 className="text-xl font-black text-vanxuan-dark uppercase tracking-widest mb-10 flex items-center space-x-3">
+                                    <span className="w-8 h-8 bg-vanxuan-red text-white rounded-lg flex items-center justify-center text-sm">2</span>
                                     <span>Phương thức thanh toán</span>
                                 </h2>
 
@@ -180,13 +180,13 @@ const Checkout = () => {
                                     <button
                                         type="button"
                                         onClick={() => setPaymentMethod('cod')}
-                                        className={`p-6 rounded-3xl border-2 flex items-center justify-between transition-all ${paymentMethod === 'cod' ? 'border-fahasa-red bg-red-50/50' : 'border-gray-50 bg-gray-50/30 hover:bg-gray-50'}`}
+                                        className={`p-6 rounded-3xl border-2 flex items-center justify-between transition-all ${paymentMethod === 'cod' ? 'border-vanxuan-red bg-red-50/50' : 'border-gray-50 bg-gray-50/30 hover:bg-gray-50'}`}
                                     >
                                         <div className="flex items-center space-x-4">
-                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'cod' ? 'border-fahasa-red' : 'border-gray-300'}`}>
-                                                {paymentMethod === 'cod' && <div className="w-3 h-3 bg-fahasa-red rounded-full"></div>}
+                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'cod' ? 'border-vanxuan-red' : 'border-gray-300'}`}>
+                                                {paymentMethod === 'cod' && <div className="w-3 h-3 bg-vanxuan-red rounded-full"></div>}
                                             </div>
-                                            <div className="text-left text-sm font-black text-fahasa-dark uppercase tracking-widest">COD</div>
+                                            <div className="text-left text-sm font-black text-vanxuan-dark uppercase tracking-widest">COD</div>
                                         </div>
                                         <span className="text-2xl">💵</span>
                                     </button>
@@ -194,13 +194,13 @@ const Checkout = () => {
                                     <button
                                         type="button"
                                         onClick={() => setPaymentMethod('transfer')}
-                                        className={`p-6 rounded-3xl border-2 flex items-center justify-between transition-all ${paymentMethod === 'transfer' ? 'border-fahasa-red bg-red-50/50' : 'border-gray-50 bg-gray-50/30 hover:bg-gray-50'}`}
+                                        className={`p-6 rounded-3xl border-2 flex items-center justify-between transition-all ${paymentMethod === 'transfer' ? 'border-vanxuan-red bg-red-50/50' : 'border-gray-50 bg-gray-50/30 hover:bg-gray-50'}`}
                                     >
                                         <div className="flex items-center space-x-4">
-                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'transfer' ? 'border-fahasa-red' : 'border-gray-300'}`}>
-                                                {paymentMethod === 'transfer' && <div className="w-3 h-3 bg-fahasa-red rounded-full"></div>}
+                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === 'transfer' ? 'border-vanxuan-red' : 'border-gray-300'}`}>
+                                                {paymentMethod === 'transfer' && <div className="w-3 h-3 bg-vanxuan-red rounded-full"></div>}
                                             </div>
-                                            <div className="text-left text-sm font-black text-fahasa-dark uppercase tracking-widest">Chuyển khoản</div>
+                                            <div className="text-left text-sm font-black text-vanxuan-dark uppercase tracking-widest">Chuyển khoản</div>
                                         </div>
                                         <span className="text-2xl">💳</span>
                                     </button>
@@ -211,7 +211,7 @@ const Checkout = () => {
                         {/* Order Summary Summary Sidebar */}
                         <div className="w-full lg:w-96 space-y-6">
                             <div className="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm sticky top-24">
-                                <h3 className="text-sm font-black text-fahasa-dark uppercase tracking-widest mb-8 pb-4 border-b border-gray-50">Đơn hàng của bạn</h3>
+                                <h3 className="text-sm font-black text-vanxuan-dark uppercase tracking-widest mb-8 pb-4 border-b border-gray-50">Đơn hàng của bạn</h3>
 
                                 <div className="space-y-6 max-h-60 overflow-y-auto pr-2 custom-scrollbar mb-8">
                                     {cart.map(item => (
@@ -220,10 +220,10 @@ const Checkout = () => {
                                                 <img src={item.images?.[0] || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400"%3E%3Crect fill="%23f3f4f6" width="300" height="400"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="18" fill="%239ca3af"%3ENo Image%3C/text%3E%3C/svg%3E'} className="w-full h-full object-cover" alt="" />
                                             </div>
                                             <div className="flex-1 space-y-1">
-                                                <p className="text-xs font-black text-fahasa-dark line-clamp-2 leading-tight">{item.title}</p>
+                                                <p className="text-xs font-black text-vanxuan-dark line-clamp-2 leading-tight">{item.title}</p>
                                                 <div className="flex justify-between items-center">
                                                     <span className="text-[10px] font-bold text-gray-400">Số lượng: {item.quantity}</span>
-                                                    <span className="text-xs font-black text-fahasa-red">{item.price.toLocaleString()}đ</span>
+                                                    <span className="text-xs font-black text-vanxuan-red">{item.price.toLocaleString()}đ</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -233,15 +233,15 @@ const Checkout = () => {
                                 <div className="space-y-4 pt-6 border-t border-gray-100">
                                     <div className="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">
                                         <span>Tạm tính</span>
-                                        <span className="text-fahasa-dark">{getCartTotal().toLocaleString()}đ</span>
+                                        <span className="text-vanxuan-dark">{getCartTotal().toLocaleString()}đ</span>
                                     </div>
                                     <div className="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">
                                         <span>Vận chuyển</span>
                                         <span className="text-green-500">Miễn phí</span>
                                     </div>
                                     <div className="pt-6 border-t border-gray-50 flex justify-between items-end">
-                                        <span className="text-sm font-black text-fahasa-dark uppercase tracking-widest">Tổng tiền</span>
-                                        <span className="text-2xl font-black text-fahasa-red">{getCartTotal().toLocaleString()}đ</span>
+                                        <span className="text-sm font-black text-vanxuan-dark uppercase tracking-widest">Tổng tiền</span>
+                                        <span className="text-2xl font-black text-vanxuan-red">{getCartTotal().toLocaleString()}đ</span>
                                     </div>
                                     <p className="text-[10px] text-gray-400 font-bold text-right">(Đã bao gồm VAT)</p>
                                 </div>
@@ -249,7 +249,7 @@ const Checkout = () => {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full mt-10 py-5 bg-fahasa-red text-white text-center rounded-2xl font-black uppercase tracking-widest shadow-2xl shadow-fahasa-red/20 hover:bg-fahasa-red/90 hover:-translate-y-1 transition-all active:translate-y-0 disabled:opacity-50 disabled:translate-y-0 flex items-center justify-center space-x-3"
+                                    className="w-full mt-10 py-5 bg-vanxuan-red text-white text-center rounded-2xl font-black uppercase tracking-widest shadow-2xl shadow-vanxuan-red/20 hover:bg-vanxuan-red/90 hover:-translate-y-1 transition-all active:translate-y-0 disabled:opacity-50 disabled:translate-y-0 flex items-center justify-center space-x-3"
                                 >
                                     {loading && <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>}
                                     <span>{paymentMethod === 'cod' ? 'Đặt hàng ngay' : 'Thanh toán ngay'}</span>

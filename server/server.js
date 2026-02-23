@@ -3,7 +3,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
-import { connectDB } from './config/db.js';
 import { config } from './config/env.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -20,11 +19,11 @@ import uploadRoutes from './routes/uploadRoutes.js';
 import supportRoutes from './routes/supportRoutes.js';
 import searchRoutes from './routes/searchRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
+import arVideoRoutes from './routes/arVideoRoutes.js';
+import bookLensRoutes from './routes/bookLensRoutes.js';
+import settingRoutes from './routes/settingRoutes.js';
 
 const app = express();
-
-// Connect to MongoDB
-connectDB();
 
 // Security middleware
 app.use(helmet({
@@ -42,9 +41,14 @@ const corsOptions = {
             return callback(null, true);
         }
 
-        // In production, only allow specific origins
-        const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
-        if (allowedOrigins.indexOf(origin) !== -1) {
+        // In production, allow frontend URL and common dev origins
+        const allowedOrigins = [
+            config.frontendUrl,
+            'http://localhost:5173',
+            'http://localhost:5174'
+        ].filter(Boolean);
+
+        if (allowedOrigins.some(o => origin.startsWith(o))) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -84,6 +88,12 @@ app.use('/uploads', (req, res, next) => {
         res.type('image/jpeg');
     } else if (req.path.endsWith('.webp')) {
         res.type('image/webp');
+    } else if (req.path.endsWith('.mp4')) {
+        res.type('video/mp4');
+    } else if (req.path.endsWith('.webm')) {
+        res.type('video/webm');
+    } else if (req.path.endsWith('.mov')) {
+        res.type('video/quicktime');
     }
 
     next();
@@ -98,6 +108,9 @@ app.use('/api/content', contentRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/recommendations', recommendationRoutes);
+app.use('/api/ar-videos', arVideoRoutes);
+app.use('/api/booklens', bookLensRoutes);
+app.use('/api/settings', settingRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/support', supportRoutes);
 app.use('/api/search', searchRoutes);

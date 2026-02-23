@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LingoLand Admin - Product List</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec13",
+                        "primary-content": "#043304",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102210",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1a331a",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#111811] dark:text-white transition-colors duration-200">
+<div class="relative flex h-screen w-full flex-row overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="flex w-64 flex-col border-r border-[#dbe6db] dark:border-[#2a442a] bg-surface-light dark:bg-surface-dark transition-all duration-300">
+<div class="flex h-full flex-col justify-between p-4">
+<div class="flex flex-col gap-4">
+<!-- Brand -->
+<div class="flex items-center gap-3 px-2 py-2">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 shadow-sm" data-alt="Abstract green leaf logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB_CeQN0pDsof4NghhUHdGvQ4niLHalBZRMbUx1Fg-uK0zF70BJiPH_qVJf2IKrhcoV_Fxzt1pf2SjKB7iWNypvDGZsX6Yo63DeRkV5yZ2CHdBfEAsVWL-flh-bNpPmlTZDAf5I-rAnFcFY0k9YSxDPbUA1mYuc3RbKYxQYfa2tHpnRgyVa9pyTvW_XBf5BycDfREEj1mkFoKQBSQ06u-JvGsprKSmzbpljJ23DIgiBawxeXYynbwcbFalomarfHrT8VotuffDXmnw");'></div>
+<div class="flex flex-col">
+<h1 class="text-[#111811] dark:text-white text-lg font-bold leading-tight">LingoLand</h1>
+<p class="text-[#618961] dark:text-[#8cb88c] text-xs font-medium">Admin Panel</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-[#f0f4f0] dark:hover:bg-[#233e23] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#618961] group-hover:text-primary dark:text-[#8cb88c]">dashboard</span>
+<span class="text-[#111811] dark:text-[#e0e0e0] text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full bg-primary/10 dark:bg-primary/20 text-primary-content dark:text-primary group" href="#">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="text-sm font-bold">Products</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-[#f0f4f0] dark:hover:bg-[#233e23] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#618961] group-hover:text-primary dark:text-[#8cb88c]">shopping_bag</span>
+<span class="text-[#111811] dark:text-[#e0e0e0] text-sm font-medium">Orders</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-[#f0f4f0] dark:hover:bg-[#233e23] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#618961] group-hover:text-primary dark:text-[#8cb88c]">group</span>
+<span class="text-[#111811] dark:text-[#e0e0e0] text-sm font-medium">Customers</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-[#f0f4f0] dark:hover:bg-[#233e23] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#618961] group-hover:text-primary dark:text-[#8cb88c]">analytics</span>
+<span class="text-[#111811] dark:text-[#e0e0e0] text-sm font-medium">Reports</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Links -->
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-[#f0f4f0] dark:hover:bg-[#233e23] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#618961] group-hover:text-primary dark:text-[#8cb88c]">settings</span>
+<span class="text-[#111811] dark:text-[#e0e0e0] text-sm font-medium">Settings</span>
+</a>
+<div class="mt-4 px-4 py-4 border-t border-[#dbe6db] dark:border-[#2a442a] flex items-center gap-3">
+<div class="bg-gray-200 dark:bg-gray-700 h-10 w-10 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-300">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div class="flex flex-col">
+<p class="text-sm font-bold text-[#111811] dark:text-white">Admin User</p>
+<p class="text-xs text-[#618961] dark:text-[#8cb88c]">admin@lingoland.com</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Header / Top Bar -->
+<header class="flex-none px-8 py-6 flex flex-col gap-6 bg-background-light dark:bg-background-dark z-10">
+<div class="flex flex-wrap justify-between items-end gap-4">
+<div class="flex flex-col gap-1">
+<h2 class="text-[#111811] dark:text-white text-3xl font-black tracking-tight">Product Management</h2>
+<p class="text-[#618961] dark:text-[#8cb88c] text-base font-normal">Manage your book inventory, prices, and stock levels.</p>
+</div>
+<button class="flex items-center justify-center gap-2 rounded-full h-12 px-6 bg-primary hover:bg-[#0fd60f] text-white shadow-lg shadow-primary/20 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span class="text-sm font-bold tracking-wide">Add New Product</span>
+</button>
+</div>
+<!-- Filters & Search -->
+<div class="flex flex-wrap items-center gap-4">
+<!-- Search Input -->
+<div class="relative flex-1 min-w-[280px] max-w-md group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#618961] dark:text-[#8cb88c] group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full h-12 pl-12 pr-4 rounded-full border-0 bg-surface-light dark:bg-surface-dark ring-1 ring-[#dbe6db] dark:ring-[#2a442a] focus:ring-2 focus:ring-primary text-[#111811] dark:text-white placeholder:text-[#9ca3af] dark:placeholder:text-[#6b7280] transition-shadow shadow-sm" placeholder="Search by title, ISBN, or author..." type="text"/>
+</div>
+<!-- Category Filter -->
+<div class="relative min-w-[200px]">
+<select class="w-full h-12 pl-4 pr-10 rounded-full border-0 bg-surface-light dark:bg-surface-dark ring-1 ring-[#dbe6db] dark:ring-[#2a442a] focus:ring-2 focus:ring-primary text-[#111811] dark:text-white appearance-none cursor-pointer shadow-sm">
+<option disabled="" selected="" value="">Filter by Category</option>
+<option value="all">All Categories</option>
+<option value="children">Children's Books</option>
+<option value="education">Education</option>
+<option value="nature">Nature &amp; Environment</option>
+<option value="fantasy">Fantasy</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#618961] pointer-events-none">expand_more</span>
+</div>
+<!-- Stock Status Filter -->
+<div class="relative min-w-[180px]">
+<select class="w-full h-12 pl-4 pr-10 rounded-full border-0 bg-surface-light dark:bg-surface-dark ring-1 ring-[#dbe6db] dark:ring-[#2a442a] focus:ring-2 focus:ring-primary text-[#111811] dark:text-white appearance-none cursor-pointer shadow-sm">
+<option disabled="" selected="" value="">Stock Status</option>
+<option value="all">All Statuses</option>
+<option value="instock">In Stock</option>
+<option value="lowstock">Low Stock</option>
+<option value="outofstock">Out of Stock</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#618961] pointer-events-none">expand_more</span>
+</div>
+</div>
+</header>
+<!-- Table Container -->
+<div class="flex-1 overflow-auto px-8 pb-8">
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-[#dbe6db] dark:border-[#2a442a] overflow-hidden">
+<table class="w-full border-collapse text-left">
+<thead class="bg-surface-light dark:bg-surface-dark sticky top-0 z-10 border-b border-[#dbe6db] dark:border-[#2a442a]">
+<tr>
+<th class="px-6 py-4 text-xs font-bold text-[#618961] dark:text-[#8cb88c] uppercase tracking-wider w-20">ID</th>
+<th class="px-6 py-4 text-xs font-bold text-[#618961] dark:text-[#8cb88c] uppercase tracking-wider w-24">Image</th>
+<th class="px-6 py-4 text-xs font-bold text-[#618961] dark:text-[#8cb88c] uppercase tracking-wider">Book Title</th>
+<th class="px-6 py-4 text-xs font-bold text-[#618961] dark:text-[#8cb88c] uppercase tracking-wider">Author</th>
+<th class="px-6 py-4 text-xs font-bold text-[#618961] dark:text-[#8cb88c] uppercase tracking-wider">Category</th>
+<th class="px-6 py-4 text-xs font-bold text-[#618961] dark:text-[#8cb88c] uppercase tracking-wider text-right">Price</th>
+<th class="px-6 py-4 text-xs font-bold text-[#618961] dark:text-[#8cb88c] uppercase tracking-wider text-center">Stock</th>
+<th class="px-6 py-4 text-xs font-bold text-[#618961] dark:text-[#8cb88c] uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#dbe6db] dark:divide-[#2a442a]">
+<!-- Row 1 -->
+<tr class="hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors group">
+<td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">#1024</td>
+<td class="px-6 py-4">
+<div class="h-12 w-10 rounded-lg bg-gray-200 dark:bg-gray-700 bg-cover bg-center shadow-sm" data-alt="Cover of The Forest Adventure book" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB2LKSHxPhrtgEvtuRk-W-Spu5XGWTJKccExVxBUAhJULhKqwITz-hkHAm0uS3LPS-DM_GsHmk_9WRtpyqkjjvkW8X-0FeWR3ecITIufPLvPMXJcn30fRpf_8umgAYKjmyIdXULQ275aIAe7LFuq1jDJhEbmULpTpscKfLOi3awXg_wl-k1wk_CT2MAeNqFvnEZnPP_WNVH1FDUbDtNfIbQ772eQKy7Q1RDL8QWhiAN7JREk3EsRQvpd3entxF1Z9vls9TVT_WQXbM");'></div>
+</td>
+<td class="px-6 py-4">
+<div class="font-bold text-[#111811] dark:text-white">The Forest Adventure</div>
+<div class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">ISBN: 978-3-16-148410-0</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#111811] dark:text-gray-300">Jane Doe</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                                        Children
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm font-medium text-[#111811] dark:text-white text-right">$14.99</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/20 text-green-800 dark:bg-primary/30 dark:text-green-100">
+                                        In Stock
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+<button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="bg-primary/[0.02] dark:bg-primary/[0.05] hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors group">
+<td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">#1025</td>
+<td class="px-6 py-4">
+<div class="h-12 w-10 rounded-lg bg-gray-200 dark:bg-gray-700 bg-cover bg-center shadow-sm" data-alt="Cover of Coding for Kids book" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDaevqYSwpUk_28vilwUKQRm5JC1SX70Ye34Qr9_692w1QaZQ5HN_rS8kLkFUsC62d442CLLe5A_NFxxf-T6pN6Xd6aC-uRlhFBvyeCKXy2m4998mkURrxtt2cFNiLJBuVmkqRIe7UG_rgcyOrDQYgbu2XhhbwmDycMu967Bgd2NLjzq5nIlxBwHR0I1xK3a47cgF36uylGW-S-ov77A7v86htXEx6xHR0Kj4sXoHv94Bfm5w8n2Gn2WbTmBAzxSc8urbdkMKUERsQ");'></div>
+</td>
+<td class="px-6 py-4">
+<div class="font-bold text-[#111811] dark:text-white">Coding for Kids</div>
+<div class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">ISBN: 978-1-23-456789-0</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#111811] dark:text-gray-300">Alan Smith</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                                        Education
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm font-medium text-[#111811] dark:text-white text-right">$29.99</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200">
+                                        Low Stock
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+<button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors group">
+<td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">#1026</td>
+<td class="px-6 py-4">
+<div class="h-12 w-10 rounded-lg bg-gray-200 dark:bg-gray-700 bg-cover bg-center shadow-sm" data-alt="Cover of Green Planet book" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDom_Sf49MqH1L7pF3nvfJOAgIPd53pn7fmNzg3LIyAt4A0TmONjIJXnrgg1--4LAj_lS_6A1ACe0p70IKx67HuQDAwwxt57iJiwT9dhP1q_7jykYady90LWBVeFNr0jtE-LZOIXI1OljvYqIMiIBYnDK2c0Q4gggRoWe2vnhsuN-lJaOXp-btIKrz1JQ2WQ6vadP5SNOnSNSPg1J72ZIcMGhSKBIE3UNMQv3PxG23FSd5BZvJ4XHDx1DubhMk5YPZG3-CLsR6tL0A");'></div>
+</td>
+<td class="px-6 py-4">
+<div class="font-bold text-[#111811] dark:text-white">Green Planet</div>
+<div class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">ISBN: 978-0-00-000000-0</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#111811] dark:text-gray-300">Eco Team</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300">
+                                        Nature
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm font-medium text-[#111811] dark:text-white text-right">$12.50</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200">
+                                        Out of Stock
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+<button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="bg-primary/[0.02] dark:bg-primary/[0.05] hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors group">
+<td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">#1027</td>
+<td class="px-6 py-4">
+<div class="h-12 w-10 rounded-lg bg-gray-200 dark:bg-gray-700 bg-cover bg-center shadow-sm" data-alt="Cover of The Little Prince book" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDQqdBnAwofLpM4KkO08rEKKDQPPo6q-jXbahDPo-yiJ0URctS6EZxw46ozs1QYRxEx4JPzSZf7EA89f54gwASCh2cAk6tyLuDldzLbADyFygnTIkNt--yWA8OEWqmPCY9u3_b0WS06cHakRzpfjHeRJULP1yEKnu5TGG6PJFh6l9yipGkFM5n1LU5aiBMKFbGLN87aKDBifw3contj9Gt5WBG2Tol_HImK4Y2r0Q7BGwkM226eaYKE3aPqFJDJdoD-cWO_ndUK2-A");'></div>
+</td>
+<td class="px-6 py-4">
+<div class="font-bold text-[#111811] dark:text-white">The Little Prince</div>
+<div class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">ISBN: 978-0-15-601219-5</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#111811] dark:text-gray-300">Antoine de Saint-Exupéry</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300">
+                                        Classics
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm font-medium text-[#111811] dark:text-white text-right">$10.99</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/20 text-green-800 dark:bg-primary/30 dark:text-green-100">
+                                        In Stock
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+<button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors group">
+<td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">#1028</td>
+<td class="px-6 py-4">
+<div class="h-12 w-10 rounded-lg bg-gray-200 dark:bg-gray-700 bg-cover bg-center shadow-sm" data-alt="Cover of Harry Potter book" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD8QXXfHw17VpJYURGWRXejjsf3YkTU63r8ykQbhF8sfZnnKvjKxzkVtfAom2so4spHM2DWDJfZghMBQCKHyS3EfYHf-2ehfrmQx456hrLu3xjGy9sGYXnn-yAZzzKInRDmU0Au87wA4zQ3J84Bxi3RsDRS2eKYVK_6x90sWgped5Kjeut43svUu0PuDXVu4Sn14gdcbkjBFGaKNy93XzYb82U-dygGgAVMsWJG1u9TSH3XsMD1SMyZLPnfL7WFLWCE_hZ3uROHomg");'></div>
+</td>
+<td class="px-6 py-4">
+<div class="font-bold text-[#111811] dark:text-white">Harry Potter</div>
+<div class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">ISBN: 978-0-7475-3269-9</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#111811] dark:text-gray-300">J.K. Rowling</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
+                                        Fantasy
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm font-medium text-[#111811] dark:text-white text-right">$24.99</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/20 text-green-800 dark:bg-primary/30 dark:text-green-100">
+                                        In Stock
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+<button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="bg-primary/[0.02] dark:bg-primary/[0.05] hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors group">
+<td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">#1029</td>
+<td class="px-6 py-4">
+<div class="h-12 w-10 rounded-lg bg-gray-200 dark:bg-gray-700 bg-cover bg-center shadow-sm" data-alt="Cover of Silent Spring book" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAFzANB0-Idz_QE1Ft73PvnLGNmgRyfb_lbJ7jxLeqK90tpV0rnBApz8Arbn3NLcUITJ6x45p-gK7CATIUxcZSr82YtGc7ZHRAqD-sky8aRCcN_Qz4MevPHBOUAlgwLPX58Jeuxglp7bo27GRORzy7lmLjXM_DxB5ADH1LX539reJ78NZQ1nkZOHOva_a7IxYVxHt_avKFe5dOmvjxUuMP1PZ5mgz7mncgTxE3Kf2WC5WwE8X25w7Q9hQXOXi5OqnMbgWny7TjyEeA");'></div>
+</td>
+<td class="px-6 py-4">
+<div class="font-bold text-[#111811] dark:text-white">Silent Spring</div>
+<div class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">ISBN: 978-0-618-24906-0</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#111811] dark:text-gray-300">Rachel Carson</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300">
+                                        Science
+                                    </span>
+</td>
+<td class="px-6 py-4 text-sm font-medium text-[#111811] dark:text-white text-right">$18.00</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200">
+                                        Low Stock
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+<button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="flex items-center justify-between py-4">
+<p class="text-sm text-gray-500 dark:text-gray-400">
+                        Showing <span class="font-bold text-[#111811] dark:text-white">1</span> to <span class="font-bold text-[#111811] dark:text-white">6</span> of <span class="font-bold text-[#111811] dark:text-white">128</span> results
+                    </p>
+<div class="flex items-center gap-2">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-[#f0f4f0] dark:hover:bg-[#233e23] text-[#111811] dark:text-white disabled:opacity-50 transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-full bg-primary text-white font-bold text-sm shadow-md shadow-primary/30">1</button>
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-[#f0f4f0] dark:hover:bg-[#233e23] text-[#111811] dark:text-white text-sm transition-colors">2</button>
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-[#f0f4f0] dark:hover:bg-[#233e23] text-[#111811] dark:text-white text-sm transition-colors">3</button>
+<span class="flex size-10 items-center justify-center text-gray-400">...</span>
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-[#f0f4f0] dark:hover:bg-[#233e23] text-[#111811] dark:text-white text-sm transition-colors">8</button>
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-[#f0f4f0] dark:hover:bg-[#233e23] text-[#111811] dark:text-white disabled:opacity-50 transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

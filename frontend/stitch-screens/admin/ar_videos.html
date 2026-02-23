@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LingoLand Admin - AR Video Manager</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#13ec13",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102210",
+              "surface-light": "#ffffff",
+              "surface-border": "#dbe6db",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans", "sans-serif"]
+            },
+            borderRadius: {
+                "DEFAULT": "1rem", 
+                "lg": "2rem", 
+                "xl": "3rem", 
+                "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+        }
+        /* Custom scrollbar for modern feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #dbe6db; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b0cbb0; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col text-[#111811]">
+<div class="flex flex-col h-full min-h-screen">
+<!-- Header -->
+<header class="bg-surface-light border-b border-surface-border px-6 py-3 flex items-center justify-between sticky top-0 z-40">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-[#111811]">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xl">auto_stories</span>
+</div>
+<h2 class="text-xl font-extrabold tracking-tight">LingoLand Admin</h2>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-[#618961] hover:text-[#111811] text-sm font-semibold transition-colors" href="#">Dashboard</a>
+<a class="text-[#111811] text-sm font-bold" href="#">Videos</a>
+<a class="text-[#618961] hover:text-[#111811] text-sm font-semibold transition-colors" href="#">Analytics</a>
+<a class="text-[#618961] hover:text-[#111811] text-sm font-semibold transition-colors" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center bg-background-light rounded-full px-3 py-2 w-64 border border-transparent focus-within:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-[#618961]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder-[#618961] text-[#111811]" placeholder="Search videos..." type="text"/>
+</div>
+<div class="size-10 rounded-full bg-cover bg-center border-2 border-white shadow-sm" data-alt="User profile portrait of a smiling woman" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA-Rvjeaffyn9Ztqx0fibFT6AZSKetr6OMX3zUfYJPBrT7yRDND8zEtuP02ILo5sPDtYvWWe4SepujDGHcw-YFpUkszVYJjND_3JbkFSxYF-57tNNAQBdnu4vL3pBcpdt4DG1gA3x_lf0bgIGWNJsnPwPnIF1_xKXkBSqWxho90weMs7cSXIV1kC-09LJOopxUHR0T0iVxcaJW9xZ6ITpD7_RDY650N4FrxonikTJX8yNFbERKxsLyNNaiEAfdn7sd3W47zODUCCMk');"></div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 p-6 md:px-12 md:py-8 max-w-[1400px] mx-auto w-full">
+<!-- Page Title & Actions -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+<div>
+<h1 class="text-3xl md:text-4xl font-black tracking-tight mb-2">AR Video Manager</h1>
+<p class="text-[#618961] text-lg max-w-2xl">Manage your AR experiences. Upload book trailers to generate scannable QR codes for your physical inventory.</p>
+</div>
+<button class="bg-primary hover:bg-[#0fd60f] text-[#111811] px-6 py-3 rounded-full font-bold flex items-center gap-2 transition-all shadow-lg shadow-primary/20 group" onclick="document.getElementById('uploadModal').classList.remove('hidden')">
+<span class="material-symbols-outlined group-hover:rotate-90 transition-transform">add</span>
+                    Upload New Video
+                </button>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<div class="bg-surface-light p-6 rounded-2xl border border-surface-border flex flex-col shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<span class="text-[#618961] font-bold text-sm uppercase tracking-wider">Total Videos</span>
+<span class="bg-primary/10 text-primary p-2 rounded-lg material-symbols-outlined text-xl">movie</span>
+</div>
+<div class="flex items-end gap-3">
+<span class="text-3xl font-black">124</span>
+<span class="text-primary font-bold text-sm mb-1 flex items-center">
+<span class="material-symbols-outlined text-base">trending_up</span> +12%
+                        </span>
+</div>
+</div>
+<div class="bg-surface-light p-6 rounded-2xl border border-surface-border flex flex-col shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<span class="text-[#618961] font-bold text-sm uppercase tracking-wider">Active QR Codes</span>
+<span class="bg-purple-100 text-purple-600 p-2 rounded-lg material-symbols-outlined text-xl">qr_code_2</span>
+</div>
+<div class="flex items-end gap-3">
+<span class="text-3xl font-black">98</span>
+<span class="text-primary font-bold text-sm mb-1 flex items-center">
+<span class="material-symbols-outlined text-base">trending_up</span> +5%
+                        </span>
+</div>
+</div>
+<div class="bg-surface-light p-6 rounded-2xl border border-surface-border flex flex-col shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<span class="text-[#618961] font-bold text-sm uppercase tracking-wider">Total Scans</span>
+<span class="bg-blue-100 text-blue-600 p-2 rounded-lg material-symbols-outlined text-xl">visibility</span>
+</div>
+<div class="flex items-end gap-3">
+<span class="text-3xl font-black">45.2k</span>
+<span class="text-primary font-bold text-sm mb-1 flex items-center">
+<span class="material-symbols-outlined text-base">trending_up</span> +24%
+                        </span>
+</div>
+</div>
+</div>
+<!-- Table Section -->
+<div class="bg-surface-light rounded-2xl border border-surface-border shadow-sm overflow-hidden">
+<div class="px-6 py-4 border-b border-surface-border flex items-center justify-between">
+<h3 class="font-bold text-lg">Recent Uploads</h3>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-background-light rounded-lg text-[#618961]">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="p-2 hover:bg-background-light rounded-lg text-[#618961]">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-background-light/50 text-[#618961] text-xs uppercase tracking-wider font-bold">
+<th class="px-6 py-4 rounded-tl-lg">Preview</th>
+<th class="px-6 py-4">Title / Metadata</th>
+<th class="px-6 py-4 text-center">QR Code</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4 text-right rounded-tr-lg">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-border">
+<!-- Row 1 -->
+<tr class="group hover:bg-background-light transition-colors">
+<td class="px-6 py-4">
+<div class="w-20 h-12 bg-gray-200 rounded-lg overflow-hidden relative shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Cover of The Great Gatsby showing a classic car" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBVwRdcPIzH7Q4Mf8YR8yVo3CfCo6hDailyoruln4zrh8_8QzI5CB9GZffUZqJ_4ttcxO77cFNABThcCOKbWNpqzNkVU32T170CdtAcxWMhn_pwCNnK4VQIkNB5iSzW55OkGpAAvGWpk6poTxmpqIiAMrZkKeTfmL3aOobPysMntxyVxWK8kggxFREHPRblQl-Lzqxguxg70HcZZjxKByrQNYtOIlsoxLl8vaJlsr2XJ87eLW2n5fm855BQxH1ydcoPMiiO0NHeFOw')"></div>
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
+<span class="material-symbols-outlined text-white text-lg drop-shadow-md">play_circle</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-bold text-[#111811]">The Great Gatsby AR Trailer</span>
+<span class="text-xs text-[#618961]">Uploaded 2 hrs ago • 14.2MB</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<div class="inline-block p-1 bg-white border border-surface-border rounded-lg shadow-sm hover:scale-150 transition-transform origin-center cursor-pointer">
+<span class="material-symbols-outlined text-4xl text-black">qr_code_2</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">
+<span class="size-2 rounded-full bg-green-500 animate-pulse"></span>
+                                        Active
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="size-8 rounded-full bg-white border border-surface-border flex items-center justify-center text-[#618961] hover:text-primary hover:border-primary transition-colors" title="Download QR">
+<span class="material-symbols-outlined text-lg">download</span>
+</button>
+<button class="size-8 rounded-full bg-white border border-surface-border flex items-center justify-center text-[#618961] hover:text-red-500 hover:border-red-200 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-background-light transition-colors">
+<td class="px-6 py-4">
+<div class="w-20 h-12 bg-gray-200 rounded-lg overflow-hidden relative shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Magical alleyway scene reminiscent of Harry Potter" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAYYUqi0jyzRqmeV7OHKe82w2QM63u5xN5dpd_xcslfw3kgWcQFG3XKWcAg_FK0etpYn_-3tiSg-O0JqwBiixH39rHBoSn2G9Eq5nwhzOH_BjGkzj0InCQrJwU3WqagywNcsp8_ruFIyj6-g6f5OnwYFbGnjdfc4yj19aW5VGmm3aBxJfwlgaNuB8AVLcqmZd0Skw0oGB-dfsb8x0IJMGZ25zO1URsKrjogxVGzhGQSfX2tap192MHXxJ-p8K_D-_3b7xtQLZdmSWQ')"></div>
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
+<span class="material-symbols-outlined text-white text-lg drop-shadow-md">play_circle</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-bold text-[#111811]">Harry Potter - Diagon Alley Tour</span>
+<span class="text-xs text-[#618961]">Uploaded yesterday • 42.1MB</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<div class="inline-block p-1 bg-white border border-surface-border rounded-lg shadow-sm hover:scale-150 transition-transform origin-center cursor-pointer">
+<span class="material-symbols-outlined text-4xl text-black">qr_code_2</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-500 border border-gray-200">
+<span class="size-2 rounded-full bg-gray-400"></span>
+                                        Inactive
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="size-8 rounded-full bg-white border border-surface-border flex items-center justify-center text-[#618961] hover:text-primary hover:border-primary transition-colors" title="Download QR">
+<span class="material-symbols-outlined text-lg">download</span>
+</button>
+<button class="size-8 rounded-full bg-white border border-surface-border flex items-center justify-center text-[#618961] hover:text-red-500 hover:border-red-200 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-background-light transition-colors">
+<td class="px-6 py-4">
+<div class="w-20 h-12 bg-gray-200 rounded-lg overflow-hidden relative shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Abstract surveillance eye representing 1984 book theme" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDLTPyolp5XsB8hpojkS9qmWfBIeNusdHwAC-dX0JIJOhUdc06q1g0gzgf5F4SLfgOIlp6qPlAimN9-wM15PFbpmA84xpqQ9I8bSZ3JRsjEGdE-Wzq_dKlNimY_WyvhaOwBw8KGUndHS4GK7QesqZJIncrkfyCK4_6dMVJfYoDvTDC2ogEJyFqFkGgDjqC453jp6fwNE76o9smEWEOm74EUn5OKWTuV-Sg8X1y5Nv2pi66OyCaw7Mdau1Q83SGZU4-ObBwWIl0-aW8')"></div>
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
+<span class="material-symbols-outlined text-white text-lg drop-shadow-md">play_circle</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-bold text-[#111811]">1984 - Big Brother is Watching</span>
+<span class="text-xs text-[#618961]">Uploaded 3 days ago • 18.5MB</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<div class="inline-block p-1 bg-white border border-surface-border rounded-lg shadow-sm hover:scale-150 transition-transform origin-center cursor-pointer">
+<span class="material-symbols-outlined text-4xl text-black">qr_code_2</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">
+<span class="size-2 rounded-full bg-green-500 animate-pulse"></span>
+                                        Active
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="size-8 rounded-full bg-white border border-surface-border flex items-center justify-center text-[#618961] hover:text-primary hover:border-primary transition-colors" title="Download QR">
+<span class="material-symbols-outlined text-lg">download</span>
+</button>
+<button class="size-8 rounded-full bg-white border border-surface-border flex items-center justify-center text-[#618961] hover:text-red-500 hover:border-red-200 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="group hover:bg-background-light transition-colors">
+<td class="px-6 py-4">
+<div class="w-20 h-12 bg-gray-200 rounded-lg overflow-hidden relative shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Dragon eye close up representing Smaug from The Hobbit" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAz-b9m84FPxOnXNHIM5vpu9xJ5pWbS7TCvyOmPcGNj74Lza7507ua4Zq93tvYvhw0cayP4Z2GfZL2rADtADHNND1DlTBx0Yx0I6YpVGGLnTV0WJC6vbXQTJDZ62b0lBdSGWVEgDysP2sj0fbByewDun-SKlG2wLMpANT7EfS_cOdbn7kCoTFqbIbjZHPm01tej6wY92aoXMRwpRLP_jMRljhXNPmTMDibsJtRxxfxsyPITU1zSM3NdRTv0NyGthSdTeKXiCLVTqS0')"></div>
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors">
+<span class="material-symbols-outlined text-white text-lg drop-shadow-md">play_circle</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-bold text-[#111811]">The Hobbit - Smaug's Lair</span>
+<span class="text-xs text-[#618961]">Uploaded 1 week ago • 64.2MB</span>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<div class="inline-block p-1 bg-white border border-surface-border rounded-lg shadow-sm hover:scale-150 transition-transform origin-center cursor-pointer">
+<span class="material-symbols-outlined text-4xl text-black">qr_code_2</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">
+<span class="size-2 rounded-full bg-green-500 animate-pulse"></span>
+                                        Active
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="size-8 rounded-full bg-white border border-surface-border flex items-center justify-center text-[#618961] hover:text-primary hover:border-primary transition-colors" title="Download QR">
+<span class="material-symbols-outlined text-lg">download</span>
+</button>
+<button class="size-8 rounded-full bg-white border border-surface-border flex items-center justify-center text-[#618961] hover:text-red-500 hover:border-red-200 transition-colors" title="Delete">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 border-t border-surface-border flex items-center justify-between">
+<p class="text-sm text-[#618961]">Showing 1-4 of 124 videos</p>
+<div class="flex gap-2">
+<button class="px-3 py-1 rounded-full border border-surface-border text-sm font-medium hover:bg-background-light disabled:opacity-50" disabled="">Previous</button>
+<button class="px-3 py-1 rounded-full border border-surface-border text-sm font-medium hover:bg-background-light">Next</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Upload Modal -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-all" id="uploadModal">
+<div class="bg-surface-light w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+<div class="px-8 py-6 border-b border-surface-border flex justify-between items-center bg-background-light/50">
+<div>
+<h3 class="text-xl font-extrabold text-[#111811]">Upload New AR Video</h3>
+<p class="text-[#618961] text-sm">Add a new video to generate a QR code for your book.</p>
+</div>
+<button class="p-2 hover:bg-surface-border/50 rounded-full transition-colors" onclick="document.getElementById('uploadModal').classList.add('hidden')">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="p-8 overflow-y-auto">
+<form class="space-y-6">
+<!-- Title Input -->
+<div class="space-y-2">
+<label class="block text-sm font-bold text-[#111811]">Book / Video Title</label>
+<input class="w-full px-4 py-3 rounded-xl bg-background-light border-transparent focus:border-primary focus:bg-white focus:ring-0 transition-all text-[#111811] placeholder:text-[#618961]/50 font-medium" placeholder="e.g. The Great Gatsby - AR Trailer" type="text"/>
+</div>
+<!-- Video Upload Area -->
+<div class="space-y-2">
+<label class="block text-sm font-bold text-[#111811]">Video File</label>
+<div class="border-2 border-dashed border-surface-border hover:border-primary/50 bg-background-light/30 rounded-2xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-colors group">
+<div class="size-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">cloud_upload</span>
+</div>
+<p class="font-bold text-[#111811]">Click to upload or drag and drop</p>
+<p class="text-sm text-[#618961] mt-1">MP4, WEBM or MOV (Max 50MB)</p>
+</div>
+</div>
+<!-- QR Generator Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<label class="text-sm font-bold text-[#111811]">QR Code Settings</label>
+</div>
+<div class="bg-background-light p-4 rounded-xl space-y-3">
+<label class="flex items-center gap-3 cursor-pointer">
+<input checked="" class="text-primary focus:ring-primary bg-white border-gray-300" name="qr_type" type="radio"/>
+<span class="text-sm font-medium">Auto-generate QR</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer">
+<input class="text-primary focus:ring-primary bg-white border-gray-300" name="qr_type" type="radio"/>
+<span class="text-sm font-medium">Upload custom QR</span>
+</label>
+</div>
+<div class="flex items-center gap-2 text-[#618961]">
+<span class="material-symbols-outlined text-lg">info</span>
+<span class="text-xs">QR code will link to the hosted video URL.</span>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center bg-background-light rounded-xl p-4 border border-surface-border">
+<span class="text-xs font-bold text-[#618961] uppercase tracking-wider mb-2">Preview</span>
+<div class="bg-white p-2 rounded-lg shadow-sm">
+<span class="material-symbols-outlined text-[120px] leading-none text-black">qr_code_2</span>
+</div>
+<p class="text-xs text-[#618961] mt-2">Scan to test</p>
+</div>
+</div>
+</form>
+</div>
+<div class="px-8 py-6 border-t border-surface-border bg-background-light/30 flex justify-end gap-3">
+<button class="px-6 py-2.5 rounded-full font-bold text-[#618961] hover:bg-surface-border/50 transition-colors" onclick="document.getElementById('uploadModal').classList.add('hidden')">
+                    Cancel
+                </button>
+<button class="px-8 py-2.5 rounded-full font-bold bg-primary hover:bg-[#0fd60f] text-[#111811] shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">check</span>
+                    Publish Video
+                </button>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,107 +1,72 @@
-import Support from '../models/Support.js';
-import Order from '../models/Order.js';
+import prisma from '../lib/prisma.js';
 
-// @desc    Create new support/return request
-// @route   POST /api/support
-// @access  Private
+function fmt(r) {
+    return { _id: String(r.id), ...r, user: r.user ? { _id: String(r.user.id), name: r.user.name, email: r.user.email } : undefined };
+}
+
 export const createRequest = async (req, res, next) => {
     try {
-        const { type, title, content, images, orderId } = req.body;
-
-        const request = await Support.create({
-            user: req.user._id,
-            type,
-            title,
-            content,
-            images,
-            orderId
+        const { type, title, content, images, orderId, name, email, subject, message } = req.body;
+        const request = await prisma.supportTicket.create({
+            data: {
+                userId: req.user?.id || null,
+                guestName: name || null,
+                guestEmail: email || null,
+                type: type || 'support',
+                title: title || subject || 'Yêu cầu hỗ trợ',
+                content: content || message,
+                images: images || [],
+                orderId: orderId ? parseInt(orderId) : null
+            }
         });
-
-        res.status(201).json({
-            success: true,
-            message: 'Gửi yêu cầu thành công',
-            data: { request }
-        });
-    } catch (error) {
-        next(error);
-    }
+        res.status(201).json({ success: true, message: 'Gửi yêu cầu thành công', data: { request: { ...request, _id: String(request.id) } } });
+    } catch (error) { next(error); }
 };
 
-// @desc    Get user's support requests
-// @route   GET /api/support/my
-// @access  Private
 export const getMyRequests = async (req, res, next) => {
     try {
-        const requests = await Support.find({ user: req.user._id })
-            .sort({ createdAt: -1 })
-            .populate('orderId', 'orderId totalAmount orderStatus');
-
-        res.json({
-            success: true,
-            data: { requests }
+        const requests = await prisma.supportTicket.findMany({
+            where: { userId: req.user.id },
+            include: { order: { select: { id: true, totalAmount: true, orderStatus: true } } },
+            orderBy: { createdAt: 'desc' }
         });
-    } catch (error) {
-        next(error);
-    }
+        res.json({ success: true, data: { requests: requests.map(r => ({ ...r, _id: String(r.id) })) } });
+    } catch (error) { next(error); }
 };
 
-// @desc    Get all support requests (Admin)
-// @route   GET /api/support
-// @access  Private/Admin
 export const getAllRequests = async (req, res, next) => {
     try {
         const { type, status } = req.query;
-        const query = {};
-        if (type) query.type = type;
-        if (status) query.status = status;
+        const where = {};
+        if (type) where.type = type;
+        if (status) where.status = status;
 
-        const requests = await Support.find(query)
-            .sort({ createdAt: -1 })
-            .populate('user', 'name email')
-            .populate('orderId', 'orderId totalAmount orderStatus');
-
-        res.json({
-            success: true,
-            data: { requests }
+        const requests = await prisma.supportTicket.findMany({
+            where,
+            include: { user: { select: { id: true, name: true, email: true } }, order: { select: { id: true, totalAmount: true, orderStatus: true } } },
+            orderBy: { createdAt: 'desc' }
         });
-    } catch (error) {
-        next(error);
-    }
+        res.json({ success: true, data: { requests: requests.map(fmt) } });
+    } catch (error) { next(error); }
 };
 
-// @desc    Update support request status/reply (Admin)
-// @route   PATCH /api/support/:id
-// @access  Private/Admin
 export const updateRequestStatus = async (req, res, next) => {
     try {
         const { status, adminReply } = req.body;
-        const request = await Support.findById(req.params.id);
+        const id = parseInt(req.params.id);
+        const existing = await prisma.supportTicket.findUnique({ where: { id } });
+        if (!existing) return res.status(404).json({ success: false, message: 'Không tìm thấy yêu cầu' });
 
-        if (!request) {
-            return res.status(404).json({
-                success: false,
-                message: 'Không tìm thấy yêu cầu'
-            });
+        const data = {};
+        if (status) data.status = status;
+        if (adminReply) data.adminReply = adminReply;
+
+        const request = await prisma.supportTicket.update({ where: { id }, data });
+
+        if (existing.type === 'return_request' && status === 'resolved' && existing.orderId) {
+            await prisma.order.update({ where: { id: existing.orderId }, data: { orderStatus: 'cancelled' } });
         }
 
-        request.status = status || request.status;
-        request.adminReply = adminReply || request.adminReply;
-
-        await request.save();
-
-        // If it's a return request and it's approved (resolved), update original order
-        if (request.type === 'return' && status === 'resolved' && request.orderId) {
-            await Order.findByIdAndUpdate(request.orderId, {
-                orderStatus: 'returned'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Cập nhật yêu cầu thành công',
-            data: { request }
-        });
-    } catch (error) {
-        next(error);
-    }
+        res.json({ success: true, message: 'Cập nhật yêu cầu thành công', data: { request: { ...request, _id: String(request.id) } } });
+    } catch (error) { next(error); }
 };

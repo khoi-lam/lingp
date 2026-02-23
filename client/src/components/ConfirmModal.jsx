@@ -24,7 +24,7 @@ const ConfirmModal = ({
             <div className="relative bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl border border-gray-100 p-10 animate-in zoom-in-95 duration-300">
                 <div className="space-y-6 text-center">
                     {/* Icon */}
-                    <div className={`mx-auto w-16 h-16 rounded-3xl flex items-center justify-center ${type === 'danger' ? 'bg-red-50 text-fahasa-red' : 'bg-blue-50 text-blue-600'}`}>
+                    <div className={`mx-auto w-16 h-16 rounded-3xl flex items-center justify-center ${type === 'danger' ? 'bg-red-50 text-vanxuan-red' : 'bg-blue-50 text-blue-600'}`}>
                         {type === 'danger' ? (
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -47,7 +47,7 @@ const ConfirmModal = ({
                         <button
                             onClick={onConfirm}
                             className={`w-full py-4 rounded-2xl font-black text-sm text-white transition-all shadow-xl shadow-opacity-20 active:scale-95 ${type === 'danger'
-                                    ? 'bg-fahasa-red hover:bg-fahasa-red/90 shadow-fahasa-red/20'
+                                    ? 'bg-vanxuan-red hover:bg-vanxuan-red/90 shadow-vanxuan-red/20'
                                     : 'bg-blue-600 hover:bg-blue-600/90 shadow-blue-600/20'
                                 }`}
                         >

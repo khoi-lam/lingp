@@ -1,143 +1,135 @@
-import Order from '../models/Order.js';
-import Book from '../models/Book.js';
+import prisma from '../lib/prisma.js';
+import crypto from 'crypto';
 
-// @desc    Create new order
-// @route   POST /api/orders
-// @access  Public (supports guest checkout)
+function generateOrderCode() {
+    return 'LL-' + crypto.randomBytes(4).toString('hex').toUpperCase();
+}
+
+function formatOrder(order) {
+    if (!order) return null;
+    return {
+        _id: order.orderCode,
+        id: order.id,
+        orderCode: order.orderCode,
+        user: order.userId,
+        items: (order.items || []).map(item => ({
+            _id: String(item.id),
+            product: item.productId,
+            title: item.title,
+            price: item.price,
+            quantity: item.quantity,
+            productData: item.product ? { _id: String(item.product.id), images: item.product.images, title: item.product.title } : null
+        })),
+        totalAmount: order.totalAmount,
+        shippingAddress: order.shippingAddress,
+        orderStatus: order.orderStatus,
+        paymentMethod: order.paymentMethod,
+        paymentStatus: order.paymentStatus,
+        vnpayTransactionId: order.vnpayTransactionId,
+        cancelledReason: order.cancelledReason,
+        trackingNumber: order.trackingNumber,
+        createdAt: order.createdAt,
+        updatedAt: order.updatedAt,
+        userData: order.user ? { _id: String(order.user.id), name: order.user.name, email: order.user.email } : null
+    };
+}
+
 export const createOrder = async (req, res, next) => {
     try {
         const { items, totalAmount, shippingAddress, paymentMethod } = req.body;
 
         if (!items || items.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: 'Không có sản phẩm trong đơn hàng'
-            });
+            return res.status(400).json({ success: false, message: 'Không có sản phẩm trong đơn hàng' });
         }
 
-        // Create order (support both authenticated and guest users)
-        const order = await Order.create({
-            user: req.user?._id || null, // null for guest checkout
-            items,
-            totalAmount,
-            shippingAddress,
-            paymentMethod
+        const orderCode = generateOrderCode();
+        const order = await prisma.order.create({
+            data: {
+                orderCode,
+                userId: req.user?.id || null,
+                totalAmount: parseFloat(totalAmount),
+                shippingAddress: shippingAddress,
+                paymentMethod: paymentMethod || 'cod',
+                items: {
+                    create: items.map(item => ({
+                        productId: parseInt(item.product),
+                        title: item.title,
+                        price: parseFloat(item.price),
+                        quantity: parseInt(item.quantity)
+                    }))
+                }
+            },
+            include: { items: { include: { product: true } } }
         });
 
-        // Update stock for each item
+        // Update stock
         for (const item of items) {
-            await Book.findByIdAndUpdate(item.product, {
-                $inc: {
-                    stockQuantity: -item.quantity,
-                    soldCount: item.quantity
+            await prisma.book.update({
+                where: { id: parseInt(item.product) },
+                data: {
+                    stockQuantity: { decrement: parseInt(item.quantity) },
+                    soldCount: { increment: parseInt(item.quantity) }
                 }
             });
         }
 
-        res.status(201).json({
-            success: true,
-            message: 'Đơn hàng đã được tạo thành công',
-            data: { order }
-        });
-    } catch (error) {
-        next(error);
-    }
+        res.status(201).json({ success: true, message: 'Đơn hàng đã được tạo thành công', data: { order: formatOrder(order) } });
+    } catch (error) { next(error); }
 };
 
-// @desc    Get logged in user orders
-// @route   GET /api/orders/my-orders
-// @access  Private
 export const getMyOrders = async (req, res, next) => {
     try {
-        const orders = await Order.find({ user: req.user._id })
-            .populate('items.product', 'images title')
-            .sort({ createdAt: -1 });
-
-        res.json({
-            success: true,
-            data: { orders }
+        const orders = await prisma.order.findMany({
+            where: { userId: req.user.id },
+            include: { items: { include: { product: { select: { id: true, images: true, title: true } } } } },
+            orderBy: { createdAt: 'desc' }
         });
-    } catch (error) {
-        next(error);
-    }
+
+        res.json({ success: true, data: { orders: orders.map(formatOrder) } });
+    } catch (error) { next(error); }
 };
 
-// @desc    Get order by ID
-// @route   GET /api/orders/:id
-// @access  Private
 export const getOrderById = async (req, res, next) => {
     try {
-        const order = await Order.findById(req.params.id).populate('items.product', 'images title');
-
-        if (!order) {
-            return res.status(404).json({
-                success: false,
-                message: 'Không tìm thấy đơn hàng'
-            });
-        }
-
-        // Check if user is owner or admin
-        // For guest orders (no user), allow access by order ID only
-        if (order.user && order.user.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-            return res.status(401).json({
-                success: false,
-                message: 'Không có quyền truy cập đơn hàng này'
-            });
-        }
-
-        res.json({
-            success: true,
-            data: { order }
+        const param = req.params.id;
+        const isCode = param.startsWith('LL-');
+        const order = await prisma.order.findUnique({
+            where: isCode ? { orderCode: param } : { id: parseInt(param) },
+            include: { items: { include: { product: { select: { id: true, images: true, title: true } } } } }
         });
-    } catch (error) {
-        next(error);
-    }
+
+        if (!order) return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng' });
+
+        if (order.userId && order.userId !== req.user.id && req.user.role !== 'admin') {
+            return res.status(401).json({ success: false, message: 'Không có quyền truy cập đơn hàng này' });
+        }
+
+        res.json({ success: true, data: { order: formatOrder(order) } });
+    } catch (error) { next(error); }
 };
 
-// @desc    Get all orders (Admin)
-// @route   GET /api/orders
-// @access  Private/Admin
 export const getAllOrders = async (req, res, next) => {
     try {
-        const orders = await Order.find().populate('user', 'name email').sort({ createdAt: -1 });
-
-        res.json({
-            success: true,
-            data: { orders }
+        const orders = await prisma.order.findMany({
+            include: { user: { select: { id: true, name: true, email: true } } },
+            orderBy: { createdAt: 'desc' }
         });
-    } catch (error) {
-        next(error);
-    }
+
+        res.json({ success: true, data: { orders: orders.map(formatOrder) } });
+    } catch (error) { next(error); }
 };
 
-// @desc    Update order status (Admin)
-// @route   PUT /api/orders/:id/status
-// @access  Private/Admin
 export const updateOrderStatus = async (req, res, next) => {
     try {
         const { status } = req.body;
-        const order = await Order.findById(req.params.id);
+        const id = parseInt(req.params.id);
+        const order = await prisma.order.findUnique({ where: { id } });
+        if (!order) return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng' });
 
-        if (!order) {
-            return res.status(404).json({
-                success: false,
-                message: 'Không tìm thấy đơn hàng'
-            });
-        }
+        const data = { orderStatus: status };
+        if (status === 'completed') data.paymentStatus = 'paid';
 
-        order.orderStatus = status;
-        if (status === 'completed') {
-            order.paymentStatus = 'paid';
-        }
-
-        await order.save();
-
-        res.json({
-            success: true,
-            message: 'Cập nhật trạng thái đơn hàng thành công',
-            data: { order }
-        });
-    } catch (error) {
-        next(error);
-    }
+        const updated = await prisma.order.update({ where: { id }, data });
+        res.json({ success: true, message: 'Cập nhật trạng thái đơn hàng thành công', data: { order: formatOrder(updated) } });
+    } catch (error) { next(error); }
 };
