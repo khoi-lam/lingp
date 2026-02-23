@@ -1,6 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import jsQR from 'jsqr';
+import { bookLensAPI } from '../services/api';
+import { API_BASE } from '../config.js';
 
 const logoUrl = '/logo.png';
 
@@ -8,16 +10,33 @@ export default function ARScanner() {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const fileInputRef = useRef(null);
-    const navigate = useNavigate();
+    const overlayVideoRef = useRef(null);
 
     const [cameraActive, setCameraActive] = useState(false);
     const [flashOn, setFlashOn] = useState(false);
     const [facingMode, setFacingMode] = useState('environment');
-    const [scanResult, setScanResult] = useState(null); // { url, source: 'camera' | 'file' }
-    const [scanError, setScanError] = useState('');
     const [scanning, setScanning] = useState(false);
+
+    // Video overlay state
+    const [activeVideo, setActiveVideo] = useState(null); // { id, videoSrc, title }
+    const [qrVisible, setQrVisible] = useState(false);
+
+    // Toast state
+    const [toast, setToast] = useState(null); // { message, type: 'error' | 'success' | 'info' }
+
     const streamRef = useRef(null);
     const animFrameRef = useRef(null);
+    const lostTimerRef = useRef(null);
+    const lastVideoIdRef = useRef(null);
+    const fetchingRef = useRef(false);
+    const toastTimerRef = useRef(null);
+
+    // ─── Toast helper ───
+    const showToast = useCallback((message, type = 'error', duration = 3000) => {
+        if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+        setToast({ message, type });
+        toastTimerRef.current = setTimeout(() => setToast(null), duration);
+    }, []);
 
     // ─── Camera controls ───
     const startCamera = async () => {
@@ -34,16 +53,18 @@ export default function ARScanner() {
                 videoRef.current.srcObject = stream;
             }
             setCameraActive(true);
-            setScanResult(null);
-            setScanError('');
+            setActiveVideo(null);
+            setQrVisible(false);
+            lastVideoIdRef.current = null;
             startLiveScanning();
         } catch (err) {
-            console.error('Không thể truy cập camera:', err);
+            showToast('Không thể truy cập camera', 'error');
         }
     };
 
     const stopCamera = () => {
         if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+        if (lostTimerRef.current) clearTimeout(lostTimerRef.current);
         if (streamRef.current) {
             streamRef.current.getTracks().forEach(track => track.stop());
             streamRef.current = null;
@@ -63,11 +84,52 @@ export default function ARScanner() {
             if (capabilities?.torch) {
                 await track.applyConstraints({ advanced: [{ torch: !flashOn }] });
                 setFlashOn(!flashOn);
+            } else {
+                showToast('Đèn flash không khả dụng', 'info');
             }
         }
     };
 
-    // ─── Live camera QR scanning ───
+    // ─── Extract BookLens ID from QR data ───
+    const extractBookLensId = (data) => {
+        try {
+            // Try as URL first: .../watch/abc123
+            const url = new URL(data);
+            const match = url.pathname.match(/\/watch\/([a-f0-9]+)/i);
+            if (match) return match[1];
+        } catch {
+            // Try as raw path: /watch/abc123
+            const match = data.match(/\/watch\/([a-f0-9]+)/i);
+            if (match) return match[1];
+        }
+        return null;
+    };
+
+    // ─── Fetch video data ───
+    const fetchVideo = async (id) => {
+        if (fetchingRef.current) return;
+        fetchingRef.current = true;
+        try {
+            const res = await bookLensAPI.getPublicVideo(id);
+            if (res.data.success) {
+                const video = res.data.data.video;
+                const videoSrc = video.videoPath ? `${API_BASE}/${video.videoPath.replace(/^\//, '')}` : null;
+                if (videoSrc) {
+                    setActiveVideo({ id, videoSrc, title: video.title });
+                    lastVideoIdRef.current = id;
+                } else {
+                    showToast('Video chưa được tải lên', 'info');
+                }
+            }
+        } catch (err) {
+            const msg = err.response?.data?.message || 'Không tìm thấy video';
+            showToast(msg, 'error');
+        } finally {
+            fetchingRef.current = false;
+        }
+    };
+
+    // ─── Live camera QR scanning (never stops) ───
     const startLiveScanning = () => {
         const canvas = canvasRef.current;
         const video = videoRef.current;
@@ -87,8 +149,33 @@ export default function ARScanner() {
                 });
 
                 if (code?.data) {
-                    handleQRResult(code.data, 'camera');
-                    return; // stop scanning on success
+                    // QR detected in frame
+                    if (lostTimerRef.current) {
+                        clearTimeout(lostTimerRef.current);
+                        lostTimerRef.current = null;
+                    }
+                    setQrVisible(true);
+
+                    const bookLensId = extractBookLensId(code.data);
+                    if (bookLensId) {
+                        // Only fetch if it's a new video
+                        if (lastVideoIdRef.current !== bookLensId) {
+                            fetchVideo(bookLensId);
+                        }
+                    } else {
+                        // Not a BookLens QR
+                        if (!lastVideoIdRef.current) {
+                            showToast('Mã QR không phải BookLens', 'error');
+                        }
+                    }
+                } else {
+                    // QR not visible — debounce 1s before hiding video
+                    if (!lostTimerRef.current) {
+                        lostTimerRef.current = setTimeout(() => {
+                            setQrVisible(false);
+                            lostTimerRef.current = null;
+                        }, 1000);
+                    }
                 }
             }
             animFrameRef.current = requestAnimationFrame(tick);
@@ -102,8 +189,6 @@ export default function ARScanner() {
         if (!file) return;
 
         setScanning(true);
-        setScanError('');
-        setScanResult(null);
 
         const img = new Image();
         img.onload = () => {
@@ -121,44 +206,55 @@ export default function ARScanner() {
             });
 
             if (code?.data) {
-                handleQRResult(code.data, 'file');
+                const bookLensId = extractBookLensId(code.data);
+                if (bookLensId) {
+                    setQrVisible(true);
+                    fetchVideo(bookLensId);
+                    showToast('QR BookLens phát hiện từ ảnh!', 'success');
+                } else {
+                    showToast('Mã QR không phải BookLens', 'error');
+                }
             } else {
-                setScanError('Không tìm thấy mã QR trong ảnh. Hãy thử ảnh khác.');
+                showToast('Không tìm thấy mã QR trong ảnh', 'error');
             }
             setScanning(false);
         };
         img.onerror = () => {
-            setScanError('Không thể đọc file ảnh.');
+            showToast('Không thể đọc file ảnh', 'error');
             setScanning(false);
         };
         img.src = URL.createObjectURL(file);
-
-        // Reset file input
         e.target.value = '';
     };
 
-    // ─── Handle decoded QR ───
-    const handleQRResult = (data, source) => {
-        setScanResult({ url: data, source });
-
-        // Auto-navigate if it's a /watch/ URL on our domain
-        try {
-            const url = new URL(data);
-            const watchMatch = url.pathname.match(/\/watch\/([a-f0-9]+)/i);
-            if (watchMatch) {
-                stopCamera();
-                navigate(`/watch/${watchMatch[1]}`);
-                return;
-            }
-        } catch {
-            // Not a valid URL, just show it
+    // ─── Auto-play/pause overlay video based on QR visibility ───
+    useEffect(() => {
+        const vid = overlayVideoRef.current;
+        if (!vid) return;
+        if (qrVisible && activeVideo) {
+            vid.play().catch(() => { });
+        } else {
+            vid.pause();
         }
-    };
+    }, [qrVisible, activeVideo]);
+
+    // Clear video when QR lost for a while
+    useEffect(() => {
+        if (!qrVisible) {
+            const timer = setTimeout(() => {
+                setActiveVideo(null);
+                lastVideoIdRef.current = null;
+            }, 3000); // Clear fully after 3s of no QR
+            return () => clearTimeout(timer);
+        }
+    }, [qrVisible]);
 
     useEffect(() => {
         startCamera();
         return () => stopCamera();
     }, [facingMode]);
+
+    const showVideoOverlay = activeVideo && qrVisible;
 
     return (
         <div className="fixed inset-0 z-[100] bg-black overflow-hidden">
@@ -179,7 +275,7 @@ export default function ARScanner() {
             <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
 
             {/* Header */}
-            <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-5">
+            <div className="absolute top-0 left-0 right-0 z-40 flex items-center justify-between p-5">
                 <div className="flex items-center gap-3">
                     <img src={logoUrl} alt="LingoLand" className="h-10 w-auto drop-shadow-2xl" />
                     <div className="flex items-center gap-[2px] h-6">
@@ -204,64 +300,66 @@ export default function ARScanner() {
                 </Link>
             </div>
 
-            {/* Scan Result Overlay */}
-            {scanResult && (
-                <div className="absolute inset-0 flex items-center justify-center z-20 p-6"
-                    style={{ animation: 'fadeIn 0.4s ease-out' }}
+            {/* ═══ Video Overlay ═══ */}
+            {showVideoOverlay && (
+                <div
+                    className="absolute inset-0 z-30 flex items-center justify-center"
+                    style={{ animation: 'fadeIn 0.3s ease-out' }}
                 >
-                    <div className="absolute top-20 left-1/2 -translate-x-1/2"
-                        style={{ animation: 'fadeIn 0.3s ease-out' }}
-                    >
-                        <div className="flex items-center gap-2 bg-[#4CAF50] text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                            <span className="material-symbols-outlined text-base">qr_code_2</span>
-                            QR Đã Phát Hiện — {scanResult.source === 'file' ? 'Từ ảnh' : 'Camera'}
-                        </div>
-                    </div>
+                    {/* Dark backdrop */}
+                    <div className="absolute inset-0 bg-black/70" />
 
-                    <div className="relative w-full max-w-lg bg-white/10 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl border border-white/20 p-6"
-                        style={{ animation: 'scaleIn 0.4s ease-out' }}
-                    >
-                        <div className="text-center text-white">
-                            <span className="material-symbols-outlined text-5xl text-[#8BC34A] mb-3 block">link</span>
-                            <p className="text-sm text-white/70 mb-2">Liên kết được phát hiện:</p>
-                            <p className="text-lg font-bold break-all mb-4">{scanResult.url}</p>
-                            <div className="flex gap-3 justify-center">
-                                <a
-                                    href={scanResult.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="px-6 py-2.5 bg-[#4CAF50] text-white rounded-full text-sm font-bold hover:brightness-110 transition-all flex items-center gap-2"
-                                >
-                                    <span className="material-symbols-outlined text-base">open_in_new</span>
-                                    Mở liên kết
-                                </a>
-                                <button
-                                    onClick={() => { setScanResult(null); if (!cameraActive) startCamera(); else startLiveScanning(); }}
-                                    className="px-6 py-2.5 bg-white/20 text-white rounded-full text-sm font-bold hover:bg-white/30 transition-all flex items-center gap-2"
-                                >
-                                    <span className="material-symbols-outlined text-base">qr_code_scanner</span>
-                                    Quét tiếp
-                                </button>
+                    {/* Video container */}
+                    <div className="relative w-[92%] max-w-lg" style={{ animation: 'scaleIn 0.3s ease-out' }}>
+                        {/* Title badge */}
+                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap z-10">
+                            <div className="flex items-center gap-2 bg-[#4CAF50] text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                                <span className="material-symbols-outlined text-sm">play_circle</span>
+                                {activeVideo.title}
                             </div>
                         </div>
+
+                        <video
+                            ref={overlayVideoRef}
+                            src={activeVideo.videoSrc}
+                            autoPlay
+                            playsInline
+                            loop
+                            className="w-full rounded-2xl shadow-2xl border-2 border-white/20"
+                            style={{ maxHeight: '60vh' }}
+                        />
+
+                        {/* Hint */}
+                        <p className="text-center text-white/60 text-xs mt-3">
+                            <span className="material-symbols-outlined text-sm align-middle mr-1">qr_code_scanner</span>
+                            Rời mã QR để dừng video
+                        </p>
                     </div>
                 </div>
             )}
 
-            {/* Scan Error */}
-            {scanError && (
-                <div className="absolute top-20 left-1/2 -translate-x-1/2 z-30"
-                    style={{ animation: 'fadeIn 0.3s ease-out' }}
+            {/* ═══ Toast ═══ */}
+            {toast && (
+                <div
+                    className="absolute top-20 left-1/2 -translate-x-1/2 z-50 max-w-[85%]"
+                    style={{ animation: 'fadeIn 0.2s ease-out' }}
                 >
-                    <div className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                        <span className="material-symbols-outlined text-base">error</span>
-                        {scanError}
+                    <div className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold shadow-lg backdrop-blur-md ${toast.type === 'error'
+                            ? 'bg-red-500/90 text-white'
+                            : toast.type === 'success'
+                                ? 'bg-[#4CAF50]/90 text-white'
+                                : 'bg-white/20 text-white border border-white/20'
+                        }`}>
+                        <span className="material-symbols-outlined text-base">
+                            {toast.type === 'error' ? 'error' : toast.type === 'success' ? 'check_circle' : 'info'}
+                        </span>
+                        {toast.message}
                     </div>
                 </div>
             )}
 
             {/* Scanning hint */}
-            {!scanResult && !scanError && (
+            {!showVideoOverlay && !toast && (
                 <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
                     <span className="text-white/80 text-sm font-medium bg-black/30 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2">
                         <span className="material-symbols-outlined text-[#8BC34A] text-base">qr_code_scanner</span>
@@ -271,7 +369,7 @@ export default function ARScanner() {
             )}
 
             {/* Bottom Controls */}
-            <div className="absolute bottom-0 left-0 right-0 z-20 p-8">
+            <div className="absolute bottom-0 left-0 right-0 z-40 p-8">
                 <div className="flex items-center justify-center gap-6">
                     <button
                         onClick={toggleFlash}
