@@ -1,19 +1,34 @@
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
 import QRCode from 'qrcode';
+import cloudinary from '../config/cloudinary.js';
 import prisma from '../lib/prisma.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const QR_DIR = path.join(__dirname, '../uploads/qr');
+/**
+ * Upload buffer to Cloudinary
+ */
+const uploadToCloudinary = (buffer, options = {}) => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(options, (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+        });
+        stream.end(buffer);
+    });
+};
 
+/**
+ * Generate QR code and upload to Cloudinary
+ */
 const generateQR = async (videoId) => {
     const watchUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/watch/${videoId}`;
-    const qrFilename = `qr-${videoId}.png`;
-    const qrPath = path.join(QR_DIR, qrFilename);
-    await QRCode.toFile(qrPath, watchUrl, { width: 400, margin: 2, color: { dark: '#1B5E20', light: '#FFFFFF' } });
-    return `/uploads/qr/${qrFilename}`;
+    const qrBuffer = await QRCode.toBuffer(watchUrl, { width: 400, margin: 2, color: { dark: '#1B5E20', light: '#FFFFFF' } });
+    const result = await uploadToCloudinary(qrBuffer, {
+        folder: 'lingoland/qr',
+        public_id: `qr-${videoId}`,
+        resource_type: 'image',
+        format: 'png',
+        overwrite: true,
+    });
+    return result.secure_url;
 };
 
 function fmt(v) {
@@ -38,7 +53,16 @@ export const getBookLensById = async (req, res, next) => {
 export const createBookLens = async (req, res, next) => {
     try {
         const { title, book, duration, status, description } = req.body;
-        const videoPath = req.file ? `/uploads/videos/${req.file.filename}` : '';
+        let videoPath = '';
+
+        // Upload video to Cloudinary if provided
+        if (req.file) {
+            const result = await uploadToCloudinary(req.file.buffer, {
+                folder: 'lingoland/videos',
+                resource_type: 'video',
+            });
+            videoPath = result.secure_url;
+        }
 
         let video = await prisma.bookLens.create({
             data: { title, bookId: book ? parseInt(book) : null, videoPath, duration: duration || '0:00', status: status || 'draft', description: description || '' }
@@ -70,18 +94,20 @@ export const updateBookLens = async (req, res, next) => {
         if (description !== undefined) data.description = description;
 
         if (req.file) {
-            if (existing.videoPath) {
-                const oldPath = path.join(__dirname, '..', existing.videoPath.replace(/^\//, ''));
-                if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+            // Delete old video from Cloudinary if exists
+            if (existing.videoPath && existing.videoPath.includes('cloudinary')) {
+                const match = existing.videoPath.match(/\/lingoland\/videos\/([^.]+)/);
+                if (match) await cloudinary.uploader.destroy(`lingoland/videos/${match[1]}`, { resource_type: 'video' }).catch(() => { });
             }
-            data.videoPath = `/uploads/videos/${req.file.filename}`;
+            const result = await uploadToCloudinary(req.file.buffer, {
+                folder: 'lingoland/videos',
+                resource_type: 'video',
+            });
+            data.videoPath = result.secure_url;
             data.qrCodeUrl = await generateQR(id);
-        } else if ((existing.videoPath && !existing.qrCodeUrl) || (existing.videoPath && existing.qrCodeUrl)) {
-            // Preserve or regenerate QR if video exists
-            if (!existing.qrCodeUrl) {
-                data.qrCodeUrl = await generateQR(id);
-            }
-            // Otherwise qrCodeUrl stays untouched (not in data = not overwritten)
+        } else if (existing.videoPath && !existing.qrCodeUrl) {
+            // Regenerate QR if video exists but QR is missing
+            data.qrCodeUrl = await generateQR(id);
         }
 
         const video = await prisma.bookLens.update({ where: { id }, data, include: { book: { select: { id: true, title: true, author: true } } } });
@@ -95,8 +121,15 @@ export const deleteBookLens = async (req, res, next) => {
         const video = await prisma.bookLens.findUnique({ where: { id } });
         if (!video) return res.status(404).json({ success: false, message: 'Video không tồn tại' });
 
-        if (video.videoPath) { const f = path.join(__dirname, '..', video.videoPath.replace(/^\//, '')); if (fs.existsSync(f)) fs.unlinkSync(f); }
-        if (video.qrCodeUrl) { const f = path.join(__dirname, '..', video.qrCodeUrl.replace(/^\//, '')); if (fs.existsSync(f)) fs.unlinkSync(f); }
+        // Delete from Cloudinary
+        if (video.videoPath && video.videoPath.includes('cloudinary')) {
+            const match = video.videoPath.match(/\/lingoland\/videos\/([^.]+)/);
+            if (match) await cloudinary.uploader.destroy(`lingoland/videos/${match[1]}`, { resource_type: 'video' }).catch(() => { });
+        }
+        if (video.qrCodeUrl && video.qrCodeUrl.includes('cloudinary')) {
+            const match = video.qrCodeUrl.match(/\/lingoland\/qr\/([^.]+)/);
+            if (match) await cloudinary.uploader.destroy(`lingoland/qr/${match[1]}`).catch(() => { });
+        }
 
         await prisma.bookLens.delete({ where: { id } });
         res.json({ success: true, message: 'Đã xoá video' });

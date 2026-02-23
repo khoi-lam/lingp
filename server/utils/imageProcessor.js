@@ -1,14 +1,21 @@
-import sharp from 'sharp';
-import path from 'path';
-import fs from 'fs/promises';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import cloudinary from '../config/cloudinary.js';
 
 /**
- * Process and optimize uploaded images
- * Creates multiple sizes: thumbnail (200x200), medium (800x800), original
+ * Upload buffer to Cloudinary and return URL
+ */
+const uploadToCloudinary = (buffer, options = {}) => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(options, (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+        });
+        stream.end(buffer);
+    });
+};
+
+/**
+ * Process and upload book images to Cloudinary
+ * Cloudinary handles resizing via URL transformations, so we only upload once
  */
 export const processBookImages = async (files) => {
     if (!files || files.length === 0) return [];
@@ -17,46 +24,24 @@ export const processBookImages = async (files) => {
 
     for (const file of files) {
         try {
-            const filename = path.parse(file.filename).name;
-            const uploadsDir = path.join(__dirname, '../uploads/books');
+            const result = await uploadToCloudinary(file.buffer, {
+                folder: 'lingoland/books',
+                resource_type: 'image',
+                format: 'webp',
+                quality: 'auto',
+            });
 
-            // Generate thumbnail (200x200)
-            const thumbnailPath = path.join(uploadsDir, `${filename}-thumb.webp`);
-            await sharp(file.path)
-                .resize(200, 200, { fit: 'cover' })
-                .webp({ quality: 80 })
-                .toFile(thumbnailPath);
+            // Use Cloudinary URL transformations for different sizes
+            const baseUrl = result.secure_url;
+            const publicId = result.public_id;
 
-            // Generate medium size (800x800)
-            const mediumPath = path.join(uploadsDir, `${filename}-medium.webp`);
-            await sharp(file.path)
-                .resize(800, 800, { fit: 'inside' })
-                .webp({ quality: 85 })
-                .toFile(mediumPath);
-
-            // Convert original to WebP
-            const originalPath = path.join(uploadsDir, `${filename}-original.webp`);
-            await sharp(file.path)
-                .webp({ quality: 90 })
-                .toFile(originalPath);
-
-            // Delete original uploaded file
-            await fs.unlink(file.path);
-
-            // Store relative paths
             processedImages.push({
-                thumbnail: `/uploads/books/${filename}-thumb.webp`,
-                medium: `/uploads/books/${filename}-medium.webp`,
-                original: `/uploads/books/${filename}-original.webp`
+                thumbnail: cloudinary.url(publicId, { width: 200, height: 200, crop: 'fill', format: 'webp', quality: 80 }),
+                medium: cloudinary.url(publicId, { width: 800, height: 800, crop: 'limit', format: 'webp', quality: 85 }),
+                original: baseUrl,
             });
         } catch (error) {
-            console.error('Error processing image:', error);
-            // Clean up on error
-            try {
-                await fs.unlink(file.path);
-            } catch (unlinkError) {
-                console.error('Error deleting file:', unlinkError);
-            }
+            console.error('Error uploading image to Cloudinary:', error);
         }
     }
 
@@ -64,22 +49,18 @@ export const processBookImages = async (files) => {
 };
 
 /**
- * Delete image files
+ * Delete images from Cloudinary
  */
 export const deleteBookImages = async (imagePaths) => {
-    const uploadsDir = path.join(__dirname, '../uploads/books');
-
     for (const imagePath of imagePaths) {
         try {
-            // Delete all sizes
-            const filename = path.basename(imagePath, path.extname(imagePath));
-            const baseFilename = filename.replace(/-thumb|-medium|-original$/, '');
-
-            await fs.unlink(path.join(uploadsDir, `${baseFilename}-thumb.webp`)).catch(() => { });
-            await fs.unlink(path.join(uploadsDir, `${baseFilename}-medium.webp`)).catch(() => { });
-            await fs.unlink(path.join(uploadsDir, `${baseFilename}-original.webp`)).catch(() => { });
+            // Extract public_id from Cloudinary URL
+            const match = imagePath.match(/\/lingoland\/books\/([^.]+)/);
+            if (match) {
+                await cloudinary.uploader.destroy(`lingoland/books/${match[1]}`);
+            }
         } catch (error) {
-            console.error('Error deleting image:', error);
+            console.error('Error deleting image from Cloudinary:', error);
         }
     }
 };

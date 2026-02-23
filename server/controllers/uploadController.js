@@ -1,8 +1,17 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
+import cloudinary from '../config/cloudinary.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+/**
+ * Upload buffer to Cloudinary
+ */
+const uploadToCloudinary = (buffer, options = {}) => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(options, (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+        });
+        stream.end(buffer);
+    });
+};
 
 // @desc    Upload images
 // @route   POST /api/upload
@@ -16,10 +25,14 @@ export const uploadImages = async (req, res, next) => {
             });
         }
 
-        // Get uploaded file URLs
-        const urls = req.files.map(file => {
-            return `${req.protocol}://${req.get('host')}/uploads/${file.filename}`;
-        });
+        const urls = [];
+        for (const file of req.files) {
+            const result = await uploadToCloudinary(file.buffer, {
+                folder: 'lingoland/uploads',
+                resource_type: 'image',
+            });
+            urls.push(result.secure_url);
+        }
 
         res.json({
             success: true,

@@ -116,7 +116,9 @@ export default function ARScanner() {
             const res = await bookLensAPI.getPublicVideo(id);
             if (res.data.success) {
                 const video = res.data.data.video;
-                const videoSrc = video.videoPath ? `${API_BASE}/${video.videoPath.replace(/^\//, '')}` : null;
+                const videoSrc = video.videoPath
+                    ? (video.videoPath.startsWith('http') ? video.videoPath : `${API_BASE}/${video.videoPath.replace(/^\//, '')}`)
+                    : null;
                 if (videoSrc) {
                     setActiveVideo({ id, videoSrc, title: video.title });
                     lastVideoIdRef.current = id;

@@ -169,7 +169,7 @@ export default function AdminBookLens() {
                             {v.qrCodeUrl && (
                                 <div className="bg-gradient-to-br from-[#E8F5E9] to-white p-4 flex items-center gap-4 border-b">
                                     <img
-                                        src={`${API_BASE}/${v.qrCodeUrl.replace(/^\//, '')}`}
+                                        src={v.qrCodeUrl.startsWith('http') ? v.qrCodeUrl : `${API_BASE}/${v.qrCodeUrl.replace(/^\//, '')}`}
                                         alt="QR Code"
                                         className="w-20 h-20 rounded-lg border-2 border-[#4CAF50]/20"
                                     />
@@ -177,8 +177,8 @@ export default function AdminBookLens() {
                                         <p className="text-xs text-[#618961] font-medium mb-1">Mã QR</p>
                                         <button
                                             onClick={async () => {
-                                                const res = await fetch(`${API_BASE}/${v.qrCodeUrl.replace(/^\//, '')}`);
-                                                const blob = await res.blob();
+                                                const imgUrl = v.qrCodeUrl.startsWith('http') ? v.qrCodeUrl : `${API_BASE}/${v.qrCodeUrl.replace(/^\//, '')}`;
+                                                const blob = await (await fetch(imgUrl)).blob();
                                                 const url = URL.createObjectURL(blob);
                                                 const a = document.createElement('a');
                                                 a.href = url;
@@ -251,7 +251,7 @@ export default function AdminBookLens() {
                             </button>
                         </div>
                         <video
-                            src={`${API_BASE}/${previewVideo.videoPath.replace(/^\//, '')}`}
+                            src={previewVideo.videoPath.startsWith('http') ? previewVideo.videoPath : `${API_BASE}/${previewVideo.videoPath.replace(/^\//, '')}`}
                             controls
                             autoPlay
                             className="w-full max-h-[70vh] object-contain"
