@@ -115,10 +115,11 @@ export const promotionsAPI = {
 export const bookLensAPI = {
     getAll: (params) => api.get('/booklens', { params }),
     getById: (id) => api.get(`/booklens/${id}`),
-    create: (formData) => api.post('/booklens', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
-    update: (id, formData) => api.put(`/booklens/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    create: (data) => api.post('/booklens', data),
+    update: (id, data) => api.put(`/booklens/${id}`, data),
     delete: (id) => api.delete(`/booklens/${id}`),
     getPublicVideo: (id) => api.get(`/booklens/watch/${id}`),
+    getUploadSignature: () => api.get('/booklens/upload-signature'),
 };
 
 // ── Settings ──

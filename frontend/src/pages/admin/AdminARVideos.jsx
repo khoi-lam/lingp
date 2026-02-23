@@ -36,33 +36,78 @@ export default function AdminBookLens() {
     const openAdd = () => { setForm({ title: '', book: '', duration: '', status: 'draft', description: '' }); setVideoFile(null); setFormOpen(true); };
     const openEdit = (v) => { setForm({ title: v.title, book: v.book?._id || '', duration: v.duration || '', status: v.status, description: v.description || '' }); setVideoFile(null); setEditTarget(v); };
 
-    const buildFormData = () => {
+    const [uploading, setUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
+
+    // Upload video directly to Cloudinary, return secure_url
+    const uploadToCloudinary = async (file) => {
+        // Get signed params from backend
+        const sigRes = await bookLensAPI.getUploadSignature();
+        const { signature, timestamp, cloudName, apiKey, folder } = sigRes.data.data;
+
         const fd = new FormData();
-        fd.append('title', form.title);
-        fd.append('book', form.book);
-        fd.append('duration', form.duration);
-        fd.append('status', form.status);
-        fd.append('description', form.description);
-        if (videoFile) fd.append('video', videoFile);
-        return fd;
+        fd.append('file', file);
+        fd.append('api_key', apiKey);
+        fd.append('timestamp', timestamp);
+        fd.append('signature', signature);
+        fd.append('folder', folder);
+        fd.append('resource_type', 'video');
+
+        const xhr = new XMLHttpRequest();
+        return new Promise((resolve, reject) => {
+            xhr.upload.onprogress = (e) => {
+                if (e.lengthComputable) setUploadProgress(Math.round((e.loaded / e.total) * 100));
+            };
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    const result = JSON.parse(xhr.responseText);
+                    resolve(result.secure_url);
+                } else {
+                    reject(new Error('Upload thất bại'));
+                }
+            };
+            xhr.onerror = () => reject(new Error('Upload thất bại'));
+            xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`);
+            xhr.send(fd);
+        });
     };
 
     const handleAdd = async () => {
         try {
-            await bookLensAPI.create(buildFormData());
+            let videoUrl = '';
+            if (videoFile) {
+                setUploading(true);
+                setUploadProgress(0);
+                videoUrl = await uploadToCloudinary(videoFile);
+            }
+            await bookLensAPI.create({ ...form, videoUrl });
             setFormOpen(false);
+            setUploading(false);
             showToast('Đã tạo video BookLens!');
             fetchData();
-        } catch (err) { showToast(err.response?.data?.message || 'Lỗi', 'error'); }
+        } catch (err) {
+            setUploading(false);
+            showToast(err.response?.data?.message || err.message || 'Lỗi', 'error');
+        }
     };
 
     const handleEdit = async () => {
         try {
-            await bookLensAPI.update(editTarget._id, buildFormData());
+            let videoUrl = '';
+            if (videoFile) {
+                setUploading(true);
+                setUploadProgress(0);
+                videoUrl = await uploadToCloudinary(videoFile);
+            }
+            await bookLensAPI.update(editTarget._id, { ...form, videoUrl });
             setEditTarget(null);
+            setUploading(false);
             showToast('Đã cập nhật video');
             fetchData();
-        } catch (err) { showToast(err.response?.data?.message || 'Lỗi', 'error'); }
+        } catch (err) {
+            setUploading(false);
+            showToast(err.response?.data?.message || err.message || 'Lỗi', 'error');
+        }
     };
 
     const handleDelete = async () => {
@@ -116,8 +161,19 @@ export default function AdminBookLens() {
                     className="w-full h-12 px-4 py-2 rounded-xl bg-white ring-1 ring-gray-200 focus:ring-2 focus:ring-[#0ea00e] text-[#111811] file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-[#0ea00e]/10 file:text-[#0ea00e]"
                 />
                 {videoFile && <p className="text-xs text-[#618961] mt-1">📹 {videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(1)}MB)</p>}
+                {uploading && (
+                    <div className="mt-2">
+                        <div className="flex items-center gap-2 text-xs text-[#0ea00e] font-bold mb-1">
+                            <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+                            Đang tải lên Cloudinary... {uploadProgress}%
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div className="bg-[#0ea00e] h-2 rounded-full transition-all" style={{ width: `${uploadProgress}%` }} />
+                        </div>
+                    </div>
+                )}
                 {editTarget?.videoPath && !videoFile && (
-                    <p className="text-xs text-green-600 mt-1">✅ Video hiện tại: <span className="font-bold">{editTarget.videoPath.split('/').pop()}</span> — upload file mới để thay thế</p>
+                    <p className="text-xs text-green-600 mt-1">✅ Video hiện tại — upload file mới để thay thế</p>
                 )}
             </div>
             <div className="grid grid-cols-2 gap-4">
