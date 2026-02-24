@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import jsQR from 'jsqr';
 import { bookLensAPI } from '../services/api';
 import { API_BASE } from '../config.js';
@@ -8,6 +8,7 @@ const logoUrl = '/logo.png';
 
 export default function ARScanner() {
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const autoVideoId = searchParams.get('id');
 
     const videoRef = useRef(null);
@@ -21,11 +22,11 @@ export default function ARScanner() {
     const [scanning, setScanning] = useState(false);
 
     // Video overlay state
-    const [activeVideo, setActiveVideo] = useState(null); // { id, videoSrc, title }
+    const [activeVideo, setActiveVideo] = useState(null);
     const [qrVisible, setQrVisible] = useState(false);
 
     // Toast state
-    const [toast, setToast] = useState(null); // { message, type: 'error' | 'success' | 'info' }
+    const [toast, setToast] = useState(null);
 
     const streamRef = useRef(null);
     const animFrameRef = useRef(null);
@@ -33,27 +34,84 @@ export default function ARScanner() {
     const lastVideoIdRef = useRef(null);
     const fetchingRef = useRef(false);
     const toastTimerRef = useRef(null);
+    const mountedRef = useRef(true);
 
     // ─── Toast helper ───
     const showToast = useCallback((message, type = 'error', duration = 3000) => {
+        if (!mountedRef.current) return;
         if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
         setToast({ message, type });
-        toastTimerRef.current = setTimeout(() => setToast(null), duration);
+        toastTimerRef.current = setTimeout(() => {
+            if (mountedRef.current) setToast(null);
+        }, duration);
     }, []);
 
     // ─── Camera controls ───
-    const startCamera = async () => {
+    const stopCamera = useCallback(() => {
+        // Cancel animation frame first
+        if (animFrameRef.current) {
+            cancelAnimationFrame(animFrameRef.current);
+            animFrameRef.current = null;
+        }
+        if (lostTimerRef.current) {
+            clearTimeout(lostTimerRef.current);
+            lostTimerRef.current = null;
+        }
+
+        // Stop all tracks
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => {
+                track.stop();
+                // Force-remove track from stream
+                streamRef.current.removeTrack(track);
+            });
+            streamRef.current = null;
+        }
+
+        // Clear video element srcObject (critical for iOS Safari)
+        if (videoRef.current) {
+            videoRef.current.srcObject = null;
+            videoRef.current.load(); // Force iOS to release camera
+        }
+
+        // Stop overlay video
+        if (overlayVideoRef.current) {
+            overlayVideoRef.current.pause();
+            overlayVideoRef.current.src = '';
+            overlayVideoRef.current.load();
+        }
+
+        if (mountedRef.current) setCameraActive(false);
+    }, []);
+
+    const startCamera = useCallback(async () => {
+        // Stop any existing stream first
+        stopCamera();
+
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({
+            // Lower resolution for newer iPhones (48MP sensor causes issues with high-res constraints)
+            const constraints = {
                 video: {
                     facingMode: facingMode,
-                    width: { ideal: 1920 },
-                    height: { ideal: 1080 },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
                 },
-            });
+                audio: false,
+            };
+
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+            if (!mountedRef.current) {
+                // Component unmounted while waiting for camera
+                stream.getTracks().forEach(t => t.stop());
+                return;
+            }
+
             streamRef.current = stream;
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
+                // Ensure video plays on iOS
+                try { await videoRef.current.play(); } catch { }
             }
             setCameraActive(true);
             setActiveVideo(null);
@@ -63,17 +121,7 @@ export default function ARScanner() {
         } catch (err) {
             showToast('Không thể truy cập camera', 'error');
         }
-    };
-
-    const stopCamera = () => {
-        if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-        if (lostTimerRef.current) clearTimeout(lostTimerRef.current);
-        if (streamRef.current) {
-            streamRef.current.getTracks().forEach(track => track.stop());
-            streamRef.current = null;
-        }
-        setCameraActive(false);
-    };
+    }, [facingMode, stopCamera, showToast]);
 
     const flipCamera = () => {
         stopCamera();
@@ -93,15 +141,19 @@ export default function ARScanner() {
         }
     };
 
+    // ─── Close / Exit handler ───
+    const handleClose = useCallback(() => {
+        stopCamera();
+        navigate('/');
+    }, [stopCamera, navigate]);
+
     // ─── Extract BookLens ID from QR data ───
     const extractBookLensId = (data) => {
         try {
-            // Try as URL first: .../watch/abc123
             const url = new URL(data);
             const match = url.pathname.match(/\/watch\/([a-f0-9]+)/i);
             if (match) return match[1];
         } catch {
-            // Try as raw path: /watch/abc123
             const match = data.match(/\/watch\/([a-f0-9]+)/i);
             if (match) return match[1];
         }
@@ -119,18 +171,20 @@ export default function ARScanner() {
                 const videoSrc = video.videoPath
                     ? (video.videoPath.startsWith('http') ? video.videoPath : `${API_BASE}/${video.videoPath.replace(/^\//, '')}`)
                     : null;
-                if (videoSrc) {
+                if (videoSrc && mountedRef.current) {
                     setActiveVideo({ id, videoSrc, title: video.title });
                     lastVideoIdRef.current = id;
-                } else {
+                } else if (!videoSrc) {
                     showToast('Video chưa được tải lên', 'info');
                 }
             }
         } catch (err) {
             const msg = err.response?.data?.message || 'Không tìm thấy video';
             showToast(msg, 'error');
-            setActiveVideo(null);
-            lastVideoIdRef.current = null;
+            if (mountedRef.current) {
+                setActiveVideo(null);
+                lastVideoIdRef.current = null;
+            }
         } finally {
             fetchingRef.current = false;
         }
@@ -145,6 +199,8 @@ export default function ARScanner() {
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
         const tick = () => {
+            if (!mountedRef.current || !streamRef.current) return;
+
             if (video.readyState === video.HAVE_ENOUGH_DATA) {
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
@@ -156,7 +212,6 @@ export default function ARScanner() {
                 });
 
                 if (code?.data) {
-                    // QR detected in frame
                     if (lostTimerRef.current) {
                         clearTimeout(lostTimerRef.current);
                         lostTimerRef.current = null;
@@ -165,21 +220,18 @@ export default function ARScanner() {
 
                     const bookLensId = extractBookLensId(code.data);
                     if (bookLensId) {
-                        // Only fetch if it's a new video
                         if (lastVideoIdRef.current !== bookLensId) {
                             fetchVideo(bookLensId);
                         }
                     } else {
-                        // Not a BookLens QR
                         if (!lastVideoIdRef.current) {
                             showToast('Mã QR không phải BookLens', 'error');
                         }
                     }
                 } else {
-                    // QR not visible — debounce 1s before hiding video
                     if (!lostTimerRef.current) {
                         lostTimerRef.current = setTimeout(() => {
-                            setQrVisible(false);
+                            if (mountedRef.current) setQrVisible(false);
                             lostTimerRef.current = null;
                         }, 1000);
                     }
@@ -225,6 +277,7 @@ export default function ARScanner() {
                 showToast('Không tìm thấy mã QR trong ảnh', 'error');
             }
             setScanning(false);
+            URL.revokeObjectURL(img.src);
         };
         img.onerror = () => {
             showToast('Không thể đọc file ảnh', 'error');
@@ -249,9 +302,11 @@ export default function ARScanner() {
     useEffect(() => {
         if (!qrVisible) {
             const timer = setTimeout(() => {
-                setActiveVideo(null);
-                lastVideoIdRef.current = null;
-            }, 3000); // Clear fully after 3s of no QR
+                if (mountedRef.current) {
+                    setActiveVideo(null);
+                    lastVideoIdRef.current = null;
+                }
+            }, 3000);
             return () => clearTimeout(timer);
         }
     }, [qrVisible]);
@@ -264,10 +319,30 @@ export default function ARScanner() {
         }
     }, [autoVideoId]);
 
+    // Start/stop camera on mount/unmount
     useEffect(() => {
+        mountedRef.current = true;
         startCamera();
-        return () => stopCamera();
+
+        return () => {
+            mountedRef.current = false;
+            stopCamera();
+            if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+        };
     }, [facingMode]);
+
+    // Handle page visibility change (iOS Safari can freeze camera)
+    useEffect(() => {
+        const handleVisibility = () => {
+            if (document.visibilityState === 'hidden') {
+                stopCamera();
+            } else if (document.visibilityState === 'visible' && mountedRef.current) {
+                startCamera();
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibility);
+        return () => document.removeEventListener('visibilitychange', handleVisibility);
+    }, [startCamera, stopCamera]);
 
     const showVideoOverlay = activeVideo && (qrVisible || autoVideoId);
 
@@ -283,6 +358,7 @@ export default function ARScanner() {
                 playsInline
                 muted
                 className="absolute inset-0 w-full h-full object-cover"
+                style={{ WebkitTransform: 'translateZ(0)' }}
             />
 
             {/* Gradient overlays */}
@@ -307,12 +383,12 @@ export default function ARScanner() {
                     </div>
                     <span className="text-white/70 text-sm font-bold ml-1">BookLens</span>
                 </div>
-                <Link
-                    to="/"
+                <button
+                    onClick={handleClose}
                     className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/30 transition-colors border border-white/10"
                 >
                     <span className="material-symbols-outlined">close</span>
-                </Link>
+                </button>
             </div>
 
             {/* ═══ Video Overlay ═══ */}
@@ -321,12 +397,8 @@ export default function ARScanner() {
                     className="absolute inset-0 z-30 flex items-center justify-center"
                     style={{ animation: 'fadeIn 0.3s ease-out' }}
                 >
-                    {/* Dark backdrop */}
                     <div className="absolute inset-0 bg-black/70" />
-
-                    {/* Video container */}
                     <div className="relative w-[92%] max-w-lg" style={{ animation: 'scaleIn 0.3s ease-out' }}>
-                        {/* Title badge */}
                         <div className="absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap z-10">
                             <div className="flex items-center gap-2 bg-[#4CAF50] text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg">
                                 <span className="material-symbols-outlined text-sm">play_circle</span>
@@ -340,11 +412,11 @@ export default function ARScanner() {
                             autoPlay
                             playsInline
                             loop
+                            muted
                             className="w-full rounded-2xl shadow-2xl border-2 border-white/20"
                             style={{ maxHeight: '60vh' }}
                         />
 
-                        {/* Hint */}
                         <p className="text-center text-white/60 text-xs mt-3">
                             <span className="material-symbols-outlined text-sm align-middle mr-1">qr_code_scanner</span>
                             Rời mã QR để dừng video
@@ -394,7 +466,6 @@ export default function ARScanner() {
                         <span className="material-symbols-outlined text-2xl">{flashOn ? 'flash_on' : 'flash_off'}</span>
                     </button>
 
-                    {/* Upload QR from device */}
                     <button
                         onClick={() => fileInputRef.current?.click()}
                         className="w-16 h-16 rounded-full bg-[#4CAF50] flex items-center justify-center text-white shadow-lg shadow-[#4CAF50]/30 hover:brightness-110 transition-all border-2 border-white/20"
