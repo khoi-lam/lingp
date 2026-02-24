@@ -70,7 +70,13 @@ export default function ARScanner() {
 
         // Clear video element srcObject (critical for iOS Safari)
         if (videoRef.current) {
+            videoRef.current.pause();
+            // Disable PiP before clearing
+            if (videoRef.current.webkitPresentationMode) {
+                try { videoRef.current.webkitSetPresentationMode('inline'); } catch { }
+            }
             videoRef.current.srcObject = null;
+            videoRef.current.removeAttribute('src');
             videoRef.current.load(); // Force iOS to release camera
         }
 
@@ -357,6 +363,9 @@ export default function ARScanner() {
                 autoPlay
                 playsInline
                 muted
+                disablePictureInPicture
+                disableRemotePlayback
+                x-webkit-airplay="deny"
                 className="absolute inset-0 w-full h-full object-cover"
                 style={{ WebkitTransform: 'translateZ(0)' }}
             />
@@ -413,6 +422,8 @@ export default function ARScanner() {
                             playsInline
                             loop
                             muted
+                            disablePictureInPicture
+                            disableRemotePlayback
                             className="w-full rounded-2xl shadow-2xl border-2 border-white/20"
                             style={{ maxHeight: '60vh' }}
                         />
