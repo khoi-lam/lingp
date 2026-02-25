@@ -375,7 +375,7 @@ export default function ARScanner() {
             <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
 
             {/* Header */}
-            <div className="absolute top-0 left-0 right-0 z-40 flex items-center justify-between p-5">
+            <div className="absolute top-0 left-0 right-0 z-40 flex items-center justify-between px-5 pb-3" style={{ paddingTop: 'max(20px, calc(env(safe-area-inset-top, 20px) + 8px))' }}>
                 <div className="flex items-center gap-3">
                     <img src={logoUrl} alt="LingoLand" className="h-10 w-auto drop-shadow-2xl" />
                     <div className="flex items-center gap-[2px] h-6">
@@ -439,8 +439,8 @@ export default function ARScanner() {
             {/* ═══ Toast ═══ */}
             {toast && (
                 <div
-                    className="absolute top-20 left-1/2 -translate-x-1/2 z-50 max-w-[85%]"
-                    style={{ animation: 'fadeIn 0.2s ease-out' }}
+                    className="absolute left-1/2 -translate-x-1/2 z-50 max-w-[85%]"
+                    style={{ animation: 'fadeIn 0.2s ease-out', top: 'max(80px, calc(env(safe-area-inset-top, 20px) + 60px))' }}
                 >
                     <div className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-bold shadow-lg backdrop-blur-md ${toast.type === 'error'
                         ? 'bg-red-500/90 text-white'
@@ -467,7 +467,7 @@ export default function ARScanner() {
             )}
 
             {/* Bottom Controls */}
-            <div className="absolute bottom-0 left-0 right-0 z-40 p-8">
+            <div className="absolute bottom-0 left-0 right-0 z-40 px-8 pt-4" style={{ paddingBottom: 'max(32px, calc(env(safe-area-inset-bottom, 20px) + 16px))' }}>
                 <div className="flex items-center justify-center gap-6">
                     <button
                         onClick={toggleFlash}
