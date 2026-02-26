@@ -71,20 +71,16 @@ export default function ARScanner() {
         // Clear video element srcObject (critical for iOS Safari)
         if (videoRef.current) {
             videoRef.current.pause();
-            // Disable PiP before clearing
-            if (videoRef.current.webkitPresentationMode) {
-                try { videoRef.current.webkitSetPresentationMode('inline'); } catch { }
-            }
             videoRef.current.srcObject = null;
             videoRef.current.removeAttribute('src');
-            videoRef.current.load(); // Force iOS to release camera
+            // Do NOT call videoRef.current.load() here — it causes a main thread freeze on iOS 16+ WebKit
         }
 
         // Stop overlay video
         if (overlayVideoRef.current) {
             overlayVideoRef.current.pause();
             overlayVideoRef.current.src = '';
-            overlayVideoRef.current.load();
+            overlayVideoRef.current.removeAttribute('src');
         }
 
         if (mountedRef.current) setCameraActive(false);
@@ -150,7 +146,11 @@ export default function ARScanner() {
     // ─── Close / Exit handler ───
     const handleClose = useCallback(() => {
         stopCamera();
-        navigate('/');
+        // Delay navigation slightly to let iOS Safari release media hardware smoothly
+        // before React unmounts the DOM
+        setTimeout(() => {
+            navigate('/');
+        }, 50);
     }, [stopCamera, navigate]);
 
     // ─── Extract BookLens ID from QR data ───
