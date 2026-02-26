@@ -3,8 +3,7 @@ import { booksAPI, categoriesAPI } from '../services/api';
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 const stats = [
-    { value: 20, suffix: '+', label: 'Đầu sách song ngữ', icon: 'auto_stories' },
-    { value: 4, suffix: '', label: 'Nhóm tuổi', icon: 'child_care' },
+    { value: '0-6', suffix: '', label: 'Nhóm tuổi', icon: 'child_care', isText: true },
     { value: 2, suffix: '', label: 'Ngôn ngữ', icon: 'translate' },
     { value: 4.9, suffix: '★', label: 'Đánh giá phụ huynh', icon: 'star', decimal: true },
 ];
@@ -229,12 +228,12 @@ export default function Home() {
             ═══════════════════════════════════════════════════ */}
             <section className="py-10 bg-white border-b border-[#E8F5E9]">
                 <div className="container mx-auto px-6">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
+                    <div className="grid grid-cols-3 gap-4 sm:gap-6 text-center">
                         {stats.map((s, i) => (
                             <div key={i} className="flex flex-col items-center gap-2">
                                 <span className="material-symbols-outlined text-3xl text-[#4CAF50]">{s.icon}</span>
                                 <span className="text-2xl sm:text-3xl font-bold text-[#2B3A67]" style={{ fontFamily: "'Inter', 'Roboto', sans-serif" }}>
-                                    <CountUp end={s.value} suffix={s.suffix} decimal={s.decimal} />
+                                    {s.isText ? <>{s.value}{s.suffix}</> : <CountUp end={s.value} suffix={s.suffix} decimal={s.decimal} />}
                                 </span>
                                 <span className="text-sm text-gray-400">{s.label}</span>
                             </div>
@@ -251,17 +250,15 @@ export default function Home() {
                     <div className="max-w-3xl mx-auto text-center space-y-6">
                         <span className="text-sm font-bold text-[#8BC34A] uppercase tracking-widest">Về LingoLand</span>
                         <h2 className="text-3xl md:text-4xl font-display font-bold text-[#2B3A67] leading-snug">
-                            Gieo Hạt Song Ngữ<br className="hidden md:block" /> Nuôi Dưỡng Tương Lai
+                            Mở trang sách nhỏ,<br className="hidden md:block" /> mở thế giới to
                         </h2>
                         <p className="text-gray-500 leading-relaxed text-lg">
-                            LingoLand là nhà xuất bản sách truyện tranh <strong className="text-[#2B3A67]">song ngữ Anh-Việt</strong> dành riêng cho trẻ em.
-                            Chúng tôi tin rằng việc học ngôn ngữ thứ hai nên bắt đầu từ sớm — và cách tốt nhất là qua những câu chuyện
-                            đầy màu sắc, nhân vật sinh động, và niềm vui đọc sách mỗi ngày.
+                            LingoLand là một doanh nghiệp <strong className="text-[#2B3A67]">EdTech</strong> được thành lập với sứ mệnh phát triển nền tảng học ngôn ngữ sớm cho trẻ em,
+                            tập trung vào nhóm tuổi từ 0 đến 6 tuổi - giai đoạn vàng trong quá trình hình thành và phát triển năng lực ngôn ngữ của trẻ nhỏ.
                         </p>
                         <p className="text-gray-500 leading-relaxed text-lg">
-                            Mỗi cuốn sách LingoLand được thiết kế theo từng nhóm tuổi (3-5, 6-8, 9-12), đảm bảo nội dung
-                            phù hợp với khả năng nhận thức và ngôn ngữ của bé. Từ vựng được giới thiệu tự nhiên qua cốt truyện —
-                            bé học mà không biết mình đang học. 📚
+                            LingoLand hướng tới xây dựng một hệ sinh thái học tập kết hợp giữa sản phẩm vật lý và nền tảng số nhằm tạo ra các trải nghiệm học tập đa giác quan,
+                            giúp trẻ tiếp thu ngôn ngữ một cách tự nhiên và từng bước hình thành nền tảng song ngữ - ngay từ những năm đầu đời. 🌱
                         </p>
                     </div>
                 </div>

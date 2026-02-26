@@ -96,8 +96,8 @@ export default function Support() {
                     <div className="bg-[#E8F5E9] rounded-lg p-6 mt-8">
                         <h3 className="font-display font-bold text-[#2E7D32] mb-4">Cách khác để liên hệ</h3>
                         <div className="space-y-3">
-                            <div className="flex items-center gap-3 text-[#388E3C]"><span className="material-symbols-outlined text-[#4CAF50]">call</span><span className="font-semibold">1800-LINGO (5464)</span></div>
-                            <div className="flex items-center gap-3 text-[#388E3C]"><span className="material-symbols-outlined text-[#4CAF50]">mail</span><span className="font-semibold">support@lingoland.com</span></div>
+                            <a href="https://www.facebook.com/lingoland.vn/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[#388E3C] hover:underline"><span className="material-symbols-outlined text-[#4CAF50]">public</span><span className="font-semibold">Facebook: LingoLand</span></a>
+                            <div className="flex items-center gap-3 text-[#388E3C]"><span className="material-symbols-outlined text-[#4CAF50]">mail</span><span className="font-semibold">lingoland.vn@gmail.com</span></div>
                             <div className="flex items-center gap-3 text-[#388E3C]"><span className="material-symbols-outlined text-[#4CAF50]">schedule</span><span className="font-semibold">Thứ 2 - Thứ 7: 8:00 - 22:00</span></div>
                         </div>
                     </div>

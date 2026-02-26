@@ -9,15 +9,13 @@ export default function Footer() {
                     <div className="space-y-4">
                         <img alt="LingoLand Logo" className="h-16 w-auto object-contain drop-shadow-md" src={logoUrl} />
                         <p className="text-[#C5E0B4] text-sm leading-relaxed">
-                            LingoLand — Phát triển và xuất bản sách truyện tranh song ngữ cho trẻ em. Gieo hạt song ngữ, nuôi dưỡng tương lai. 🌱
+                            LingoLand - Dự Án Phát Triển Nền Tảng Học Ngôn Ngữ Sớm Cho Trẻ Em. Mở trang sách nhỏ, mở thế giới to. 🌱
                         </p>
                     </div>
                     <div>
                         <h4 className="font-bold text-lg mb-6 text-[#8BC34A]">Bộ Sưu Tập</h4>
                         <ul className="space-y-3 text-[#C5E0B4]">
-                            <li><Link to="/shop" className="hover:text-white transition-colors">📚 3-5 Tuổi</Link></li>
-                            <li><Link to="/shop" className="hover:text-white transition-colors">📖 6-8 Tuổi</Link></li>
-                            <li><Link to="/shop" className="hover:text-white transition-colors">📕 9-12 Tuổi</Link></li>
+                            <li><Link to="/shop" className="hover:text-white transition-colors">📚 Tất Cả Sách</Link></li>
                             <li><Link to="/shop" className="hover:text-white transition-colors">🌏 Song Ngữ Anh-Việt</Link></li>
                         </ul>
                     </div>
@@ -25,13 +23,13 @@ export default function Footer() {
                         <h4 className="font-bold text-lg mb-6 text-[#8BC34A]">Liên Hệ</h4>
                         <ul className="space-y-3 text-[#C5E0B4]">
                             <li><Link to="/support" className="hover:text-white transition-colors">💬 Hỗ Trợ Khách Hàng</Link></li>
-                            <li><Link to="/support" className="hover:text-white transition-colors">📦 Thông Tin Giao Hàng</Link></li>
-                            <li><Link to="/support" className="hover:text-white transition-colors">❓ Câu Hỏi Thường Gặp</Link></li>
+                            <li><a href="https://www.facebook.com/lingoland.vn/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">📘 Facebook</a></li>
+                            <li><a href="mailto:lingoland.vn@gmail.com" className="hover:text-white transition-colors">✉️ lingoland.vn@gmail.com</a></li>
                         </ul>
                     </div>
                 </div>
                 <div className="border-t border-[#4CAF50] pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className="text-[#C5E0B4]/60 text-sm">© 2026 LingoLand Studio — Sách Song Ngữ Cho Bé</p>
+                    <p className="text-[#C5E0B4]/60 text-sm">© 2026 LingoLand — Mở trang sách nhỏ, mở thế giới to</p>
                 </div>
             </div>
         </footer>
