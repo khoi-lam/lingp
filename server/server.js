@@ -45,9 +45,11 @@ const corsOptions = {
             return callback(null, true);
         }
 
-        // In production, allow frontend URL and common dev origins
+        // In production, allow frontend URL and production domains
         const allowedOrigins = [
             config.frontendUrl,
+            'https://lingolandvn.com',
+            'https://www.lingolandvn.com',
             'http://localhost:5173',
             'http://localhost:5174'
         ].filter(Boolean);
