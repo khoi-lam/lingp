@@ -260,6 +260,25 @@ model BookLens {
   @@map("book_lenses")
 }
 
+model Promotion {
+  id             Int      @id @default(autoincrement())
+  name           String
+  code           String   @unique
+  discountType   String   // 'percentage' | 'fixed'
+  discountValue  Float
+  startDate      DateTime
+  endDate        DateTime
+  status         String   @default("active") // active, upcoming, expired, paused
+  usedCount      Int      @default(0)
+  minOrderAmount Float    @default(0)
+  maxUses        Int      @default(0)
+  description    String   @default("")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("promotions")
+}
+
 model Content {
   id        Int         @id @default(autoincrement())
   type      ContentType @unique

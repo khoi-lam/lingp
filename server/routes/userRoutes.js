@@ -2,8 +2,7 @@ import express from 'express';
 import {
     getProfile,
     updateProfile,
-    changePassword,
-    promoteToAdmin
+    changePassword
 } from '../controllers/userController.js';
 import {
     getAllUsers,
@@ -20,7 +19,6 @@ router.use(authenticate);
 router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
 router.put('/change-password', changePassword);
-router.put('/promote-admin', promoteToAdmin); // TEMPORARY endpoint
 
 // Admin routes
 router.get('/admin/all', requireAdmin, getAllUsers);

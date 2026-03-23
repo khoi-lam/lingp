@@ -19,6 +19,7 @@ export const authenticate = async (req, res, next) => {
 
         // Attach user info to request
         req.user = {
+            id: decoded.userId,
             _id: decoded.userId,
             userId: decoded.userId,
             email: decoded.email,

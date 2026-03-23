@@ -50,14 +50,3 @@ export const changePassword = async (req, res, next) => {
         res.json({ success: true, message: 'Đổi mật khẩu thành công' });
     } catch (error) { next(error); }
 };
-
-export const promoteToAdmin = async (req, res, next) => {
-    try {
-        const user = await prisma.user.update({ where: { id: parseInt(req.user.userId) }, data: { role: 'admin' } });
-        res.json({
-            success: true,
-            message: 'Đã promote thành admin thành công',
-            data: { user: { id: user.id, _id: String(user.id), email: user.email, name: user.name, role: user.role } }
-        });
-    } catch (error) { next(error); }
-};

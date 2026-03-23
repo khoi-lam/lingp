@@ -22,8 +22,12 @@ import chatRoutes from './routes/chatRoutes.js';
 import arVideoRoutes from './routes/arVideoRoutes.js';
 import bookLensRoutes from './routes/bookLensRoutes.js';
 import settingRoutes from './routes/settingRoutes.js';
+import promotionRoutes from './routes/promotionRoutes.js';
 
 const app = express();
+
+// Trust proxy (Railway, Render, etc. use reverse proxies)
+app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet({
@@ -115,6 +119,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/support', supportRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/promotions', promotionRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

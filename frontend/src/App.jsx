@@ -11,6 +11,9 @@ import Checkout from './pages/Checkout';
 import Support from './pages/Support';
 import Login from './pages/Login';
 import ARScanner from './pages/ARScanner';
+import Profile from './pages/Profile';
+import Orders from './pages/Orders';
+import Wishlist from './pages/Wishlist';
 // WatchVideo removed — /watch/:id now redirects to BookLens camera
 import AdminLayout from './components/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -22,6 +25,8 @@ import AdminSupport from './pages/admin/AdminSupport';
 import AdminCategories from './pages/admin/AdminCategories';
 import AdminBookLens from './pages/admin/AdminARVideos';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminPromotions from './pages/admin/AdminPromotions';
+import AdminUsers from './pages/admin/AdminUsers';
 
 function Layout({ children, showNav = true, showFooter = true }) {
   return (
@@ -31,6 +36,12 @@ function Layout({ children, showNav = true, showFooter = true }) {
       {showFooter && <Footer />}
     </div>
   );
+}
+
+function ProtectedRoute({ children }) {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  return <Layout>{children}</Layout>;
 }
 
 function AdminRoute({ children }) {
@@ -66,6 +77,11 @@ export default function App() {
         <Route path="/booklens" element={<Layout showNav={false} showFooter={false}><ARScanner /></Layout>} />
         <Route path="/watch/:id" element={<WatchRedirect />} />
 
+        {/* Protected user routes */}
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+        <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+
         {/* Admin Routes — protected */}
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
@@ -77,7 +93,10 @@ export default function App() {
         <Route path="/admin/categories" element={<AdminRoute><AdminCategories /></AdminRoute>} />
         <Route path="/admin/booklens" element={<AdminRoute><AdminBookLens /></AdminRoute>} />
         <Route path="/admin/settings" element={<AdminRoute><AdminSettings /></AdminRoute>} />
+        <Route path="/admin/promotions" element={<AdminRoute><AdminPromotions /></AdminRoute>} />
+        <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
       </Routes>
     </>
   );
 }
+

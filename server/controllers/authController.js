@@ -66,6 +66,10 @@ export const login = async (req, res, next) => {
             return res.status(401).json({ success: false, message: 'Email hoặc mật khẩu không đúng' });
         }
 
+        if (user.isBlocked) {
+            return res.status(403).json({ success: false, message: 'Tài khoản của bạn đã bị khoá. Vui lòng liên hệ hỗ trợ.' });
+        }
+
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(401).json({ success: false, message: 'Email hoặc mật khẩu không đúng' });
