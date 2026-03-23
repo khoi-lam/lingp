@@ -24,6 +24,7 @@ export default function ARScanner() {
     // Video overlay state
     const [activeVideo, setActiveVideo] = useState(null);
     const [qrVisible, setQrVisible] = useState(false);
+    const [isMuted, setIsMuted] = useState(true);
 
     // Toast state
     const [toast, setToast] = useState(null);
@@ -293,11 +294,20 @@ export default function ARScanner() {
         e.target.value = '';
     };
 
+    // Reset mute when switching to a new video (prevent autoplay blocking)
+    useEffect(() => {
+        setIsMuted(true);
+        if (overlayVideoRef.current) overlayVideoRef.current.muted = true;
+    }, [activeVideo?.id]);
+
     // ─── Auto-play/pause overlay video based on QR visibility ───
     useEffect(() => {
         const vid = overlayVideoRef.current;
         if (!vid) return;
         if (qrVisible && activeVideo) {
+            // Ensure muted before play to guarantee autoplay works (iOS Safari)
+            vid.muted = true;
+            setIsMuted(true);
             vid.play().catch(() => { });
         } else {
             vid.pause();
@@ -415,22 +425,42 @@ export default function ARScanner() {
                             </div>
                         </div>
 
-                        <video
-                            ref={overlayVideoRef}
-                            src={activeVideo.videoSrc}
-                            autoPlay
-                            playsInline
-                            loop
-                            muted
-                            disablePictureInPicture
-                            disableRemotePlayback
-                            className="w-full rounded-2xl shadow-2xl border-2 border-white/20"
-                            style={{ maxHeight: '60vh' }}
-                        />
+                        <div className="relative">
+                            <video
+                                ref={overlayVideoRef}
+                                src={activeVideo.videoSrc}
+                                autoPlay
+                                playsInline
+                                loop
+                                muted={isMuted}
+                                disablePictureInPicture
+                                disableRemotePlayback
+                                className="w-full rounded-2xl shadow-2xl border-2 border-white/20"
+                                style={{ maxHeight: '60vh' }}
+                            />
+
+                            {/* Mute/Unmute toggle */}
+                            <button
+                                onClick={() => {
+                                    const next = !isMuted;
+                                    setIsMuted(next);
+                                    if (overlayVideoRef.current) {
+                                        overlayVideoRef.current.muted = next;
+                                        // If unmuting, ensure video is playing (user gesture unlocks autoplay)
+                                        if (!next) overlayVideoRef.current.play().catch(() => {});
+                                    }
+                                }}
+                                className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors border border-white/20"
+                            >
+                                <span className="material-symbols-outlined text-xl">
+                                    {isMuted ? 'volume_off' : 'volume_up'}
+                                </span>
+                            </button>
+                        </div>
 
                         <p className="text-center text-white/60 text-xs mt-3">
                             <span className="material-symbols-outlined text-sm align-middle mr-1">qr_code_scanner</span>
-                            Rời mã QR để dừng video
+                            {isMuted ? 'Nhấn 🔊 để nghe âm thanh • ' : ''}Rời mã QR để dừng video
                         </p>
                     </div>
                 </div>
