@@ -300,32 +300,14 @@ export default function ARScanner() {
         if (overlayVideoRef.current) overlayVideoRef.current.muted = true;
     }, [activeVideo?.id]);
 
-    // ─── Auto-play/pause overlay video based on QR visibility ───
+    // Auto-play overlay video when a new video is loaded
     useEffect(() => {
         const vid = overlayVideoRef.current;
-        if (!vid) return;
-        if (qrVisible && activeVideo) {
-            // Ensure muted before play to guarantee autoplay works (iOS Safari)
-            vid.muted = true;
-            setIsMuted(true);
-            vid.play().catch(() => { });
-        } else {
-            vid.pause();
-        }
-    }, [qrVisible, activeVideo]);
-
-    // Clear video when QR lost for a while
-    useEffect(() => {
-        if (!qrVisible) {
-            const timer = setTimeout(() => {
-                if (mountedRef.current) {
-                    setActiveVideo(null);
-                    lastVideoIdRef.current = null;
-                }
-            }, 3000);
-            return () => clearTimeout(timer);
-        }
-    }, [qrVisible]);
+        if (!vid || !activeVideo) return;
+        vid.muted = true;
+        setIsMuted(true);
+        vid.play().catch(() => { });
+    }, [activeVideo]);
 
     // Auto-load video from URL param (from /watch/:id redirect)
     useEffect(() => {
@@ -360,7 +342,7 @@ export default function ARScanner() {
         return () => document.removeEventListener('visibilitychange', handleVisibility);
     }, [startCamera, stopCamera]);
 
-    const showVideoOverlay = activeVideo && (qrVisible || autoVideoId);
+    const showVideoOverlay = !!activeVideo;
 
     return (
         <div className="fixed inset-0 z-[100] bg-black overflow-hidden">
@@ -431,12 +413,17 @@ export default function ARScanner() {
                                 src={activeVideo.videoSrc}
                                 autoPlay
                                 playsInline
-                                loop
                                 muted={isMuted}
                                 disablePictureInPicture
                                 disableRemotePlayback
                                 className="w-full rounded-2xl shadow-2xl border-2 border-white/20"
                                 style={{ maxHeight: '60vh' }}
+                                onEnded={() => {
+                                    if (mountedRef.current) {
+                                        setActiveVideo(null);
+                                        lastVideoIdRef.current = null;
+                                    }
+                                }}
                             />
 
                             {/* Mute/Unmute toggle */}
@@ -460,7 +447,7 @@ export default function ARScanner() {
 
                         <p className="text-center text-white/60 text-xs mt-3">
                             <span className="material-symbols-outlined text-sm align-middle mr-1">qr_code_scanner</span>
-                            {isMuted ? 'Nhấn 🔊 để nghe âm thanh • ' : ''}Rời mã QR để dừng video
+                            {isMuted ? 'Nhấn 🔊 để nghe âm thanh' : 'Đang phát...'}
                         </p>
                     </div>
                 </div>
